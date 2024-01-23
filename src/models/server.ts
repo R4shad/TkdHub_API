@@ -1,7 +1,8 @@
 import express from "express";
 import morgan from "morgan";
+import { swaggerDocs } from "../V1/swagger";
 
-//import { swaggerDocs } from "../v1/swagger";
+import routesChampionship from "../routes/championship.routes";
 
 class Server {
   app: express.Application;
@@ -10,23 +11,36 @@ class Server {
   constructor() {
     this.app = express();
     this.port = process.env.PORT || "3000";
-    this.listen();
-    console.log(process.env.PORT);
+    this.configureRoutes();
+    this.configureServer();
+    this.startServer();
   }
 
-  listen() {
-    this.app.listen(this.port, () => {
-      //swaggerDocs(this.app, this.port);
-      this.app.use(express.json());
-      this.app.use(morgan("dev"));
+  private configureServer() {
+    this.launchSwagger();
+    this.app.use(express.json());
+    this.app.use(morgan("dev"));
 
-      this.app.use((req, res, next) => {
-        res.status(404).json({
-          message: "endpoint not found",
-        });
+    // Middleware para manejar rutas no encontradas
+    this.app.use((req, res) => {
+      res.status(404).json({
+        message: "Endpoint not found",
       });
     });
-    console.log("Server running on port " + this.port + "/api");
+  }
+
+  private configureRoutes() {
+    this.app.use("/api/Championship", routesChampionship);
+  }
+
+  private launchSwagger() {
+    swaggerDocs(this.app, this.port);
+  }
+
+  private startServer() {
+    this.app.listen(this.port, () => {
+      console.log("Server running on port " + this.port + "/api");
+    });
   }
 }
 
