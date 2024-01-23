@@ -1,12 +1,12 @@
-// models/championship.ts
 import { DataTypes, Model } from "sequelize";
-import { sequelize } from "../config/db"; // Ajusta la ruta según tu estructura
+import { sequelize } from "../config/db";
 
 class Championship extends Model {
   public championshipId!: number;
   public name!: string | null;
   public organizer!: string | null;
   public active!: boolean;
+  public championshipDate!: Date | null; // Nuevo campo
 }
 
 Championship.init(
@@ -30,10 +30,14 @@ Championship.init(
       type: DataTypes.BOOLEAN,
       defaultValue: true,
     },
+    championshipDate: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
     sequelize,
-    tableName: "Championship", // Ajusta el nombre de la tabla según tu configuración
+    tableName: "Championship",
   }
 );
 

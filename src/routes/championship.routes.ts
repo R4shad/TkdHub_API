@@ -22,26 +22,24 @@ router.get("/", getChampionships);
  *   post:
  *     tags:
  *       - Championship
- *     summary: Crea un nuevo championship
  *     requestBody:
- *       description: Datos del championship a crear
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
  *             properties:
- *               nombre:
+ *               name:
  *                 type: string
- *                 description: Nombre del campeonato.
- *               organizador:
+ *               organizer:
  *                 type: string
- *                 description: Nombre de la organizacion o la persona que organiza.
+ *               championshipDate:
+ *                 type: string
  *     responses:
- *       200:
- *         description: Campeonato creado exitosamente
- *       400:
- *         description: Error en la solicitud
+ *       201:
+ *         description: Created
+ *       500:
+ *         description: Error
  */
 router.post("/", createChampionship);
 

@@ -66,7 +66,7 @@ class Server {
 
   async dbConnect() {
     try {
-      await Championship.sync();
+      await Championship.sync({ alter: true });
       await Responsible.sync();
       await ChampionshipResponsible.sync();
       await Club.sync();
