@@ -4,6 +4,22 @@ import { swaggerDocs } from "../V1/swagger";
 
 import routesChampionship from "../routes/championship.routes";
 import Championship from "./championship";
+import Responsible from "./responsible";
+import ChampionshipResponsible from "./championshipResponsible";
+import Club from "./club";
+import ChampionshipClub from "./championshipClub";
+import Coach from "./coach";
+import ChampionshipCoach from "./championshipCoach";
+import Participant from "./participant";
+import ChampionshipParticipant from "./championshipParticipant";
+import Category from "./category";
+import ChampionshipCategory from "./championshipCategory";
+import Division from "./division";
+import AgeInterval from "./ageInterval";
+import ChampionshipDivision from "./championshipDivision";
+import Competitor from "./competitor";
+import Bracket from "./bracket";
+import Match from "./match";
 
 class Server {
   app: express.Application;
@@ -16,6 +32,7 @@ class Server {
     this.startServer();
     this.routes();
     this.notFound();
+    this.dbConnect();
   }
 
   private configureServer() {
@@ -47,9 +64,25 @@ class Server {
     });
   }
 
-  async dbConect() {
+  async dbConnect() {
     try {
       await Championship.sync();
+      await Responsible.sync();
+      await ChampionshipResponsible.sync();
+      await Club.sync();
+      await ChampionshipClub.sync();
+      await Coach.sync();
+      await ChampionshipCoach.sync();
+      await Participant.sync();
+      await ChampionshipParticipant.sync();
+      await Category.sync();
+      await ChampionshipCategory.sync();
+      await Division.sync();
+      await AgeInterval.sync();
+      await ChampionshipDivision.sync();
+      await Competitor.sync();
+      await Bracket.sync();
+      await Match.sync();
     } catch (error) {
       console.error("Unable to connect to the database:", error);
     }
