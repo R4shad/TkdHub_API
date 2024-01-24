@@ -5,8 +5,9 @@ class Championship extends Model {
   public championshipId!: number;
   public name!: string | null;
   public organizer!: string | null;
+  public password!: string | null;
   public active!: boolean;
-  public championshipDate!: Date | null; // Nuevo campo
+  public championshipDate!: Date | null;
 }
 
 Championship.init(
@@ -20,10 +21,13 @@ Championship.init(
     name: {
       type: DataTypes.STRING(80),
       allowNull: true,
-      unique: true,
     },
     organizer: {
       type: DataTypes.STRING(80),
+      allowNull: true,
+    },
+    password: {
+      type: DataTypes.STRING,
       allowNull: true,
     },
     active: {

@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   getChampionships,
   createChampionship,
+  loginOrganizer,
 } from "../controllers/championship.controllers";
 
 const router = Router();
@@ -33,6 +34,8 @@ router.get("/", getChampionships);
  *                 type: string
  *               organizer:
  *                 type: string
+ *               password:  # Agrega la nueva propiedad password
+ *                 type: string
  *               championshipDate:
  *                 type: string
  *     responses:
@@ -43,4 +46,35 @@ router.get("/", getChampionships);
  */
 router.post("/", createChampionship);
 
+/**
+ * @openapi
+ * /api/championship/login/{championshipId}:
+ *   post:
+ *     tags:
+ *       - Championship
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID of the championship
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               organizer:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Created
+ *       500:
+ *         description: Error
+ */
+router.post("/login/:championshipId", loginOrganizer);
 export default router;

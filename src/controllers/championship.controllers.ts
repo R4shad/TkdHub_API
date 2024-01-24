@@ -2,6 +2,7 @@
 import { Request, Response } from "express";
 import Championship from "./../models/championship";
 import ApiResponse from "../interfaces/apiResponse";
+import jwt from "jsonwebtoken";
 
 export const getChampionships = async (req: Request, res: Response) => {
   try {
@@ -23,7 +24,7 @@ export const getChampionships = async (req: Request, res: Response) => {
 
 export const createChampionship = async (req: Request, res: Response) => {
   try {
-    const { name, organizer, championshipDate } = req.body;
+    const { name, organizer, password, championshipDate } = req.body;
 
     // Check if a championship with the same name already exists
     const existingChampionship = await Championship.findOne({
@@ -42,6 +43,7 @@ export const createChampionship = async (req: Request, res: Response) => {
     const newChampionship = await Championship.create({
       name: name,
       organizer: organizer,
+      password: password, // Aquí se guarda la contraseña
       active: 1,
       championshipDate: championshipDate,
     });
@@ -53,6 +55,52 @@ export const createChampionship = async (req: Request, res: Response) => {
     res.status(response.status).json(response);
   } catch (error) {
     console.error("Error creating the championship:", error);
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "There was an error processing the request.",
+    };
+    res.status(response.status).json(response);
+  }
+};
+
+export const loginOrganizer = async (req: Request, res: Response) => {
+  try {
+    const { championshipId } = req.params;
+    const { organizer, password } = req.body;
+
+    // Validamos si existe en la base de datos
+    const championship = await Championship.findOne({
+      where: { organizer: organizer, championshipId: championshipId },
+    });
+
+    if (!championship) {
+      const response: ApiResponse<undefined> = {
+        status: 404,
+        error: "Organizer not found.",
+      };
+      return res.status(response.status).json(response);
+    }
+
+    // Verificamos la contraseña
+    if (password !== championship.password) {
+      const response: ApiResponse<undefined> = {
+        status: 400,
+        error: "Incorrect Password.",
+      };
+      return res.status(response.status).json(response);
+    }
+
+    // Generamos el token
+    const token = jwt.sign(
+      {
+        name: championship.organizer,
+      },
+      process.env.SECRET_KEY || "R4shad"
+    );
+
+    res.json({ token });
+  } catch (error) {
+    console.error("Error during organizer login:", error);
     const response: ApiResponse<undefined> = {
       status: 500,
       error: "There was an error processing the request.",
