@@ -2,10 +2,11 @@ import { Request, Response } from "express";
 import Responsible from "./../models/responsible";
 
 import ApiResponse from "../interfaces/apiResponse";
-import ChampionshipResponsibleI from "../interfaces/championshipResponsible";
 
 import ChampionshipResponsible from "./../models/championshipResponsible";
 import bcrypt from "bcrypt";
+
+import jwt from "jsonwebtoken";
 
 export const getResponsibles = async (req: Request, res: Response) => {
   try {
@@ -14,9 +15,8 @@ export const getResponsibles = async (req: Request, res: Response) => {
     // Obtener los responsables filtrados por championshipId
     const responsiblesList = await ChampionshipResponsible.findAll({
       where: { championshipId: championshipId },
-      include: [Responsible], // Incluir información de la tabla Responsible
+      include: [Responsible],
     });
-
     const response: ApiResponse<typeof responsiblesList> = {
       status: 200,
       data: responsiblesList,
@@ -63,8 +63,10 @@ export const createResponsible = async (req: Request, res: Response) => {
 
     const password = generatePassword(name, responsibleCi);
     const hashPassword = password;
+
     //QUITANDO EL HASH
     //const hashPassword = await bcrypt.hash(password, 10);
+
     await ChampionshipResponsible.create({
       championshipId: parseInt(championshipId, 10),
       responsibleCi: responsibleCi,
@@ -98,7 +100,6 @@ export const createResponsible = async (req: Request, res: Response) => {
 };
 
 export const loginResponsible = async (req: Request, res: Response) => {
-  console.log("AAAAAAAAAAAAaa");
   const { championshipId } = req.params;
   const { responsibleCi, password } = req.body;
   //validamos si existe en la bd
@@ -120,14 +121,26 @@ export const loginResponsible = async (req: Request, res: Response) => {
     password,
     championshipResponsible.password
   );*/
-  console.log("pss1", password);
-  console.log("pss2", championshipResponsible.password);
-  if (password === championshipResponsible.password) {
-    console.log("BBBBBBBBBBBBB");
+
+  if (password !== championshipResponsible.password) {
     const response: ApiResponse<undefined> = {
       status: 400,
       error: "Incorrect Password.",
     };
     return res.status(response.status).json(response);
   }
+
+  //GENERAMOS TOKEN
+  //obtenemos nombre de Responsable:
+  const responsibleName = await Responsible.findOne({
+    where: { responsibleCi: responsibleCi } || "User",
+  });
+
+  const token = jwt.sign(
+    {
+      name: responsibleName!.name,
+    },
+    process.env.SECRET_KEY || "R4shad"
+  );
+  res.json({ token });
 };
