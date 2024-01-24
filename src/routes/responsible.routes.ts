@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   getResponsibles,
   createResponsible,
+  loginResponsible,
 } from "../controllers/responsible.controllers";
 
 const router = Router();
@@ -56,5 +57,37 @@ router.get("/:championshipId", getResponsibles);
  *         description: Error
  */
 router.post("/:championshipId", createResponsible);
+
+/**
+ * @openapi
+ * /api/responsible/login/{championshipId}:
+ *   post:
+ *     tags:
+ *       - Responsible
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID of the championship
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               responsibleCi:
+ *                 type: integer
+ *               password:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Created
+ *       500:
+ *         description: Error
+ */
+router.post("/login/:championshipId", loginResponsible);
 
 export default router;

@@ -1,7 +1,11 @@
 import { Request, Response } from "express";
 import Responsible from "./../models/responsible";
+
 import ApiResponse from "../interfaces/apiResponse";
+import ChampionshipResponsibleI from "../interfaces/championshipResponsible";
+
 import ChampionshipResponsible from "./../models/championshipResponsible";
+import bcrypt from "bcrypt";
 
 export const getResponsibles = async (req: Request, res: Response) => {
   try {
@@ -56,10 +60,15 @@ export const createResponsible = async (req: Request, res: Response) => {
     });
 
     // Asociar el responsable al campeonato en ChampionshipResponsible
+
+    const password = generatePassword(name, responsibleCi);
+    const hashPassword = password;
+    //QUITANDO EL HASH
+    //const hashPassword = await bcrypt.hash(password, 10);
     await ChampionshipResponsible.create({
       championshipId: parseInt(championshipId, 10),
       responsibleCi: responsibleCi,
-      password: generatePassword(name, responsibleCi),
+      password: hashPassword,
     });
 
     const response: ApiResponse<typeof newResponsible> = {
@@ -85,5 +94,40 @@ export const createResponsible = async (req: Request, res: Response) => {
     const randomComponent = Math.random().toString(36).substring(7);
     const password = `${passwordBase}_${randomComponent}`;
     return password;
+  }
+};
+
+export const loginResponsible = async (req: Request, res: Response) => {
+  console.log("AAAAAAAAAAAAaa");
+  const { championshipId } = req.params;
+  const { responsibleCi, password } = req.body;
+  //validamos si existe en la bd
+  const championshipResponsible = await ChampionshipResponsible.findOne({
+    where: { responsibleCi: responsibleCi, championshipId: championshipId },
+  });
+  if (!championshipResponsible) {
+    const response: ApiResponse<undefined> = {
+      status: 404,
+      error: "Responsible not found.",
+    };
+    return res.status(response.status).json(response);
+  }
+  console.log("ENCONTREEEEEEE");
+  //verificamos la contrasenia
+
+  //QUITAMOS EL HASH
+  /*const passwordValid = await bcrypt.compare(
+    password,
+    championshipResponsible.password
+  );*/
+  console.log("pss1", password);
+  console.log("pss2", championshipResponsible.password);
+  if (password === championshipResponsible.password) {
+    console.log("BBBBBBBBBBBBB");
+    const response: ApiResponse<undefined> = {
+      status: 400,
+      error: "Incorrect Password.",
+    };
+    return res.status(response.status).json(response);
   }
 };

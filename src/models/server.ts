@@ -82,8 +82,9 @@ class Server {
       await ChampionshipParticipant.sync();
       await Category.sync();
       await ChampionshipCategory.sync();
-      await Division.sync();
-      await AgeInterval.sync();
+      await AgeInterval.sync({});
+      await Division.sync({});
+
       await ChampionshipDivision.sync();
       await Competitor.sync();
       await Bracket.sync();
