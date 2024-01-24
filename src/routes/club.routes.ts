@@ -1,17 +1,15 @@
+// routes/club.routes.ts
 import { Router } from "express";
-import {
-  getResponsibles,
-  createResponsible,
-} from "../controllers/responsible.controllers";
+import { getClubs, createClub } from "../controllers/club.controllers"; // Asegúrate de importar los controladores correctos
 
 const router = Router();
 
 /**
  * @openapi
- * /api/responsible/{championshipId}:
+ * /api/club/{championshipId}:
  *   get:
  *     tags:
- *       - Responsible
+ *       - Club
  *     parameters:
  *       - name: championshipId
  *         in: path
@@ -23,14 +21,14 @@ const router = Router();
  *       200:
  *         description: OK
  */
-router.get("/:championshipId", getResponsibles);
+router.get("/:championshipId", getClubs);
 
 /**
  * @openapi
- * /api/responsible/{championshipId}:
+ * /api/club/{championshipId}:
  *   post:
  *     tags:
- *       - Responsible
+ *       - Club
  *     parameters:
  *       - name: championshipId
  *         in: path
@@ -45,16 +43,18 @@ router.get("/:championshipId", getResponsibles);
  *           schema:
  *             type: object
  *             properties:
- *               responsibleCi:
- *                 type: integer
+ *               clubCode:
+ *                 type: string
  *               name:
  *                 type: string
+ *               coachCi:
+ *                 type: integer
  *     responses:
  *       201:
  *         description: Created
  *       500:
  *         description: Error
  */
-router.post("/:championshipId", createResponsible);
+router.post("/:championshipId", createClub);
 
 export default router;

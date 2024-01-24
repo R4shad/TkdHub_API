@@ -22,6 +22,7 @@ import Match from "./match";
 
 import routesChampionship from "../routes/championship.routes";
 import routesResponsibles from "../routes/responsible.routes";
+import routesClub from "../routes/club.routes";
 
 class Server {
   app: express.Application;
@@ -45,7 +46,8 @@ class Server {
 
   private routes() {
     this.app.use("/api/championship", routesChampionship);
-    this.app.use("/api/responsibles", routesResponsibles);
+    this.app.use("/api/responsible", routesResponsibles);
+    this.app.use("/api/club", routesClub);
   }
 
   private launchSwagger() {
