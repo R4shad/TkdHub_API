@@ -7,7 +7,10 @@ const options = {
     openapi: "3.1.0",
     info: { title: "TKD API", version: "1.0.0" },
   },
-  apis: ["src/routes/championship.routes.ts"],
+  apis: [
+    "src/routes/championship.routes.ts",
+    "src/routes/responsible.routes.ts",
+  ],
 };
 
 const swaggerSpec = swaggerJSDoc(options);

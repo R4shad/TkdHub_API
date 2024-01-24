@@ -2,7 +2,6 @@ import express from "express";
 import morgan from "morgan";
 import { swaggerDocs } from "../V1/swagger";
 
-import routesChampionship from "../routes/championship.routes";
 import Championship from "./championship";
 import Responsible from "./responsible";
 import ChampionshipResponsible from "./championshipResponsible";
@@ -20,6 +19,9 @@ import ChampionshipDivision from "./championshipDivision";
 import Competitor from "./competitor";
 import Bracket from "./bracket";
 import Match from "./match";
+
+import routesChampionship from "../routes/championship.routes";
+import routesResponsibles from "../routes/responsible.routes";
 
 class Server {
   app: express.Application;
@@ -42,7 +44,8 @@ class Server {
   }
 
   private routes() {
-    this.app.use("/api/Championship", routesChampionship);
+    this.app.use("/api/championship", routesChampionship);
+    this.app.use("/api/responsibles", routesResponsibles);
   }
 
   private launchSwagger() {
