@@ -3,6 +3,7 @@ import {
   getChampionships,
   createChampionship,
   loginOrganizer,
+  getChampionshipById,
 } from "../controllers/championship.controllers";
 
 const router = Router();
@@ -17,6 +18,28 @@ const router = Router();
  *         description: OK
  */
 router.get("/", getChampionships);
+
+/**
+ * @openapi
+ * /api/championship/{championshipId}:
+ *   get:
+ *     tags:
+ *       - Championship
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID of the championship
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Error
+ */
+router.get("/:championshipId", getChampionshipById);
+
 /**
  * @openapi
  * /api/championship:

@@ -108,3 +108,33 @@ export const loginOrganizer = async (req: Request, res: Response) => {
     res.status(response.status).json(response);
   }
 };
+
+export const getChampionshipById = async (req: Request, res: Response) => {
+  try {
+    const { championshipId } = req.params;
+
+    // Obtener el campeonato por ID
+    const championship = await Championship.findByPk(championshipId);
+
+    if (!championship) {
+      const response: ApiResponse<undefined> = {
+        status: 404,
+        error: "Championship not found.",
+      };
+      return res.status(response.status).json(response);
+    }
+
+    const response: ApiResponse<typeof championship> = {
+      status: 200,
+      data: championship,
+    };
+    res.json(response);
+  } catch (error) {
+    console.error("Error fetching championship by ID:", error);
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "There was an error processing the request.",
+    };
+    res.status(response.status).json(response);
+  }
+};
