@@ -1,5 +1,6 @@
 import express from "express";
 import morgan from "morgan";
+import cors from "cors";
 import { swaggerDocs } from "../V1/swagger";
 
 import Championship from "./championship";
@@ -30,6 +31,7 @@ class Server {
 
   constructor() {
     this.app = express();
+    this.app.use(cors());
     this.port = process.env.PORT || "3000";
     this.configureServer();
     this.startServer();
