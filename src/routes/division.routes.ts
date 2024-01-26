@@ -1,30 +1,31 @@
+// routes/division.routes.ts
 import { Router } from "express";
 import {
-  getAgeIntervals,
-  createAgeInterval,
-  deleteAgeInterval,
-} from "../controllers/ageInterval.controllers";
+  getDivisions,
+  createDivision,
+  deleteDivision,
+} from "../controllers/division.controllers";
 
 const router = Router();
 
 /**
  * @openapi
- * /api/ageInterval:
+ * /api/division:
  *   get:
  *     tags:
- *       - AgeInterval
+ *       - Division
  *     responses:
  *       200:
  *         description: OK
  */
-router.get("/", getAgeIntervals);
+router.get("/", getDivisions);
 
 /**
  * @openapi
- * /api/ageInterval:
+ * /api/division:
  *   post:
  *     tags:
- *       - AgeInterval
+ *       - Division
  *     requestBody:
  *       required: true
  *       content:
@@ -32,39 +33,47 @@ router.get("/", getAgeIntervals);
  *           schema:
  *             type: object
  *             properties:
- *               ageIntervalName:
+ *               divisionName:
  *                 type: string
- *               minAge:
+ *               ageIntervalId:
+ *                 type: integer // Cambiado de string a integer
+ *               minWeight:
  *                 type: integer
- *               maxAge:
+ *               maxWeight:
  *                 type: integer
+ *               gender:
+ *                 type: string
+ *               grouping:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Created
  *       500:
  *         description: Error
  */
-router.post("/", createAgeInterval);
+router.post("/", createDivision);
 
 /**
  * @openapi
- * /api/ageInterval:
+ * /api/division:
  *   delete:
  *     tags:
- *       - AgeInterval
+ *       - Division
  *     parameters:
- *       - name: ageIntervalId
+ *       - name: divisionName
  *         in: query
  *         required: true
- *         description: ID of the age interval
+ *         description: Name of the division to delete
  *         schema:
- *           type: integer
+ *           type: string
  *     responses:
  *       200:
  *         description: OK
+ *       404:
+ *         description: Division not found
  *       500:
  *         description: Error
  */
-router.delete("/", deleteAgeInterval);
+router.delete("/", deleteDivision);
 
 export default router;

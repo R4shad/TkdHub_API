@@ -23,10 +23,7 @@ const router = Router();
  *       200:
  *         description: OK
  */
-router.get(
-  "/championshipAgeInterval/:championshipId",
-  getChampionshipAgeIntervals
-);
+router.get("/:championshipId", getChampionshipAgeIntervals);
 
 /**
  * @openapi
@@ -56,9 +53,6 @@ router.get(
  *       500:
  *         description: Error
  */
-router.post(
-  "/championshipAgeInterval/:championshipId",
-  createChampionshipAgeInterval
-);
+router.post("/:championshipId", createChampionshipAgeInterval);
 
 export default router;

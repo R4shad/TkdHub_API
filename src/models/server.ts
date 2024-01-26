@@ -25,6 +25,7 @@ import Match from "./match";
 import routesChampionship from "../routes/championship.routes";
 import routesResponsibles from "../routes/responsible.routes";
 import routesClub from "../routes/club.routes";
+import routesDivision from "../routes/division.routes";
 import routesAgeInterval from "../routes/ageInterval.routes";
 import routesChampionshipAgeInterval from "../routes/championshipAgeInterval.routes";
 
@@ -53,8 +54,9 @@ class Server {
     this.app.use("/api/championship", routesChampionship);
     this.app.use("/api/responsible", routesResponsibles);
     this.app.use("/api/club", routesClub);
-    this.app.use("/api/", routesAgeInterval);
-    this.app.use("/api/", routesChampionshipAgeInterval);
+    this.app.use("/api/ageInterval", routesAgeInterval);
+    this.app.use("/api/championshipAgeInterval", routesChampionshipAgeInterval);
+    this.app.use("/api/division", routesDivision);
   }
 
   private launchSwagger() {
@@ -91,10 +93,10 @@ class Server {
       await ChampionshipCategory.sync();
       await AgeInterval.sync({});
       await championshipAgeInterval.sync({});
-      await Division.sync({});
+      await Division.sync({ force: true });
 
-      await ChampionshipDivision.sync();
-      await Competitor.sync();
+      await ChampionshipDivision.sync({});
+      await Competitor.sync({ force: true });
       await Bracket.sync();
       await Match.sync();
     } catch (error) {
