@@ -12,6 +12,7 @@ const options = {
     "src/routes/responsible.routes.ts",
     "src/routes/club.routes.ts",
     "src/routes/ageInterval.routes.ts",
+    "src/routes/championshipAgeInterval.routes.ts",
   ],
 };
 
