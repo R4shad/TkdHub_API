@@ -16,6 +16,7 @@ import Category from "./category";
 import ChampionshipCategory from "./championshipCategory";
 import Division from "./division";
 import AgeInterval from "./ageInterval";
+import championshipAgeInterval from "./championshipAgeInterval";
 import ChampionshipDivision from "./championshipDivision";
 import Competitor from "./competitor";
 import Bracket from "./bracket";
@@ -24,6 +25,7 @@ import Match from "./match";
 import routesChampionship from "../routes/championship.routes";
 import routesResponsibles from "../routes/responsible.routes";
 import routesClub from "../routes/club.routes";
+import routesAgeInterval from "../routes/ageInterval.routes";
 
 class Server {
   app: express.Application;
@@ -50,6 +52,7 @@ class Server {
     this.app.use("/api/championship", routesChampionship);
     this.app.use("/api/responsible", routesResponsibles);
     this.app.use("/api/club", routesClub);
+    this.app.use("/api/", routesAgeInterval);
   }
 
   private launchSwagger() {
@@ -73,7 +76,7 @@ class Server {
 
   async dbConnect() {
     try {
-      await Championship.sync({ alter: true });
+      await Championship.sync({});
       await Responsible.sync();
       await ChampionshipResponsible.sync();
       await Club.sync();
@@ -85,6 +88,7 @@ class Server {
       await Category.sync();
       await ChampionshipCategory.sync();
       await AgeInterval.sync({});
+      await championshipAgeInterval.sync({});
       await Division.sync({});
 
       await ChampionshipDivision.sync();
