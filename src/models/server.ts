@@ -96,7 +96,7 @@ class Server {
       await Division.sync({ force: true });
 
       await ChampionshipDivision.sync({});
-      await Competitor.sync({ force: true });
+      await Competitor.sync({});
       await Bracket.sync();
       await Match.sync();
     } catch (error) {

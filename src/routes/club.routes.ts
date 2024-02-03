@@ -1,6 +1,5 @@
-// routes/club.routes.ts
 import { Router } from "express";
-import { getClubs, createClub } from "../controllers/club.controllers"; // Asegúrate de importar los controladores correctos
+import { getClubs, createClub } from "../controllers/club.controllers";
 
 const router = Router();
 
@@ -20,6 +19,17 @@ const router = Router();
  *     responses:
  *       200:
  *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   clubCode:
+ *                     type: string
+ *                   name:
+ *                     type: string
  */
 router.get("/:championshipId", getClubs);
 
@@ -47,11 +57,18 @@ router.get("/:championshipId", getClubs);
  *                 type: string
  *               name:
  *                 type: string
- *               coachCi:
- *                 type: integer
  *     responses:
  *       201:
  *         description: Created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 clubCode:
+ *                   type: string
+ *                 name:
+ *                   type: string
  *       500:
  *         description: Error
  */
