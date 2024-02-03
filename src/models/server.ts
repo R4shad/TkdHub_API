@@ -25,6 +25,8 @@ import Match from "./match";
 import routesChampionship from "../routes/championship.routes";
 import routesResponsibles from "../routes/responsible.routes";
 import routesClub from "../routes/club.routes";
+import routesCoach from "../routes/coach.routes";
+
 import routesDivision from "../routes/division.routes";
 import routesAgeInterval from "../routes/ageInterval.routes";
 import routesChampionshipAgeInterval from "../routes/championshipAgeInterval.routes";
@@ -54,6 +56,7 @@ class Server {
     this.app.use("/api/championship", routesChampionship);
     this.app.use("/api/responsible", routesResponsibles);
     this.app.use("/api/club", routesClub);
+    this.app.use("/api/coach", routesCoach);
     this.app.use("/api/ageInterval", routesAgeInterval);
     this.app.use("/api/championshipAgeInterval", routesChampionshipAgeInterval);
     this.app.use("/api/division", routesDivision);
