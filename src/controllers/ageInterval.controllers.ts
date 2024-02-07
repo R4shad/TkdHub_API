@@ -48,13 +48,11 @@ export const createAgeInterval = async (req: Request, res: Response) => {
 
 export const deleteAgeInterval = async (req: Request, res: Response) => {
   try {
-    const { ageIntervalId } = req.query;
-
+    const { ageIntervalId } = req.params;
+    console.log("AAAAAAAAAAAAAAA ", ageIntervalId);
     // Verificar si el intervalo de edad existe
-    const ageIntervalToDelete = await AgeInterval.findByPk(
-      ageIntervalId as string
-    );
-
+    const ageIntervalToDelete = await AgeInterval.findByPk(ageIntervalId);
+    console.log(ageIntervalToDelete);
     if (!ageIntervalToDelete) {
       const response: ApiResponse<undefined> = {
         status: 404,

@@ -48,13 +48,13 @@ router.post("/", createAgeInterval);
 
 /**
  * @openapi
- * /api/ageInterval:
+ * /api/ageInterval/{ageIntervalId}:
  *   delete:
  *     tags:
  *       - AgeInterval
  *     parameters:
  *       - name: ageIntervalId
- *         in: query
+ *         in: path
  *         required: true
  *         description: ID of the age interval
  *         schema:
@@ -65,6 +65,6 @@ router.post("/", createAgeInterval);
  *       500:
  *         description: Error
  */
-router.delete("/", deleteAgeInterval);
+router.delete("/:ageIntervalId", deleteAgeInterval);
 
 export default router;
