@@ -21,6 +21,30 @@ export const getDivisions = async (req: Request, res: Response) => {
   }
 };
 
+export const getDivisionsByGrouping = async (req: Request, res: Response) => {
+  try {
+    const { grouping } = req.params; // Obtiene el valor de agrupación de los parámetros de la solicitud
+    const divisionsList = await Division.findAll({ where: { grouping } }); // Busca divisiones por el valor de agrupación
+
+    // Prepara la respuesta
+    const response: ApiResponse<typeof divisionsList> = {
+      status: 200,
+      data: divisionsList,
+    };
+
+    // Envía la respuesta
+    res.json(response);
+  } catch (error) {
+    // Manejo de errores
+    console.error("Error fetching divisions by grouping:", error);
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "There was an error processing the request.",
+    };
+    res.status(response.status).json(response);
+  }
+};
+
 export const createDivision = async (req: Request, res: Response) => {
   try {
     const {

@@ -2,6 +2,7 @@
 import { Router } from "express";
 import {
   getDivisions,
+  getDivisionsByGrouping,
   createDivision,
   deleteDivision,
 } from "../controllers/division.controllers";
@@ -19,6 +20,27 @@ const router = Router();
  *         description: OK
  */
 router.get("/", getDivisions);
+
+/**
+ * @openapi
+ * /api/division/{grouping}:
+ *   get:
+ *     tags:
+ *       - Division
+ *     parameters:
+ *       - in: path
+ *         name: grouping
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Grouping value to filter divisions
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Error
+ */
+router.get("/:grouping", getDivisionsByGrouping);
 
 /**
  * @openapi
