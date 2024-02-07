@@ -36,7 +36,7 @@ router.get("/", getDivisions);
  *               divisionName:
  *                 type: string
  *               ageIntervalId:
- *                 type: integer // Cambiado de string a integer
+ *                 type: integer
  *               minWeight:
  *                 type: integer
  *               maxWeight:

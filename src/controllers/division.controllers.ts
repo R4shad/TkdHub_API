@@ -31,7 +31,7 @@ export const createDivision = async (req: Request, res: Response) => {
       gender,
       grouping,
     } = req.body;
-
+    console.log(req.body);
     const newDivision = await Division.create({
       divisionName: divisionName,
       ageIntervalId: ageIntervalId, // Cambiado de ageIntervalName a ageIntervalId
