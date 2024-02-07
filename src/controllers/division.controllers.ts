@@ -21,12 +21,14 @@ export const getDivisions = async (req: Request, res: Response) => {
   }
 };
 
-export const getDivisionsByGrouping = async (req: Request, res: Response) => {
+export const getDivisionsByAgeIntervalId = async (
+  req: Request,
+  res: Response
+) => {
   try {
-    const { grouping } = req.params; // Obtiene el valor de agrupación de los parámetros de la solicitud
-    const divisionsList = await Division.findAll({ where: { grouping } }); // Busca divisiones por el valor de agrupación
+    const { ageIntervalId } = req.params;
+    const divisionsList = await Division.findAll({ where: { ageIntervalId } });
 
-    // Prepara la respuesta
     const response: ApiResponse<typeof divisionsList> = {
       status: 200,
       data: divisionsList,

@@ -2,9 +2,9 @@
 import { Router } from "express";
 import {
   getDivisions,
-  getDivisionsByGrouping,
   createDivision,
   deleteDivision,
+  getDivisionsByAgeIntervalId,
 } from "../controllers/division.controllers";
 
 const router = Router();
@@ -23,24 +23,24 @@ router.get("/", getDivisions);
 
 /**
  * @openapi
- * /api/division/{grouping}:
+ * /api/division/{ageIntervalId}:
  *   get:
  *     tags:
  *       - Division
  *     parameters:
  *       - in: path
- *         name: grouping
+ *         name: ageIntervalId
  *         required: true
  *         schema:
- *           type: string
- *         description: Grouping value to filter divisions
+ *           type: integer
+ *         description: AgeIntervalId value to filter divisions
  *     responses:
  *       200:
  *         description: OK
  *       500:
  *         description: Error
  */
-router.get("/:grouping", getDivisionsByGrouping);
+router.get("/:ageIntervalId", getDivisionsByAgeIntervalId);
 
 /**
  * @openapi
