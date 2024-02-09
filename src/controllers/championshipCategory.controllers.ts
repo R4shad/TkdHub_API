@@ -18,13 +18,14 @@ export async function getChampionshipCategories(req: Request, res: Response) {
 
 export async function createChampionshipCategory(req: Request, res: Response) {
   const championshipId = parseInt(req.params.championshipId, 10);
-  const { categoryName, numberOfCompetitors } = req.body;
+  const { categoryName } = req.body; // Quitamos numberOfCompetitors del req.body
 
   try {
+    // Creamos la categoría con numberOfCompetitors por defecto en 0
     const newCategory = await ChampionshipCategory.create({
       championshipId,
       categoryName,
-      numberOfCompetitors,
+      numberOfCompetitors: 0, // Asignamos 0 como valor por defecto
     });
 
     res.status(201).json(newCategory);

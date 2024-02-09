@@ -47,8 +47,6 @@ router.get("/:championshipId", getChampionshipCategories);
  *             properties:
  *               categoryName:
  *                 type: string
- *               numberOfCompetitors:
- *                 type: integer
  *     responses:
  *       201:
  *         description: Creado
