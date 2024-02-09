@@ -30,6 +30,7 @@ import routesCoach from "../routes/coach.routes";
 import routesDivision from "../routes/division.routes";
 import routesAgeInterval from "../routes/ageInterval.routes";
 import routesChampionshipAgeInterval from "../routes/championshipAgeInterval.routes";
+import routesChampionshipDivision from "../routes/championshipDivision.routes";
 
 class Server {
   app: express.Application;
@@ -58,8 +59,9 @@ class Server {
     this.app.use("/api/club", routesClub);
     this.app.use("/api/coach", routesCoach);
     this.app.use("/api/ageInterval", routesAgeInterval);
-    this.app.use("/api/championshipAgeInterval", routesChampionshipAgeInterval);
     this.app.use("/api/division", routesDivision);
+    this.app.use("/api/championshipAgeInterval", routesChampionshipAgeInterval);
+    this.app.use("/api/championshipDivision", routesChampionshipDivision);
   }
 
   private launchSwagger() {
