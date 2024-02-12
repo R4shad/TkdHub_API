@@ -5,39 +5,45 @@ import ChampionshipCoach from "./../models/championshipCoach";
 
 export const getCoaches = async (req: Request, res: Response) => {
   try {
-    const championshipId = parseInt(req.params.championshipId, 10);
-
-    // Obtener los entrenadores asociados al campeonato a través de la tabla intermedia
-    const coachesList = await ChampionshipCoach.findAll({
-      where: { championshipId: championshipId },
-      include: [
-        {
-          model: Coach,
-          attributes: ["coachCi", "name", "clubCode"],
-        },
-      ],
+    // Obtener todos los entrenadores
+    const coaches = await Coach.findAll({
+      attributes: ["coachCi", "name", "clubCode"],
     });
 
-    // Mapear la respuesta para obtener solo los campos deseados
-    const mappedCoachesList = await Promise.all(
-      coachesList.map(async (championshipCoach) => {
-        const coachCi = championshipCoach.getDataValue("coachCi");
-        const coachData = await Coach.findOne({
-          where: { coachCi: coachCi },
-          attributes: ["coachCi", "name", "clubCode"],
-        });
-        return coachData ? coachData.toJSON() : null;
-      })
+    // Obtener las contraseñas correspondientes de ChampionshipCoach
+    const coachCis = coaches.map((coach) => coach.coachCi);
+    const passwords = await ChampionshipCoach.findAll({
+      where: {
+        coachCi: coachCis,
+      },
+      attributes: ["coachCi", "password"],
+    });
+    interface CoachPasswordsMap {
+      [coachCi: number]: string;
+    }
+    // Mapear las contraseñas con los entrenadores
+    const coachPasswordsMap: CoachPasswordsMap = passwords.reduce(
+      (map: CoachPasswordsMap, item) => {
+        map[item.coachCi] = item.password;
+        return map;
+      },
+      {}
     );
 
-    const response: ApiResponse<typeof mappedCoachesList> = {
+    // Agregar las contraseñas a los datos de los entrenadores
+    const coachesWithPasswords = coaches.map((coach) => ({
+      ...coach.toJSON(),
+      password: coachPasswordsMap[coach.coachCi],
+    }));
+
+    const response = {
       status: 200,
-      data: mappedCoachesList,
+      data: coachesWithPasswords,
     };
     res.json(response);
   } catch (error) {
     console.error("Error fetching coaches:", error);
-    const response: ApiResponse<undefined> = {
+    const response = {
       status: 500,
       error: "There was an error processing the request.",
     };
