@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import Coach from "./../models/coach";
 import ApiResponse from "../interfaces/apiResponse";
 import ChampionshipCoach from "./../models/championshipCoach";
-
+import jwt from "jsonwebtoken";
 export const getCoaches = async (req: Request, res: Response) => {
   try {
     // Obtener todos los entrenadores
@@ -112,5 +112,55 @@ export const createCoach = async (req: Request, res: Response) => {
     const randomComponent = Math.random().toString(36).substring(7);
     const password = `${passwordBase}_${randomComponent}`;
     return password;
+  }
+};
+
+export const loginTrainer = async (req: Request, res: Response) => {
+  try {
+    const { championshipId } = req.params;
+    const { coachCi, password } = req.body;
+
+    // Validamos si existe en la base de datos
+    const championship = await ChampionshipCoach.findOne({
+      where: {
+        championshipId: championshipId,
+        coachCi: coachCi,
+        password: password,
+      },
+    });
+
+    if (!championship) {
+      const response: ApiResponse<undefined> = {
+        status: 404,
+        error: "Organizer not found.",
+      };
+      return res.status(response.status).json(response);
+    }
+
+    // Verificamos la contraseña
+    if (password !== championship.password) {
+      const response: ApiResponse<undefined> = {
+        status: 400,
+        error: "Incorrect Password.",
+      };
+      return res.status(response.status).json(response);
+    }
+
+    // Generamos el token
+    const token = jwt.sign(
+      {
+        coachCi: championship.coachCi,
+      },
+      process.env.SECRET_KEY || "R4shad"
+    );
+
+    res.json({ token });
+  } catch (error) {
+    console.error("Error during organizer login:", error);
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "There was an error processing the request.",
+    };
+    res.status(response.status).json(response);
   }
 };

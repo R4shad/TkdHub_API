@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { getCoaches, createCoach } from "../controllers/coach.controllers";
+import {
+  getCoaches,
+  createCoach,
+  loginTrainer,
+} from "../controllers/coach.controllers";
 
 const router = Router();
 
@@ -79,5 +83,37 @@ router.get("/:championshipId", getCoaches);
  *         description: Error
  */
 router.post("/:championshipId", createCoach);
+
+/**
+ * @openapi
+ * /api/coach/login/{championshipId}:
+ *   post:
+ *     tags:
+ *       - Coach
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID of the championship
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               coachCi:
+ *                 type: integer
+ *               password:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Created
+ *       500:
+ *         description: Error
+ */
+router.post("/login/:championshipId", loginTrainer);
 
 export default router;
