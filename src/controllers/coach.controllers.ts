@@ -51,6 +51,43 @@ export const getCoaches = async (req: Request, res: Response) => {
   }
 };
 
+export const getClubCode = async (req: Request, res: Response) => {
+  try {
+    const { coachCi } = req.params;
+
+    // Buscar el coach por coachCi
+    const coach = await Coach.findOne({
+      where: { coachCi },
+      attributes: ["coachCi", "clubCode"],
+    });
+
+    if (!coach) {
+      const response = {
+        status: 404,
+        error: "Coach not found",
+      };
+      res.status(response.status).json(response);
+      return;
+    }
+
+    const response = {
+      status: 200,
+      data: {
+        coachCi: coach.coachCi,
+        clubCode: coach.clubCode,
+      },
+    };
+    res.json(response);
+  } catch (error) {
+    console.error("Error fetching coach clubCode:", error);
+    const response = {
+      status: 500,
+      error: "There was an error processing the request.",
+    };
+    res.status(response.status).json(response);
+  }
+};
+
 export const createCoach = async (req: Request, res: Response) => {
   try {
     const { championshipId } = req.params;

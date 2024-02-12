@@ -3,6 +3,7 @@ import {
   getCoaches,
   createCoach,
   loginTrainer,
+  getClubCode,
 } from "../controllers/coach.controllers";
 
 const router = Router();
@@ -38,6 +39,36 @@ const router = Router();
  *                     type: string
  */
 router.get("/:championshipId", getCoaches);
+
+/**
+ * @openapi
+ * /api/coach/{championshipId}/{coachCi}:
+ *   get:
+ *     tags:
+ *       - Coach
+ *     parameters:
+ *       - name: coachCi
+ *         in: path
+ *         required: true
+ *         description: ID of the coach
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 coachCi:
+ *                   type: integer
+ *                 name:
+ *                   type: string
+ *                 clubCode:
+ *                   type: string
+ */
+router.get("/:championshipId/:coachCi", getClubCode);
 
 /**
  * @openapi
