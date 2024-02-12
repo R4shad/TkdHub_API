@@ -17,9 +17,24 @@ export const getResponsibles = async (req: Request, res: Response) => {
       where: { championshipId: championshipId },
       include: [Responsible],
     });
-    const response: ApiResponse<typeof responsiblesList> = {
+
+    const responsibleResponse = []; // Lista para almacenar los objetos JSON formateados
+
+    for (const responsible of responsiblesList) {
+      const responsibleData = await Responsible.findByPk(
+        responsible.responsibleCi
+      ); // Consultar los datos de Responsible usando el responsableCi de ChampionshipResponsible
+      const formattedData = {
+        responsibleCi: responsible.responsibleCi,
+        name: responsibleData?.name || null, // Acceder al nombre de Responsible
+        password: responsible.password,
+      };
+      responsibleResponse.push(formattedData);
+    }
+
+    const response: ApiResponse<typeof responsibleResponse> = {
       status: 200,
-      data: responsiblesList,
+      data: responsibleResponse,
     };
     res.json(response);
   } catch (error) {
