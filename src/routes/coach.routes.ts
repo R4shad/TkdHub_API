@@ -42,7 +42,7 @@ router.get("/:championshipId", getCoaches);
 
 /**
  * @openapi
- * /api/coach/{championshipId}/{coachCi}:
+ * /api/coach/getClubCode/{coachCi}:
  *   get:
  *     tags:
  *       - Coach
@@ -68,7 +68,7 @@ router.get("/:championshipId", getCoaches);
  *                 clubCode:
  *                   type: string
  */
-router.get("/:championshipId/:coachCi", getClubCode);
+router.get("/getClubCode/:coachCi", getClubCode);
 
 /**
  * @openapi
