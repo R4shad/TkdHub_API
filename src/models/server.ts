@@ -34,6 +34,7 @@ import routesChampionshipDivision from "../routes/championshipDivision.routes";
 
 import routesCategory from "../routes/category.routes";
 import routesChampionshipCategory from "../routes/championshipCategory.routes";
+import routesParticipant from "../routes/participant.routes";
 
 class Server {
   app: express.Application;
@@ -58,6 +59,7 @@ class Server {
 
   private routes() {
     this.app.use("/api/championship", routesChampionship);
+    this.app.use("/api/participant", routesParticipant);
     this.app.use("/api/responsible", routesResponsibles);
     this.app.use("/api/club", routesClub);
     this.app.use("/api/coach", routesCoach);
