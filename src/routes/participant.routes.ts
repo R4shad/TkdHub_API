@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   getParticipants,
   createParticipant,
+  getParticipantsByClubCode,
 } from "../controllers/participant.controllers";
 
 const router = Router();
@@ -27,9 +28,32 @@ const router = Router();
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/Participant'
  */
 router.get("/:championshipId", getParticipants);
+
+/**
+ * @openapi
+ * /api/participant/club/{clubCode}:
+ *   get:
+ *     tags:
+ *       - Participant
+ *     parameters:
+ *       - name: clubCode
+ *         in: path
+ *         required: true
+ *         description: Code of the club
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ */
+router.get("/club/:clubCode", getParticipantsByClubCode);
 
 /**
  * @openapi
@@ -81,11 +105,9 @@ router.get("/:championshipId", getParticipants);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Participant'
  *       500:
  *         description: Error
  */
-
 router.post("/:championshipId", createParticipant);
 
 export default router;

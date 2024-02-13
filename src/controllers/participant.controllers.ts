@@ -5,21 +5,61 @@ import ChampionshipParticipant from "../models/championshipParticipant";
 export const getParticipants = async (req: Request, res: Response) => {
   try {
     const { championshipId } = req.params;
+
     // Obtener todos los participantes para el campeonato especificado
-    const participants = await ChampionshipParticipant.findAll({
+    const championshipParticipants = await ChampionshipParticipant.findAll({
       where: { championshipId: championshipId },
     });
-    console.log(participants);
+
     // Verificar si hay participantes
-    if (participants.length === 0) {
+    if (championshipParticipants.length === 0) {
+      // Si no hay participantes, devolver un arreglo vacío
+      res.status(200).json([]);
+    } else {
+      // Si hay participantes, obtener los datos completos de cada participante
+      const participantsPromises = championshipParticipants.map(
+        async (participant) => {
+          const completeParticipant = await Participant.findByPk(
+            participant.participantCi
+          );
+          return completeParticipant;
+        }
+      );
+
+      // Esperar a que todas las promesas se resuelvan y devolver los participantes completos
+      const completeParticipants = await Promise.all(participantsPromises);
+      res.status(200).json(completeParticipants);
+    }
+  } catch (error) {
+    console.error("Error fetching participants:", error);
+    res
+      .status(500)
+      .json({ error: "There was an error processing the request." });
+  }
+};
+
+export const getParticipantsByClubCode = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { clubCode } = req.params;
+    console.log(clubCode);
+    // Obtener todos los participantes para el código de club especificado
+    const clubParticipants = await Participant.findAll({
+      where: { clubCode: clubCode },
+    });
+    console.log(clubParticipants);
+    // Verificar si hay participantes
+    if (clubParticipants.length === 0) {
       // Si no hay participantes, devolver un arreglo vacío
       res.status(200).json([]);
     } else {
       // Si hay participantes, devolver los resultados
-      res.status(200).json(participants);
+      res.status(200).json(clubParticipants);
     }
   } catch (error) {
-    console.error("Error fetching participants:", error);
+    console.error("Error fetching participants by club code:", error);
     res
       .status(500)
       .json({ error: "There was an error processing the request." });
