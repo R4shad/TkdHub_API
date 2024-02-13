@@ -3,6 +3,7 @@ import {
   getParticipants,
   createParticipant,
   getParticipantsByClubCode,
+  getParticipantsToRegister,
 } from "../controllers/participant.controllers";
 
 const router = Router();
@@ -54,6 +55,36 @@ router.get("/:championshipId", getParticipants);
  *               items:
  */
 router.get("/club/:clubCode", getParticipantsByClubCode);
+
+/**
+ * @openapi
+ * /api/participant/toRegister/{championshipId}/{clubCode}:
+ *   get:
+ *     tags:
+ *       - Participant
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID of the championship
+ *         schema:
+ *           type: integer
+ *       - name: clubCode
+ *         in: path
+ *         required: true
+ *         description: Code of the club
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ */
+router.get("/toRegister/:championshipId/:clubCode", getParticipantsToRegister);
 
 /**
  * @openapi

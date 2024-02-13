@@ -66,6 +66,42 @@ export const getParticipantsByClubCode = async (
   }
 };
 
+export const getParticipantsToRegister = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { championshipId, clubCode } = req.params;
+
+    // Obtener todos los participantes para el clubCode especificado
+    const clubParticipants = await Participant.findAll({
+      where: { clubCode: clubCode },
+    });
+
+    // Obtener los participantes ya registrados para el championshipId dado
+    const registeredParticipants = await ChampionshipParticipant.findAll({
+      where: { championshipId: championshipId },
+    });
+
+    // Filtrar los participantes del clubCode que aún no están registrados para el championshipId
+    const participantsToRegister = clubParticipants.filter(
+      (participant) =>
+        !registeredParticipants.find(
+          (regParticipant) =>
+            regParticipant.participantCi === participant.participantCi
+        )
+    );
+
+    // Devolver los participantes que aún no están registrados
+    res.status(200).json(participantsToRegister);
+  } catch (error) {
+    console.error("Error fetching participants to register:", error);
+    res
+      .status(500)
+      .json({ error: "There was an error processing the request." });
+  }
+};
+
 export const createParticipant = async (req: Request, res: Response) => {
   try {
     const { championshipId } = req.params;
