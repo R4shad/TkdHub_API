@@ -4,6 +4,7 @@ import {
   createParticipant,
   getParticipantsByClubCode,
   getParticipantsToRegister,
+  updateParticipantVerification,
 } from "../controllers/participant.controllers";
 
 const router = Router();
@@ -34,11 +35,17 @@ router.get("/:championshipId", getParticipants);
 
 /**
  * @openapi
- * /api/participant/club/{clubCode}:
+ * /api/participant/club/{championshipId}/{clubCode}:
  *   get:
  *     tags:
  *       - Participant
  *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID of the championship
+ *         schema:
+ *           type: integer
  *       - name: clubCode
  *         in: path
  *         required: true
@@ -54,7 +61,7 @@ router.get("/:championshipId", getParticipants);
  *               type: array
  *               items:
  */
-router.get("/club/:clubCode", getParticipantsByClubCode);
+router.get("/club/:championshipId/:clubCode", getParticipantsByClubCode);
 
 /**
  * @openapi
@@ -140,5 +147,49 @@ router.get("/toRegister/:championshipId/:clubCode", getParticipantsToRegister);
  *         description: Error
  */
 router.post("/:championshipId", createParticipant);
+
+/**
+ * @openapi
+ * /api/participant/{championshipId}/{participantCi}:
+ *   patch:
+ *     tags:
+ *       - Participant
+ *     summary: Actualizar estado de verificación del participante
+ *     description: Actualiza el estado de verificación del participante para inscribirlo en un campeonato.
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID del campeonato
+ *         schema:
+ *           type: integer
+ *       - name: participantCi
+ *         in: path
+ *         required: true
+ *         description: CI del participante
+ *         schema:
+ *           type: integer
+ *       - in: body
+ *         name: body
+ *         description: Datos del participante a actualizar
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             verified:
+ *               type: boolean
+ *               description: Estado de verificación del participante
+ *               example: true
+ *     responses:
+ *       '200':
+ *         description: Actualización exitosa
+ *       '400':
+ *         description: Solicitud incorrecta
+ *       '404':
+ *         description: No se encontró el participante
+ *       '500':
+ *         description: Error interno del servidor
+ */
+router.patch("/:championshipId/:participantCi", updateParticipantVerification);
 
 export default router;
