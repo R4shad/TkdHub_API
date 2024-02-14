@@ -18,12 +18,26 @@ export const getParticipants = async (req: Request, res: Response) => {
           const completeParticipant = await Participant.findByPk(
             participant.participantCi
           );
-          return completeParticipant;
+
+          if (completeParticipant) {
+            return {
+              ...completeParticipant.toJSON(),
+              verified: participant.verified,
+            };
+          } else {
+            console.error(
+              "Participant not found for ID:",
+              participant.participantCi
+            );
+            return null;
+          }
         }
       );
 
       const completeParticipants = await Promise.all(participantsPromises);
-      res.status(200).json({ status: 200, data: completeParticipants });
+      res
+        .status(200)
+        .json({ status: 200, data: completeParticipants.filter(Boolean) });
     }
   } catch (error) {
     console.error("Error fetching participants:", error);
