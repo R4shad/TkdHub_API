@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import AgeInterval from "../models/ageInterval";
 import ApiResponse from "../interfaces/apiResponse";
 import ChampionshipAgeInterval from "../models/championshipAgeInterval";
+const { Sequelize, Op } = require("sequelize");
 
 export const getAgeIntervals = async (req: Request, res: Response) => {
   try {
@@ -59,6 +60,41 @@ export const getAgeIntervalByChampionshipId = async (
     res.json(response);
   } catch (error) {
     console.error("Error fetching divisions by championship:", error);
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "There was an error processing the request.",
+    };
+    res.status(response.status).json(response);
+  }
+};
+
+export const getAgeIntervalByAge = async (req: Request, res: Response) => {
+  try {
+    const { age } = req.params;
+    const ageValue = parseInt(age);
+    const ageInterval = await AgeInterval.findOne({
+      where: {
+        minAge: { [Sequelize.Op.lte]: ageValue }, // Utiliza el operador de comparación 'menor o igual que' de Sequelize
+        maxAge: { [Sequelize.Op.gte]: ageValue }, // Utiliza el operador de comparación 'mayor o igual que' de Sequelize
+      },
+    });
+
+    console.log(age);
+    console.log(ageInterval);
+    if (!ageInterval) {
+      const response: ApiResponse<undefined> = {
+        status: 404,
+        error: "Age interval not found for the provided age.",
+      };
+      return res.status(response.status).json(response);
+    }
+    const response: ApiResponse<typeof ageInterval> = {
+      status: 200,
+      data: ageInterval,
+    };
+    res.json(response);
+  } catch (error) {
+    console.error("Error fetching age interval by age:", error);
     const response: ApiResponse<undefined> = {
       status: 500,
       error: "There was an error processing the request.",

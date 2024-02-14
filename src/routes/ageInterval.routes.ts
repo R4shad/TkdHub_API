@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   getAgeIntervals,
   getAgeIntervalByChampionshipId,
+  getAgeIntervalByAge,
   createAgeInterval,
   deleteAgeInterval,
 } from "../controllers/ageInterval.controllers";
@@ -40,6 +41,29 @@ router.get("/", getAgeIntervals);
  *         description: Error
  */
 router.get("/:championshipId", getAgeIntervalByChampionshipId);
+
+/**
+ * @openapi
+ * /api/ageInterval/byAge/{age}:
+ *   get:
+ *     tags:
+ *       - AgeInterval
+ *     parameters:
+ *       - in: path
+ *         name: age
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Age value to find corresponding age interval
+ *     responses:
+ *       200:
+ *         description: OK
+ *       404:
+ *         description: Age interval not found
+ *       500:
+ *         description: Error
+ */
+router.get("/byAge/:age", getAgeIntervalByAge);
 
 /**
  * @openapi
