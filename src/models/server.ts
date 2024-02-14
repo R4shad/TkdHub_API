@@ -36,7 +36,7 @@ import routesChampionshipDivision from "../routes/championshipDivision.routes";
 import routesCategory from "../routes/category.routes";
 import routesChampionshipCategory from "../routes/championshipCategory.routes";
 import routesParticipant from "../routes/participant.routes";
-
+import routesBracket from "../routes/bracket.routes";
 class Server {
   app: express.Application;
   port: string | number;
@@ -68,6 +68,7 @@ class Server {
     this.app.use("/api/division", routesDivision);
     this.app.use("/api/category", routesCategory);
     this.app.use("/api/competitor", routesCompetitor);
+    this.app.use("/api/bracket", routesBracket);
     this.app.use("/api/championshipCategory", routesChampionshipCategory);
     this.app.use("/api/championshipAgeInterval", routesChampionshipAgeInterval);
     this.app.use("/api/championshipDivision", routesChampionshipDivision);

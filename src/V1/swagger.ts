@@ -20,6 +20,7 @@ const options = {
     "src/routes/championshipAgeInterval.routes.ts",
     "src/routes/championshipDivision.routes.ts",
     "src/routes/championshipCategory.routes.ts",
+    "src/routes/bracket.routes.ts",
   ],
 };
 
