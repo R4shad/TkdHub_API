@@ -1,5 +1,7 @@
 import Division from "../models/division";
 import { sequelize } from "../config/db";
+import AgeInterval from "../models/ageInterval";
+import Category from "../models/category";
 
 // Inserta los datos en la base de datos
 (async () => {
@@ -9,7 +11,7 @@ import { sequelize } from "../config/db";
       // Datos para PreInfantil A
       {
         divisionName: "PreInfantil A Atomo",
-        ageIntervalId: 4,
+        ageIntervalId: 1,
         minWeight: 0,
         maxWeight: 19,
         gender: "Ambos",
@@ -17,7 +19,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil A Molécula",
-        ageIntervalId: 4,
+        ageIntervalId: 1,
         minWeight: 19,
         maxWeight: 21,
         gender: "Ambos",
@@ -25,7 +27,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil A Micra",
-        ageIntervalId: 4,
+        ageIntervalId: 1,
         minWeight: 21,
         maxWeight: 23,
         gender: "Ambos",
@@ -33,7 +35,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil A Escama",
-        ageIntervalId: 4,
+        ageIntervalId: 1,
         minWeight: 23,
         maxWeight: 25,
         gender: "Ambos",
@@ -41,7 +43,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil A Paja",
-        ageIntervalId: 4,
+        ageIntervalId: 1,
         minWeight: 25,
         maxWeight: 27,
         gender: "Ambos",
@@ -49,7 +51,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil A Pluma",
-        ageIntervalId: 4,
+        ageIntervalId: 1,
         minWeight: 27,
         maxWeight: 30,
         gender: "Ambos",
@@ -57,7 +59,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil A Mosco",
-        ageIntervalId: 4,
+        ageIntervalId: 1,
         minWeight: 30,
         maxWeight: 33,
         gender: "Ambos",
@@ -65,7 +67,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil A Mosca",
-        ageIntervalId: 4,
+        ageIntervalId: 1,
         minWeight: 33,
         maxWeight: 36,
         gender: "Ambos",
@@ -73,7 +75,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil A Libélula",
-        ageIntervalId: 4,
+        ageIntervalId: 1,
         minWeight: 36,
         maxWeight: 39,
         gender: "Ambos",
@@ -81,7 +83,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil A Avispa",
-        ageIntervalId: 4,
+        ageIntervalId: 1,
         minWeight: 39,
         maxWeight: 100,
         gender: "Ambos",
@@ -91,7 +93,7 @@ import { sequelize } from "../config/db";
       // Datos para PreInfantil B
       {
         divisionName: "PreInfantil B Atomo",
-        ageIntervalId: 5,
+        ageIntervalId: 2,
         minWeight: 0,
         maxWeight: 23,
         gender: "Ambos",
@@ -99,7 +101,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil B Molécula",
-        ageIntervalId: 5,
+        ageIntervalId: 2,
         minWeight: 23,
         maxWeight: 25,
         gender: "Ambos",
@@ -107,7 +109,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil B Micra",
-        ageIntervalId: 5,
+        ageIntervalId: 2,
         minWeight: 25,
         maxWeight: 27,
         gender: "Ambos",
@@ -115,7 +117,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil B Escama",
-        ageIntervalId: 5,
+        ageIntervalId: 2,
         minWeight: 27,
         maxWeight: 29,
         gender: "Ambos",
@@ -123,7 +125,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil B Paja",
-        ageIntervalId: 5,
+        ageIntervalId: 2,
         minWeight: 29,
         maxWeight: 31,
         gender: "Ambos",
@@ -131,7 +133,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil B Pluma",
-        ageIntervalId: 5,
+        ageIntervalId: 2,
         minWeight: 31,
         maxWeight: 34,
         gender: "Ambos",
@@ -139,7 +141,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil B Mosco",
-        ageIntervalId: 5,
+        ageIntervalId: 2,
         minWeight: 34,
         maxWeight: 37,
         gender: "Ambos",
@@ -147,7 +149,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil B Mosca",
-        ageIntervalId: 5,
+        ageIntervalId: 2,
         minWeight: 37,
         maxWeight: 40,
         gender: "Ambos",
@@ -155,7 +157,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil B Libélula",
-        ageIntervalId: 5,
+        ageIntervalId: 2,
         minWeight: 40,
         maxWeight: 43,
         gender: "Ambos",
@@ -163,7 +165,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil B Avispa",
-        ageIntervalId: 5,
+        ageIntervalId: 2,
         minWeight: 43,
         maxWeight: 100,
         gender: "Ambos",
@@ -173,7 +175,7 @@ import { sequelize } from "../config/db";
       // Datos para PreInfantil C
       {
         divisionName: "PreInfantil C Atomo",
-        ageIntervalId: 6,
+        ageIntervalId: 3,
         minWeight: 0,
         maxWeight: 25,
         gender: "Ambos",
@@ -181,7 +183,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil C Molécula",
-        ageIntervalId: 6,
+        ageIntervalId: 3,
         minWeight: 25,
         maxWeight: 27,
         gender: "Ambos",
@@ -189,7 +191,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil C Micra",
-        ageIntervalId: 6,
+        ageIntervalId: 3,
         minWeight: 27,
         maxWeight: 29,
         gender: "Ambos",
@@ -197,7 +199,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil C Escama",
-        ageIntervalId: 6,
+        ageIntervalId: 3,
         minWeight: 29,
         maxWeight: 31,
         gender: "Ambos",
@@ -205,7 +207,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil C Paja",
-        ageIntervalId: 6,
+        ageIntervalId: 3,
         minWeight: 31,
         maxWeight: 33,
         gender: "Ambos",
@@ -213,7 +215,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil C Pluma",
-        ageIntervalId: 6,
+        ageIntervalId: 3,
         minWeight: 33,
         maxWeight: 36,
         gender: "Ambos",
@@ -221,7 +223,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil C Mosco",
-        ageIntervalId: 6,
+        ageIntervalId: 3,
         minWeight: 36,
         maxWeight: 39,
         gender: "Ambos",
@@ -229,7 +231,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil C Mosca",
-        ageIntervalId: 6,
+        ageIntervalId: 3,
         minWeight: 39,
         maxWeight: 42,
         gender: "Ambos",
@@ -237,7 +239,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil C Libélula",
-        ageIntervalId: 6,
+        ageIntervalId: 3,
         minWeight: 42,
         maxWeight: 45,
         gender: "Ambos",
@@ -245,7 +247,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "PreInfantil C Avispa",
-        ageIntervalId: 6,
+        ageIntervalId: 3,
         minWeight: 45,
         maxWeight: 100,
         gender: "Ambos",
@@ -255,7 +257,7 @@ import { sequelize } from "../config/db";
 
       {
         divisionName: "Infantil Atomo",
-        ageIntervalId: 7,
+        ageIntervalId: 4,
         minWeight: 0,
         maxWeight: 27,
         gender: "Ambos",
@@ -263,7 +265,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Infantil Molécula",
-        ageIntervalId: 7,
+        ageIntervalId: 4,
         minWeight: 27,
         maxWeight: 30,
         gender: "Ambos",
@@ -271,7 +273,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Infantil Micra",
-        ageIntervalId: 7,
+        ageIntervalId: 4,
         minWeight: 30,
         maxWeight: 33,
         gender: "Ambos",
@@ -279,7 +281,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Infantil Escama",
-        ageIntervalId: 7,
+        ageIntervalId: 4,
         minWeight: 33,
         maxWeight: 36,
         gender: "Ambos",
@@ -287,7 +289,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Infantil Paja",
-        ageIntervalId: 7,
+        ageIntervalId: 4,
         minWeight: 36,
         maxWeight: 39,
         gender: "Ambos",
@@ -295,7 +297,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Infantil Pluma",
-        ageIntervalId: 7,
+        ageIntervalId: 4,
         minWeight: 39,
         maxWeight: 42,
         gender: "Ambos",
@@ -303,7 +305,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Infantil Mosco",
-        ageIntervalId: 7,
+        ageIntervalId: 4,
         minWeight: 42,
         maxWeight: 45,
         gender: "Ambos",
@@ -311,7 +313,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Infantil Mosca",
-        ageIntervalId: 7,
+        ageIntervalId: 4,
         minWeight: 45,
         maxWeight: 48,
         gender: "Ambos",
@@ -319,7 +321,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Infantil Libélula",
-        ageIntervalId: 7,
+        ageIntervalId: 4,
         minWeight: 48,
         maxWeight: 51,
         gender: "Ambos",
@@ -327,7 +329,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Infantil Avispa",
-        ageIntervalId: 7,
+        ageIntervalId: 4,
         minWeight: 51,
         maxWeight: 100,
         gender: "Ambos",
@@ -337,7 +339,7 @@ import { sequelize } from "../config/db";
 
       {
         divisionName: "Cadetes M1",
-        ageIntervalId: 8,
+        ageIntervalId: 5,
         minWeight: 0,
         maxWeight: 33,
         gender: "Masculino",
@@ -345,7 +347,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Cadetes M2",
-        ageIntervalId: 8,
+        ageIntervalId: 5,
         minWeight: 33,
         maxWeight: 37,
         gender: "Masculino",
@@ -353,7 +355,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Cadetes M3",
-        ageIntervalId: 8,
+        ageIntervalId: 5,
         minWeight: 37,
         maxWeight: 41,
         gender: "Masculino",
@@ -361,7 +363,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Cadetes M4",
-        ageIntervalId: 8,
+        ageIntervalId: 5,
         minWeight: 41,
         maxWeight: 45,
         gender: "Masculino",
@@ -369,7 +371,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Cadetes M5",
-        ageIntervalId: 8,
+        ageIntervalId: 5,
         minWeight: 45,
         maxWeight: 49,
         gender: "Masculino",
@@ -377,7 +379,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Cadetes M6",
-        ageIntervalId: 8,
+        ageIntervalId: 5,
         minWeight: 49,
         maxWeight: 53,
         gender: "Masculino",
@@ -385,7 +387,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Cadetes M7",
-        ageIntervalId: 8,
+        ageIntervalId: 5,
         minWeight: 53,
         maxWeight: 57,
         gender: "Masculino",
@@ -393,7 +395,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Cadetes M8",
-        ageIntervalId: 8,
+        ageIntervalId: 5,
         minWeight: 57,
         maxWeight: 61,
         gender: "Masculino",
@@ -401,7 +403,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Cadetes M9",
-        ageIntervalId: 8,
+        ageIntervalId: 5,
         minWeight: 61,
         maxWeight: 65,
         gender: "Masculino",
@@ -409,7 +411,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Cadetes M10",
-        ageIntervalId: 8,
+        ageIntervalId: 5,
         minWeight: 65,
         maxWeight: 100,
         gender: "Masculino",
@@ -417,7 +419,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Cadetes F1",
-        ageIntervalId: 8,
+        ageIntervalId: 5,
         minWeight: 0,
         maxWeight: 29,
         gender: "Femenino",
@@ -425,7 +427,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Cadetes F2",
-        ageIntervalId: 8,
+        ageIntervalId: 5,
         minWeight: 29,
         maxWeight: 33,
         gender: "Femenino",
@@ -433,7 +435,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Cadetes F3",
-        ageIntervalId: 8,
+        ageIntervalId: 5,
         minWeight: 33,
         maxWeight: 37,
         gender: "Femenino",
@@ -441,7 +443,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Cadetes F4",
-        ageIntervalId: 8,
+        ageIntervalId: 5,
         minWeight: 37,
         maxWeight: 41,
         gender: "Femenino",
@@ -449,7 +451,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Cadetes F5",
-        ageIntervalId: 8,
+        ageIntervalId: 5,
         minWeight: 41,
         maxWeight: 44,
         gender: "Femenino",
@@ -457,7 +459,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Cadetes F6",
-        ageIntervalId: 8,
+        ageIntervalId: 5,
         minWeight: 44,
         maxWeight: 47,
         gender: "Femenino",
@@ -465,7 +467,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Cadetes F7",
-        ageIntervalId: 8,
+        ageIntervalId: 5,
         minWeight: 47,
         maxWeight: 51,
         gender: "Femenino",
@@ -473,7 +475,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Cadetes F8",
-        ageIntervalId: 8,
+        ageIntervalId: 5,
         minWeight: 51,
         maxWeight: 55,
         gender: "Femenino",
@@ -481,7 +483,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Cadetes F9",
-        ageIntervalId: 8,
+        ageIntervalId: 5,
         minWeight: 55,
         maxWeight: 59,
         gender: "Femenino",
@@ -489,7 +491,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Cadetes F10",
-        ageIntervalId: 8,
+        ageIntervalId: 5,
         minWeight: 49,
         maxWeight: 100,
         gender: "Femenino",
@@ -499,7 +501,7 @@ import { sequelize } from "../config/db";
 
       {
         divisionName: "Juvenil M1",
-        ageIntervalId: 9,
+        ageIntervalId: 6,
         minWeight: 0,
         maxWeight: 45,
         gender: "Masculino",
@@ -507,7 +509,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Juvenil M2",
-        ageIntervalId: 9,
+        ageIntervalId: 6,
         minWeight: 45,
         maxWeight: 48,
         gender: "Masculino",
@@ -515,7 +517,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Juvenil M3",
-        ageIntervalId: 9,
+        ageIntervalId: 6,
         minWeight: 48,
         maxWeight: 51,
         gender: "Masculino",
@@ -523,7 +525,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Juvenil M4",
-        ageIntervalId: 9,
+        ageIntervalId: 6,
         minWeight: 51,
         maxWeight: 55,
         gender: "Masculino",
@@ -531,7 +533,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Juvenil M5",
-        ageIntervalId: 9,
+        ageIntervalId: 6,
         minWeight: 55,
         maxWeight: 59,
         gender: "Masculino",
@@ -539,7 +541,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Juvenil M6",
-        ageIntervalId: 9,
+        ageIntervalId: 6,
         minWeight: 59,
         maxWeight: 63,
         gender: "Masculino",
@@ -547,7 +549,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Juvenil M7",
-        ageIntervalId: 9,
+        ageIntervalId: 6,
         minWeight: 63,
         maxWeight: 68,
         gender: "Masculino",
@@ -555,7 +557,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Juvenil M8",
-        ageIntervalId: 9,
+        ageIntervalId: 6,
         minWeight: 68,
         maxWeight: 73,
         gender: "Masculino",
@@ -563,7 +565,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Juvenil M9",
-        ageIntervalId: 9,
+        ageIntervalId: 6,
         minWeight: 73,
         maxWeight: 78,
         gender: "Masculino",
@@ -571,7 +573,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Juvenil M10",
-        ageIntervalId: 9,
+        ageIntervalId: 6,
         minWeight: 78,
         maxWeight: 100,
         gender: "Masculino",
@@ -579,7 +581,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Juvenil F1",
-        ageIntervalId: 9,
+        ageIntervalId: 6,
         minWeight: 0,
         maxWeight: 42,
         gender: "Femenino",
@@ -587,7 +589,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Juvenil F2",
-        ageIntervalId: 9,
+        ageIntervalId: 6,
         minWeight: 42,
         maxWeight: 44,
         gender: "Femenino",
@@ -595,7 +597,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Juvenil F3",
-        ageIntervalId: 9,
+        ageIntervalId: 6,
         minWeight: 44,
         maxWeight: 46,
         gender: "Femenino",
@@ -603,7 +605,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Juvenil F4",
-        ageIntervalId: 9,
+        ageIntervalId: 6,
         minWeight: 46,
         maxWeight: 49,
         gender: "Femenino",
@@ -611,7 +613,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Juvenil F5",
-        ageIntervalId: 9,
+        ageIntervalId: 6,
         minWeight: 49,
         maxWeight: 52,
         gender: "Femenino",
@@ -619,7 +621,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Juvenil F6",
-        ageIntervalId: 9,
+        ageIntervalId: 6,
         minWeight: 52,
         maxWeight: 55,
         gender: "Femenino",
@@ -627,7 +629,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Juvenil F7",
-        ageIntervalId: 9,
+        ageIntervalId: 6,
         minWeight: 55,
         maxWeight: 59,
         gender: "Femenino",
@@ -635,7 +637,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Juvenil F8",
-        ageIntervalId: 9,
+        ageIntervalId: 6,
         minWeight: 59,
         maxWeight: 63,
         gender: "Femenino",
@@ -643,7 +645,7 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Juvenil F9",
-        ageIntervalId: 9,
+        ageIntervalId: 6,
         minWeight: 63,
         maxWeight: 68,
         gender: "Femenino",
@@ -651,13 +653,97 @@ import { sequelize } from "../config/db";
       },
       {
         divisionName: "Juvenil F10",
-        ageIntervalId: 9,
+        ageIntervalId: 6,
         minWeight: 68,
         maxWeight: 100,
         gender: "Femenino",
         grouping: "Juveniles",
       },
     ]);
+    console.log("Datos insertados correctamente.");
+  } catch (error) {
+    console.error("Error al insertar datos:", error);
+  } finally {
+    await sequelize.close(); // Cierra la conexión a la base de datos al finalizar
+  }
+})();
+
+(async () => {
+  try {
+    await sequelize.sync(); // Sincroniza el modelo con la base de datos, eliminando las tablas existentes si existen
+    await AgeInterval.bulkCreate([
+      {
+        id: 1,
+        ageIntervalName: "Pre infantil A",
+        minAge: 4,
+        maxAge: 5,
+      },
+      {
+        id: 2,
+        ageIntervalName: "Pre infantil B",
+        minAge: 6,
+        maxAge: 7,
+      },
+      {
+        id: 3,
+        ageIntervalName: "Pre infantil C",
+        minAge: 8,
+        maxAge: 9,
+      },
+      {
+        id: 4,
+        ageIntervalName: "Infanil",
+        minAge: 10,
+        maxAge: 11,
+      },
+      {
+        id: 5,
+        ageIntervalName: "Cadetes",
+        minAge: 12,
+        maxAge: 14,
+      },
+      {
+        id: 6,
+        ageIntervalName: "Juvenil",
+        minAge: 15,
+        maxAge: 17,
+      },
+      {
+        id: 7,
+        ageIntervalName: "Mayores",
+        minAge: 18,
+        maxAge: 100,
+      },
+    ]);
+    console.log("Datos insertados correctamente.");
+  } catch (error) {
+    console.error("Error al insertar datos:", error);
+  } finally {
+    await sequelize.close(); // Cierra la conexión a la base de datos al finalizar
+  }
+})();
+
+(async () => {
+  try {
+    await sequelize.sync(); // Sincroniza el modelo con la base de datos, eliminando las tablas existentes si existen
+    await Category.bulkCreate([
+      {
+        categoryName: "Avanzado",
+        gradeMin: "rojo",
+        gradeMax: "negro",
+      },
+      {
+        categoryName: "Inicial",
+        gradeMin: "franja amarillo",
+        gradeMax: "franja verde",
+      },
+      {
+        categoryName: "Intermedio",
+        gradeMin: "verde",
+        gradeMax: "franja rojo",
+      },
+    ]); // Omitir timestamps
+
     console.log("Datos insertados correctamente.");
   } catch (error) {
     console.error("Error al insertar datos:", error);
