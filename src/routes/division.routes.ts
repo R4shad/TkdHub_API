@@ -45,7 +45,7 @@ router.get("/:championshipId", getDivisionsByChampionshipId);
 
 /**
  * @openapi
- * /api/division/{ageIntervalId}:
+ * /api/division/ages/{ageIntervalId}:
  *   get:
  *     tags:
  *       - Division
@@ -62,7 +62,7 @@ router.get("/:championshipId", getDivisionsByChampionshipId);
  *       500:
  *         description: Error
  */
-router.get("/:ageIntervalId", getDivisionsByAgeIntervalId);
+router.get("/ages/:ageIntervalId", getDivisionsByAgeIntervalId);
 
 /**
  * @openapi

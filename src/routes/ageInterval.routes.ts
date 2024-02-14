@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   getAgeIntervals,
+  getAgeIntervalByChampionshipId,
   createAgeInterval,
   deleteAgeInterval,
 } from "../controllers/ageInterval.controllers";
@@ -18,6 +19,27 @@ const router = Router();
  *         description: OK
  */
 router.get("/", getAgeIntervals);
+
+/**
+ * @openapi
+ * /api/ageInterval/{championshipId}:
+ *   get:
+ *     tags:
+ *       - AgeInterval
+ *     parameters:
+ *       - in: path
+ *         name: championshipId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: championshipId value to filter ageInterval
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Error
+ */
+router.get("/:championshipId", getAgeIntervalByChampionshipId);
 
 /**
  * @openapi

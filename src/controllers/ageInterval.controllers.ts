@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import AgeInterval from "../models/ageInterval";
 import ApiResponse from "../interfaces/apiResponse";
+import ChampionshipAgeInterval from "../models/championshipAgeInterval";
 
 export const getAgeIntervals = async (req: Request, res: Response) => {
   try {
@@ -12,6 +13,52 @@ export const getAgeIntervals = async (req: Request, res: Response) => {
     res.json(response);
   } catch (error) {
     console.error("Error fetching age intervals:", error);
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "There was an error processing the request.",
+    };
+    res.status(response.status).json(response);
+  }
+};
+
+export const getAgeIntervalByChampionshipId = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { championshipId } = req.params;
+
+    // Buscar las divisiones asociadas al campeonato en ChampionshipDivision
+    const championshipAgeInterval = await ChampionshipAgeInterval.findAll({
+      where: { championshipId: championshipId },
+    });
+    // Verificar si no se encontraron divisiones asociadas al campeonato
+    if (championshipAgeInterval.length === 0) {
+      const response: ApiResponse<undefined> = {
+        status: 404,
+        error: "No divisions found for the championship.",
+      };
+      return res.status(response.status).json(response);
+    }
+
+    // Obtener la información completa de las divisiones desde la tabla Division
+    const ageIntervalId = championshipAgeInterval.map(
+      (championshipAgeInterval) => championshipAgeInterval.ageIntervalId
+    );
+
+    const ageIntervals = await AgeInterval.findAll({
+      where: { id: ageIntervalId },
+    });
+
+    // Construir la respuesta con la información completa de las divisiones
+    const response: ApiResponse<typeof ageIntervals> = {
+      status: 200,
+      data: ageIntervals,
+    };
+
+    res.json(response);
+  } catch (error) {
+    console.error("Error fetching divisions by championship:", error);
     const response: ApiResponse<undefined> = {
       status: 500,
       error: "There was an error processing the request.",
