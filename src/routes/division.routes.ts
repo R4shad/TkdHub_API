@@ -5,6 +5,7 @@ import {
   createDivision,
   deleteDivision,
   getDivisionsByAgeIntervalId,
+  getDivisionsByChampionshipId,
 } from "../controllers/division.controllers";
 
 const router = Router();
@@ -20,6 +21,27 @@ const router = Router();
  *         description: OK
  */
 router.get("/", getDivisions);
+
+/**
+ * @openapi
+ * /api/division/{championshipId}:
+ *   get:
+ *     tags:
+ *       - Division
+ *     parameters:
+ *       - in: path
+ *         name: championshipId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: championshipId value to filter divisions
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Error
+ */
+router.get("/:championshipId", getDivisionsByChampionshipId);
 
 /**
  * @openapi

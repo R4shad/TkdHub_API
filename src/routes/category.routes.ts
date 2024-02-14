@@ -3,6 +3,7 @@ import {
   getCategories,
   createCategory,
   deleteCategory,
+  getCategoriesByChampionshipId,
 } from "../controllers/category.controllers";
 
 const router = Router();
@@ -18,6 +19,27 @@ const router = Router();
  *         description: OK
  */
 router.get("/", getCategories);
+
+/**
+ * @openapi
+ * /api/category/{championshipId}:
+ *   get:
+ *     tags:
+ *       - Category
+ *     parameters:
+ *       - in: path
+ *         name: championshipId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: championshipId value to filter categories
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Error
+ */
+router.get("/:championshipId", getCategoriesByChampionshipId);
 
 /**
  * @openapi
