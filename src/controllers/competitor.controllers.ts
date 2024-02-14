@@ -10,6 +10,21 @@ export const getCompetitors = async (req: Request, res: Response) => {
 
     const competitors = await Competitor.findAll({
       where: { championshipId },
+      include: [
+        {
+          model: Participant,
+          attributes: [
+            "clubCode",
+            "firstNames",
+            "lastNames",
+            "age",
+            "weight",
+            "grade",
+            "gender",
+          ],
+        },
+      ],
+      attributes: ["participantCi", "divisionName", "categoryName"],
     });
 
     res.status(200).json({ status: 200, data: competitors });
