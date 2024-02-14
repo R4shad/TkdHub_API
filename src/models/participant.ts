@@ -12,7 +12,6 @@ class Participant extends Model {
   public weight!: number | null;
   public grade!: string | null;
   public gender!: string | null;
-  public verified!: boolean;
 }
 
 Participant.init(
@@ -49,10 +48,6 @@ Participant.init(
     gender: {
       type: DataTypes.STRING(20),
       allowNull: true,
-    },
-    verified: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
     },
   },
   {

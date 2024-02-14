@@ -7,6 +7,7 @@ import Championship from "./championship";
 class ChampionshipParticipant extends Model {
   public participantCi!: number;
   public championshipId!: number;
+  public verified!: boolean;
 }
 
 ChampionshipParticipant.init(
@@ -20,6 +21,10 @@ ChampionshipParticipant.init(
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       primaryKey: true,
+    },
+    verified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
   },
   {
