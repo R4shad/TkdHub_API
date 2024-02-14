@@ -9,7 +9,7 @@ export const getCompetitors = async (req: Request, res: Response) => {
     const { championshipId } = req.params;
 
     const competitors = await Competitor.findAll({
-      where: { campeonatoId: championshipId },
+      where: { championshipId },
     });
 
     res.status(200).json({ status: 200, data: competitors });
@@ -28,7 +28,7 @@ export const getCompetitorsByClubCode = async (req: Request, res: Response) => {
 
     // Buscar todos los competidores asociados con el campeonato y el código de club
     const competitors = await Competitor.findAll({
-      where: { campeonatoId: championshipId },
+      where: { championshipId: championshipId },
       include: [
         {
           model: Participant,
@@ -61,7 +61,7 @@ export const createCompetitor = async (req: Request, res: Response) => {
 
     const newCompetitor = await Competitor.create({
       ...competitorData,
-      campeonatoId: championshipId,
+      championshipId: championshipId,
     });
 
     res.status(201).json({ status: 201, data: newCompetitor });
