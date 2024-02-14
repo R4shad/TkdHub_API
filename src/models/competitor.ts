@@ -1,49 +1,60 @@
-// models/competitor.ts
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 import Participant from "./participant";
-import Division from "./division";
-import Category from "./category";
+import ChampionshipCategory from "./championshipCategory";
+import ChampionshipDivision from "./championshipDivision";
 
 class Competitor extends Model {
-  public participantCi!: number;
-  public divisionName!: string;
-  public categoryName!: string;
+  public competidorId!: number;
+  public inscritoCi!: number;
+  public campeonatoId!: number;
+  public nombreDivision!: string;
+  public nombreCategoria!: string;
 }
 
 Competitor.init(
   {
-    participantCi: {
+    competidorId: {
       type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
+      autoIncrement: true,
       primaryKey: true,
     },
-    divisionName: {
+    inscritoCi: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
+    campeonatoId: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
+    nombreDivision: {
       type: DataTypes.STRING(50),
       allowNull: false,
     },
-    categoryName: {
+    nombreCategoria: {
       type: DataTypes.STRING(50),
       allowNull: false,
     },
   },
   {
     sequelize,
-    tableName: "Competitor",
+    tableName: "Competidor",
   }
 );
 
 // Definir las relaciones con las otras tablas
 Competitor.belongsTo(Participant, {
-  foreignKey: "participantCi",
+  foreignKey: "inscritoCi",
 });
 
-Competitor.belongsTo(Division, {
-  foreignKey: "divisionName",
+// Relación con la tabla ChampionshipCategory
+Competitor.belongsTo(ChampionshipCategory, {
+  foreignKey: "campeonatoId",
 });
 
-Competitor.belongsTo(Category, {
-  foreignKey: "categoryName",
+// Relación con la tabla ChampionshipDivision
+Competitor.belongsTo(ChampionshipDivision, {
+  foreignKey: "campeonatoId",
 });
 
 export default Competitor;

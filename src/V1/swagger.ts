@@ -16,6 +16,7 @@ const options = {
     "src/routes/ageInterval.routes.ts",
     "src/routes/division.routes.ts",
     "src/routes/category.routes.ts",
+    "src/routes/competitor.routes.ts",
     "src/routes/championshipAgeInterval.routes.ts",
     "src/routes/championshipDivision.routes.ts",
     "src/routes/championshipCategory.routes.ts",

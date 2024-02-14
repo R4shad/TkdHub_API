@@ -28,6 +28,7 @@ import routesClub from "../routes/club.routes";
 import routesCoach from "../routes/coach.routes";
 
 import routesDivision from "../routes/division.routes";
+import routesCompetitor from "../routes/competitor.routes";
 import routesAgeInterval from "../routes/ageInterval.routes";
 import routesChampionshipAgeInterval from "../routes/championshipAgeInterval.routes";
 import routesChampionshipDivision from "../routes/championshipDivision.routes";
@@ -66,6 +67,7 @@ class Server {
     this.app.use("/api/ageInterval", routesAgeInterval);
     this.app.use("/api/division", routesDivision);
     this.app.use("/api/category", routesCategory);
+    this.app.use("/api/competitor", routesCompetitor);
     this.app.use("/api/championshipCategory", routesChampionshipCategory);
     this.app.use("/api/championshipAgeInterval", routesChampionshipAgeInterval);
     this.app.use("/api/championshipDivision", routesChampionshipDivision);
@@ -103,9 +105,9 @@ class Server {
       await ChampionshipParticipant.sync();
       await Category.sync();
       await ChampionshipCategory.sync();
-      await AgeInterval.sync({});
+      await AgeInterval.sync();
       await championshipAgeInterval.sync({});
-      await Division.sync({ force: true });
+      await Division.sync();
 
       await ChampionshipDivision.sync({});
       await Competitor.sync({});
