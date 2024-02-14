@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   getChampionshipDivisions,
   createChampionshipDivision,
+  incrementDivisionCompetitors,
 } from "../controllers/championshipDivision.controllers";
 
 const router = Router();
@@ -54,5 +55,35 @@ router.get("/:championshipId", getChampionshipDivisions);
  *         description: Error
  */
 router.post("/:championshipId", createChampionshipDivision);
+
+/**
+ * @swagger
+ * /api/championshipDivision/increment/{championshipId}/{divisionName}:
+ *   put:
+ *     tags:
+ *       - ChampionshipDivision
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID del campeonato
+ *         schema:
+ *           type: integer
+ *       - name: divisionName
+ *         in: path
+ *         required: true
+ *         description: Nombre de la división
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Error
+ */
+router.put(
+  "/increment/:championshipId/:divisionName",
+  incrementDivisionCompetitors
+);
 
 export default router;

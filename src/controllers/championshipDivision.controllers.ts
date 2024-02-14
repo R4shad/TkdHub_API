@@ -55,3 +55,44 @@ export const createChampionshipDivision = async (
     res.status(response.status).json(response);
   }
 };
+
+export const incrementDivisionCompetitors = async (
+  req: Request,
+  res: Response
+) => {
+  const championshipId = parseInt(req.params.championshipId, 10);
+  const divisionName = req.params.divisionName;
+
+  try {
+    const division = await ChampionshipDivision.findOne({
+      where: { championshipId, divisionName },
+    });
+
+    if (!division) {
+      const response: ApiResponse<undefined> = {
+        status: 404,
+        error: "Championship division not found",
+      };
+      return res.status(response.status).json(response);
+    }
+
+    // Incrementar el valor de numberOfCompetitors
+    await division.increment("numberOfCompetitors");
+    const response: ApiResponse<typeof division> = {
+      status: 200,
+      data: division,
+    };
+
+    res.status(response.status).json(response);
+  } catch (error) {
+    console.error(
+      "Error incrementing championship division competitors:",
+      error
+    );
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "Error incrementing championship division competitors",
+    };
+    res.status(response.status).json(response);
+  }
+};
