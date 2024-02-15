@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import ChampionshipCategory from "../models/championshipCategory";
 import ApiResponse from "../interfaces/apiResponse";
+import { Op } from "sequelize";
 
 export async function getChampionshipCategories(req: Request, res: Response) {
   const championshipId = parseInt(req.params.championshipId, 10);
@@ -48,6 +49,41 @@ export async function createChampionshipCategory(req: Request, res: Response) {
     const response: ApiResponse<undefined> = {
       status: 500,
       error: "Error creating championship category",
+    };
+    res.status(response.status).json(response);
+  }
+}
+
+export async function getChampionshipCategoriesWithCompetitors(
+  req: Request,
+  res: Response
+) {
+  const championshipId = parseInt(req.params.championshipId, 10);
+
+  try {
+    const categoriesWithCompetitors = await ChampionshipCategory.findAll({
+      where: {
+        championshipId: championshipId,
+        numberOfCompetitors: {
+          [Op.gte]: 2, // Utilizamos Op.gte para mayor o igual que 2
+        },
+      },
+    });
+
+    const response: ApiResponse<typeof categoriesWithCompetitors> = {
+      status: 200,
+      data: categoriesWithCompetitors,
+    };
+
+    res.json(response);
+  } catch (error) {
+    console.error(
+      "Error fetching championship categories with competitors:",
+      error
+    );
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "Error fetching championship categories with competitors",
     };
     res.status(response.status).json(response);
   }

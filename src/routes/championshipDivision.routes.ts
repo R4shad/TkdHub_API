@@ -3,6 +3,7 @@ import {
   getChampionshipDivisions,
   createChampionshipDivision,
   incrementDivisionCompetitors,
+  getChampionshipDivisionsWithCompetitors,
 } from "../controllers/championshipDivision.controllers";
 
 const router = Router();
@@ -25,6 +26,30 @@ const router = Router();
  *         description: OK
  */
 router.get("/:championshipId", getChampionshipDivisions);
+
+/**
+ * @swagger
+ * /api/championshipDivision/{championshipId}/withCompetitors:
+ *   get:
+ *     tags:
+ *       - ChampionshipDivision
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID del campeonato
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Error
+ */
+router.get(
+  "/:championshipId/withCompetitors",
+  getChampionshipDivisionsWithCompetitors
+);
 
 /**
  * @swagger
