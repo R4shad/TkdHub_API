@@ -1,1 +1,2 @@
 npx tsc --watch
+node dist/db/divisionData.js

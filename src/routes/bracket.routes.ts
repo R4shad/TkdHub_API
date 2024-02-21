@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   getBrackets,
   getBracketsByChampionshipId,
+  getBracketsWithCompetitorsByChampionshipId,
   createBracket,
   deleteBracket,
 } from "../controllers/bracket.controllers";
@@ -40,6 +41,30 @@ router.get("/", getBrackets);
  *         description: Error
  */
 router.get("/:championshipId", getBracketsByChampionshipId);
+
+/**
+ * @openapi
+ * /api/bracket/withCompetitors/{championshipId}:
+ *   get:
+ *     tags:
+ *       - Bracket
+ *     parameters:
+ *       - in: path
+ *         name: championshipId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: championshipId value to filter brackets
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Error
+ */
+router.get(
+  "/withCompetitors/:championshipId",
+  getBracketsWithCompetitorsByChampionshipId
+);
 
 /**
  * @openapi

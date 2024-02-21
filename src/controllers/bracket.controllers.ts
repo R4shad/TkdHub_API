@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import Bracket from "../models/bracket";
 import ApiResponse from "../interfaces/apiResponse";
+import Competitor from "../models/competitor";
+import Participant from "../models/participant";
 
 export const getBrackets = async (req: Request, res: Response) => {
   try {
@@ -30,6 +32,50 @@ export const getBracketsByChampionshipId = async (
     const brackets = await Bracket.findAll({
       where: { championshipId },
     });
+
+    res.status(200).json({ status: 200, data: brackets });
+  } catch (error) {
+    console.error("Error fetching brackets:", error);
+    res.status(500).json({
+      status: 500,
+      error: "There was an error processing the request.",
+    });
+  }
+};
+export const getBracketsWithCompetitorsByChampionshipId = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { championshipId } = req.params;
+
+    const brackets = await Bracket.findAll({
+      where: { championshipId },
+    });
+
+    // Iterar sobre cada bracket y agregar los competidores correspondientes
+    for (const bracket of brackets) {
+      const competitors = await Competitor.findAll({
+        where: {
+          championshipId,
+          divisionName: bracket.divisionName,
+          categoryName: bracket.categoryName,
+        },
+      });
+
+      // Obtener los datos completos de los participantes y agregarlos al bracket
+      const competitorsWithDetails = await Promise.all(
+        competitors.map(async (competitor) => {
+          const participant = await Participant.findOne({
+            where: { participantCi: competitor.participantCi },
+          });
+          return { ...competitor.toJSON(), Participant: participant };
+        })
+      );
+
+      // Agregar los competidores completos al bracket actual
+      bracket.dataValues.competitors = competitorsWithDetails;
+    }
 
     res.status(200).json({ status: 200, data: brackets });
   } catch (error) {
