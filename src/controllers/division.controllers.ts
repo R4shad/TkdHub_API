@@ -95,6 +95,32 @@ export const getDivisionsByAgeIntervalId = async (
   }
 };
 
+export const getDivisionsByDivisionName = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { divisionName } = req.params;
+    const division = await Division.findOne({ where: { divisionName } });
+
+    const response: ApiResponse<typeof division> = {
+      status: 200,
+      data: division,
+    };
+
+    // Envía la respuesta
+    res.json(response);
+  } catch (error) {
+    // Manejo de errores
+    console.error("Error fetching divisions by grouping:", error);
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "There was an error processing the request.",
+    };
+    res.status(response.status).json(response);
+  }
+};
+
 export const createDivision = async (req: Request, res: Response) => {
   try {
     const {
