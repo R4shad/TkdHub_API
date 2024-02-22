@@ -53,11 +53,13 @@ router.get("/:championshipId", getChampionshipById);
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               championshipName:
  *                 type: string
  *               organizer:
  *                 type: string
- *               password:  # Agrega la nueva propiedad password
+ *               organizerCi:
+ *                 type: number
+ *               organizerPassword:
  *                 type: string
  *               championshipDate:
  *                 type: string
@@ -89,9 +91,9 @@ router.post("/", createChampionship);
  *           schema:
  *             type: object
  *             properties:
- *               organizer:
- *                 type: string
- *               password:
+ *               organizerCi:
+ *                 type: number
+ *               organizerPassword:
  *                 type: string
  *     responses:
  *       201:

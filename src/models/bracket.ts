@@ -1,4 +1,3 @@
-// models/bracket.ts
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 import Division from "./division";
@@ -38,7 +37,6 @@ Bracket.init(
   }
 );
 
-// Definir las relaciones con las otras tablas
 Bracket.belongsTo(Division, {
   foreignKey: "divisionName",
 });

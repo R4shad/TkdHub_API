@@ -1,10 +1,9 @@
-// models/participant.ts
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 import Club from "./club";
 
 class Participant extends Model {
-  public participantCi!: number;
+  public id!: string;
   public clubCode!: string;
   public lastNames!: string | null;
   public firstNames!: string | null;
@@ -16,8 +15,9 @@ class Participant extends Model {
 
 Participant.init(
   {
-    participantCi: {
-      type: DataTypes.INTEGER.UNSIGNED,
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
       allowNull: false,
       primaryKey: true,
     },
@@ -56,7 +56,6 @@ Participant.init(
   }
 );
 
-// Definir la relación con la tabla Club
 Participant.belongsTo(Club, {
   foreignKey: "clubCode",
 });

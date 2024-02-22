@@ -1,4 +1,3 @@
-// models/championshipDivision.ts
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 import Championship from "./championship";
@@ -34,7 +33,6 @@ ChampionshipDivision.init(
   }
 );
 
-// Definir las relaciones con las otras tablas
 ChampionshipDivision.belongsTo(Championship, {
   foreignKey: "championshipId",
 });

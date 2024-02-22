@@ -5,8 +5,8 @@ import ChampionshipCategory from "./championshipCategory";
 import ChampionshipDivision from "./championshipDivision";
 
 class Competitor extends Model {
-  public competitorId!: number;
-  public participantCi!: number;
+  public competitorId!: string;
+  public participantId!: string;
   public championshipId!: number;
   public divisionName!: string;
   public categoryName!: string;
@@ -15,11 +15,12 @@ class Competitor extends Model {
 Competitor.init(
   {
     competitorId: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      autoIncrement: true,
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
       primaryKey: true,
     },
-    participantCi: {
+    participantId: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       unique: "uniqueParticipantPerChampionship",
@@ -44,17 +45,14 @@ Competitor.init(
   }
 );
 
-// Definir las relaciones con las otras tablas
 Competitor.belongsTo(Participant, {
-  foreignKey: "participantCi",
+  foreignKey: "participantId",
 });
 
-// Relación con la tabla ChampionshipCategory
 Competitor.belongsTo(ChampionshipCategory, {
   foreignKey: "championshipId",
 });
 
-// Relación con la tabla ChampionshipDivision
 Competitor.belongsTo(ChampionshipDivision, {
   foreignKey: "championshipId",
 });

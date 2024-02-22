@@ -3,9 +3,10 @@ import { sequelize } from "../config/db";
 
 class Championship extends Model {
   public championshipId!: number;
-  public name!: string | null;
+  public championshipName!: string | null;
   public organizer!: string | null;
-  public password!: string | null;
+  public organizerCi!: number | null;
+  public organizerPassword!: string | null;
   public active!: boolean;
   public championshipDate!: Date | null;
 }
@@ -18,17 +19,21 @@ Championship.init(
       autoIncrement: true,
       primaryKey: true,
     },
-    name: {
+    championshipName: {
       type: DataTypes.STRING(80),
-      allowNull: true,
+      allowNull: false,
     },
     organizer: {
       type: DataTypes.STRING(80),
-      allowNull: true,
+      allowNull: false,
     },
-    password: {
+    organizerCi: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
+    organizerPassword: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
     active: {
       type: DataTypes.BOOLEAN,

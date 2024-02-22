@@ -1,4 +1,3 @@
-// models/match.ts
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 import Bracket from "./bracket";
@@ -7,8 +6,8 @@ import Competitor from "./competitor";
 class Match extends Model {
   public matchId!: number;
   public bracketId!: number;
-  public redParticipantCi!: number;
-  public blueParticipantCi!: number;
+  public redParticipantId!: string;
+  public blueParticipantId!: string;
   public round!: string;
   public redRounds!: number | null;
   public blueRounds!: number | null;
@@ -26,12 +25,12 @@ Match.init(
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
     },
-    redParticipantCi: {
-      type: DataTypes.INTEGER.UNSIGNED,
+    redParticipantId: {
+      type: DataTypes.UUID,
       allowNull: false,
     },
-    blueParticipantCi: {
-      type: DataTypes.INTEGER.UNSIGNED,
+    blueParticipantId: {
+      type: DataTypes.UUID,
       allowNull: false,
     },
     round: {
@@ -55,7 +54,6 @@ Match.init(
   }
 );
 
-// Definir las relaciones con las otras tablas
 Match.belongsTo(Bracket, {
   foreignKey: "bracketId",
 });

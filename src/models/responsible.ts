@@ -1,4 +1,3 @@
-// models/responsible.ts
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 

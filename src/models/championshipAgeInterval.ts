@@ -1,4 +1,3 @@
-// models/championshipAgeInterval.ts
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 import Championship from "./championship";
@@ -28,7 +27,6 @@ ChampionshipAgeInterval.init(
   }
 );
 
-// Definir las relaciones con las otras tablas
 ChampionshipAgeInterval.belongsTo(Championship, {
   foreignKey: "championshipId",
 });

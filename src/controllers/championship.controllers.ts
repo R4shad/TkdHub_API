@@ -25,11 +25,17 @@ export const getChampionships = async (req: Request, res: Response) => {
 
 export const createChampionship = async (req: Request, res: Response) => {
   try {
-    const { name, organizer, password, championshipDate } = req.body;
+    const {
+      championshipName,
+      organizer,
+      organizerCi,
+      organizerPassword,
+      championshipDate,
+    } = req.body;
 
     // Check if a championship with the same name already exists
     const existingChampionship = await Championship.findOne({
-      where: { name: name },
+      where: { championshipName: championshipName },
     });
 
     if (existingChampionship) {
@@ -42,9 +48,10 @@ export const createChampionship = async (req: Request, res: Response) => {
 
     // If it doesn't exist, create a new championship
     const newChampionship = await Championship.create({
-      name: name,
+      championshipName: championshipName,
       organizer: organizer,
-      password: password, // Aquí se guarda la contraseña
+      organizerCi: organizerCi,
+      organizerPassword: organizerPassword, // Aquí se guarda la contraseña
       active: 1,
       championshipDate: championshipDate,
     });
@@ -67,11 +74,11 @@ export const createChampionship = async (req: Request, res: Response) => {
 export const loginOrganizer = async (req: Request, res: Response) => {
   try {
     const { championshipId } = req.params;
-    const { organizer, password } = req.body;
+    const { organizerCi, organizerPassword } = req.body;
 
     // Validamos si existe en la base de datos
     const championship = await Championship.findOne({
-      where: { organizer: organizer, championshipId: championshipId },
+      where: { organizerCi: organizerCi, championshipId: championshipId },
     });
 
     if (!championship) {
@@ -83,7 +90,7 @@ export const loginOrganizer = async (req: Request, res: Response) => {
     }
 
     // Verificamos la contraseña
-    if (password !== championship.password) {
+    if (organizerPassword !== championship.organizerPassword) {
       const response: ApiResponse<undefined> = {
         status: 400,
         error: "Incorrect Password.",

@@ -1,19 +1,18 @@
-// models/championshipParticipant.ts
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 import Participant from "./participant";
 import Championship from "./championship";
 
 class ChampionshipParticipant extends Model {
-  public participantCi!: number;
+  public participantId!: string;
   public championshipId!: number;
   public verified!: boolean;
 }
 
 ChampionshipParticipant.init(
   {
-    participantCi: {
-      type: DataTypes.INTEGER.UNSIGNED,
+    participantId: {
+      type: DataTypes.UUID,
       allowNull: false,
       primaryKey: true,
     },
@@ -33,9 +32,8 @@ ChampionshipParticipant.init(
   }
 );
 
-// Definir las relaciones con las otras tablas
 ChampionshipParticipant.belongsTo(Participant, {
-  foreignKey: "participantCi",
+  foreignKey: "participantId",
 });
 
 ChampionshipParticipant.belongsTo(Championship, {

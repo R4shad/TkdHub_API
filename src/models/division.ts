@@ -1,17 +1,14 @@
-// models/division.ts
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 import AgeInterval from "./ageInterval";
 
 class Division extends Model {
   public divisionName!: string;
-  public ageIntervalId!: number; // Cambiado a número
+  public ageIntervalId!: number;
   public minWeight!: number | null;
   public maxWeight!: number | null;
   public gender!: string | null;
-  public grouping!: string | null; // Nuevo campo para la agrupación
-
-  // ... otras propiedades y métodos
+  public grouping!: string | null;
 }
 
 Division.init(
@@ -22,7 +19,6 @@ Division.init(
       primaryKey: true,
     },
     ageIntervalId: {
-      // Cambiado a número
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
     },
@@ -39,7 +35,7 @@ Division.init(
       allowNull: true,
     },
     grouping: {
-      type: DataTypes.STRING(50), // Puedes ajustar la longitud según sea necesario
+      type: DataTypes.STRING(50),
       allowNull: true,
     },
   },
@@ -49,7 +45,6 @@ Division.init(
   }
 );
 
-// Definir la relación con la tabla AgeInterval
 Division.belongsTo(AgeInterval, {
   foreignKey: "ageIntervalId",
 });

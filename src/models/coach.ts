@@ -1,4 +1,3 @@
-// models/coach.ts
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 import Club from "./club";
@@ -31,7 +30,6 @@ Coach.init(
   }
 );
 
-// Definir la relación con la tabla Club
 Coach.belongsTo(Club, {
   foreignKey: "clubCode",
 });
