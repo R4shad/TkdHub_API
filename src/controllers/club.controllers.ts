@@ -51,29 +51,39 @@ export const getClubs = async (req: Request, res: Response) => {
 export const createClub = async (req: Request, res: Response) => {
   try {
     const { championshipId } = req.params;
-    const { clubCode, name, coachCi } = req.body;
+    const { clubCode, name } = req.body;
 
+    // Verificar si el club ya existe en Club
+    const newClub = {
+      clubCode: clubCode,
+      name: name,
+    };
+
+    const existingClub = await Club.findOne({
+      where: {
+        clubCode: clubCode,
+      },
+    });
+    if (!existingClub) {
+      await Club.create({
+        clubCode: clubCode,
+        name: name,
+      });
+    }
     // Verificar si el club ya existe en ChampionshipClub
-    const existingClub = await ChampionshipClub.findOne({
+    const existingChampionshipClub = await ChampionshipClub.findOne({
       where: {
         clubCode: clubCode,
         championshipId: parseInt(championshipId, 10),
       },
     });
-
-    if (existingClub) {
+    if (existingChampionshipClub) {
       const response: ApiResponse<undefined> = {
         status: 400,
         error: "A club with this clubCode already exists.",
       };
       return res.status(response.status).json(response);
     }
-
-    // Crear un nuevo club
-    const newClub = await Club.create({
-      clubCode: clubCode,
-      name: name,
-    });
 
     // Asociar el club al campeonato en ChampionshipClub
     await ChampionshipClub.create({
@@ -82,15 +92,105 @@ export const createClub = async (req: Request, res: Response) => {
     });
 
     // Obtener los valores del modelo Club como un objeto simple
-    const clubData = newClub.toJSON();
 
-    const response: ApiResponse<typeof clubData> = {
+    const response = {
       status: 201,
-      data: clubData,
+      data: newClub,
     };
     res.status(response.status).json(response);
   } catch (error) {
     console.error("Error creating the club:", error);
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "There was an error processing the request.",
+    };
+    res.status(response.status).json(response);
+  }
+};
+
+export const updateClub = async (req: Request, res: Response) => {
+  try {
+    const { championshipId, clubCode } = req.params;
+    const { name } = req.body;
+
+    const existingClub = await ChampionshipClub.findOne({
+      where: {
+        clubCode: clubCode,
+        championshipId: parseInt(championshipId, 10),
+      },
+    });
+
+    if (!existingClub) {
+      const response: ApiResponse<undefined> = {
+        status: 404,
+        error: "Club not found",
+      };
+      return res.status(response.status).json(response);
+    }
+
+    // Actualizar el nombre del club en la tabla Club
+    await Club.update({ name: name }, { where: { clubCode: clubCode } });
+
+    const response = {
+      status: 200,
+      message: "Club updated successfully",
+    };
+    res.status(response.status).json(response);
+  } catch (error) {
+    console.error("Error updating the club:", error);
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "There was an error processing the request.",
+    };
+    res.status(response.status).json(response);
+  }
+};
+
+export const deleteClub = async (req: Request, res: Response) => {
+  const championshipId = parseInt(req.params.championshipId, 10);
+  const clubCode = req.params.clubCode;
+
+  try {
+    // Buscar el club en ChampionshipClub
+    const club = await ChampionshipClub.findOne({
+      where: {
+        championshipId: championshipId,
+        clubCode: clubCode,
+      },
+    });
+
+    if (!club) {
+      return res.status(404).json({
+        status: 404,
+        error: "Club not found",
+      });
+    }
+
+    // Eliminar el club de ChampionshipClub
+    await club.destroy();
+
+    // Eliminar el club de la tabla Club si no está asociado a otro campeonato
+    const remainingClub = await ChampionshipClub.findOne({
+      where: {
+        clubCode: clubCode,
+      },
+    });
+
+    if (!remainingClub) {
+      await Club.destroy({
+        where: {
+          clubCode: clubCode,
+        },
+      });
+    }
+
+    const response = {
+      status: 200,
+      message: "Club deleted successfully",
+    };
+    res.status(response.status).json(response);
+  } catch (error) {
+    console.error("Error deleting the club:", error);
     const response: ApiResponse<undefined> = {
       status: 500,
       error: "There was an error processing the request.",

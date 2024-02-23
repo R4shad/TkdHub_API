@@ -230,3 +230,29 @@ export const updateParticipantVerification = async (
     });
   }
 };
+
+export const deleteParticipant = async (req: Request, res: Response) => {
+  const championshipId = parseInt(req.params.championshipId);
+  const participantId = req.params.participantId;
+  console.log(participantId);
+  try {
+    const result = await ChampionshipParticipant.destroy({
+      where: { championshipId, participantId },
+    });
+    console.log(result);
+    if (result === 1) {
+      res
+        .status(200)
+        .json({ status: 200, message: "Participante eliminado exitosamente" });
+    } else {
+      res
+        .status(404)
+        .json({ status: 404, message: "Participante no encontrado" });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ status: 500, message: "Error al procesar la solicitud" });
+    console.log(error);
+  }
+};

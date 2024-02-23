@@ -6,6 +6,7 @@ import {
   getParticipantsToRegister,
   updateParticipant,
   updateParticipantVerification,
+  deleteParticipant,
 } from "../controllers/participant.controllers";
 
 const router = Router();
@@ -247,5 +248,36 @@ router.patch("/:championshipId/:participantId", updateParticipant);
  *         description: Error interno del servidor
  */
 router.patch("/:championshipId/:participantCi", updateParticipantVerification);
+
+/**
+ * @openapi
+ * /api/participant/{championshipId}/{participantId}:
+ *   delete:
+ *     tags:
+ *       - Participant
+ *     summary: Eliminar participante del campeonato
+ *     description: Elimina un participante de un campeonato mediante su ID de participante y el ID del campeonato.
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID del campeonato
+ *         schema:
+ *           type: integer
+ *       - name: participantId
+ *         in: path
+ *         required: true
+ *         description: ID del participante
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Participante eliminado exitosamente
+ *       '404':
+ *         description: Participante no encontrado
+ *       '500':
+ *         description: Error al procesar la solicitud
+ */
+router.delete("/:championshipId/:participantId", deleteParticipant);
 
 export default router;
