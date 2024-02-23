@@ -4,6 +4,7 @@ import {
   createParticipant,
   getParticipantsByClubCode,
   getParticipantsToRegister,
+  updateParticipant,
   updateParticipantVerification,
 } from "../controllers/participant.controllers";
 
@@ -113,9 +114,6 @@ router.get("/toRegister/:championshipId/:clubCode", getParticipantsToRegister);
  *           schema:
  *             type: object
  *             properties:
- *               participantCi:
- *                 type: integer
- *                 description: CI of the participant
  *               clubCode:
  *                 type: string
  *                 description: Code of the club
@@ -147,6 +145,64 @@ router.get("/toRegister/:championshipId/:clubCode", getParticipantsToRegister);
  *         description: Error
  */
 router.post("/:championshipId", createParticipant);
+
+/**
+ * @openapi
+ * /api/participant/{championshipId}/{participantId}:
+ *   patch:
+ *     tags:
+ *       - Participant
+ *     summary: Modificar participante
+ *     description: Modifica un participante específico por su ID.
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID del campeonato
+ *         schema:
+ *           type: integer
+ *       - name: participantId
+ *         in: path
+ *         required: true
+ *         description: ID del participante
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               lastNames:
+ *                 type: string
+ *                 description: Nuevos apellidos del participante
+ *               firstNames:
+ *                 type: string
+ *                 description: Nuevos nombres del participante
+ *               age:
+ *                 type: integer
+ *                 description: Nueva edad del participante
+ *               weight:
+ *                 type: integer
+ *                 description: Nuevo peso del participante
+ *               grade:
+ *                 type: string
+ *                 description: Nueva categoría del participante
+ *               gender:
+ *                 type: string
+ *                 description: Nuevo género del participante
+ *     responses:
+ *       '200':
+ *         description: Participante modificado exitosamente
+ *       '400':
+ *         description: Solicitud incorrecta
+ *       '404':
+ *         description: No se encontró el participante
+ *       '500':
+ *         description: Error interno del servidor
+ */
+router.patch("/:championshipId/:participantId", updateParticipant);
 
 /**
  * @openapi

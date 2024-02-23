@@ -21,7 +21,7 @@ Competitor.init(
       primaryKey: true,
     },
     participantId: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.UUID,
       allowNull: false,
       unique: "uniqueParticipantPerChampionship",
     },

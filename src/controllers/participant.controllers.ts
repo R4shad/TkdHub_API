@@ -16,7 +16,7 @@ export const getParticipants = async (req: Request, res: Response) => {
       const participantsPromises = championshipParticipants.map(
         async (participant) => {
           const completeParticipant = await Participant.findByPk(
-            participant.participantCi
+            participant.participantId
           );
 
           if (completeParticipant) {
@@ -27,7 +27,7 @@ export const getParticipants = async (req: Request, res: Response) => {
           } else {
             console.error(
               "Participant not found for ID:",
-              participant.participantCi
+              participant.participantId
             );
             return null;
           }
@@ -66,7 +66,7 @@ export const getParticipantsByClubCode = async (
     const participantsInChampionship = clubParticipants.filter((participant) =>
       championshipParticipants.some(
         (championshipParticipant) =>
-          championshipParticipant.participantCi === participant.participantCi
+          championshipParticipant.participantId === participant.id
       )
     );
 
@@ -98,8 +98,7 @@ export const getParticipantsToRegister = async (
     const participantsToRegister = clubParticipants.filter(
       (participant) =>
         !registeredParticipants.find(
-          (regParticipant) =>
-            regParticipant.participantCi === participant.participantCi
+          (regParticipant) => regParticipant.participantId === participant.id
         )
     );
 
@@ -119,27 +118,36 @@ export const createParticipant = async (req: Request, res: Response) => {
     const participantData = req.body;
     participantData.verified = false;
 
+    // Verificar si ya existe un participante con el mismo nombre, apellido y edad
     let existingParticipant = await Participant.findOne({
-      where: { participantCi: participantData.participantCi },
+      where: {
+        firstNames: participantData.firstNames,
+        lastNames: participantData.lastNames,
+        age: participantData.age,
+      },
     });
 
     if (!existingParticipant) {
+      // Si no existe, crear un nuevo participante
       existingParticipant = await Participant.create(participantData);
     } else {
+      // Si existe, actualizar los datos del participante
       await existingParticipant.update(participantData);
     }
 
+    // Verificar si ya existe una asociación entre el participante y el campeonato
     const existingChampionshipParticipant =
       await ChampionshipParticipant.findOne({
         where: {
-          participantCi: participantData.participantCi,
+          participantId: existingParticipant.id, // Utilizando el ID del participante existente
           championshipId: championshipId,
         },
       });
 
     if (!existingChampionshipParticipant) {
+      // Si no existe, crear la asociación entre el participante y el campeonato
       await ChampionshipParticipant.create({
-        participantCi: participantData.participantCi,
+        participantId: existingParticipant.id, // Utilizando el ID del participante existente
         championshipId: championshipId,
       });
     }
@@ -147,6 +155,37 @@ export const createParticipant = async (req: Request, res: Response) => {
     res.status(201).json({ status: 201, data: existingParticipant });
   } catch (error) {
     console.error("Error creating participant:", error);
+    res.status(500).json({
+      status: 500,
+      error: "There was an error processing the request.",
+    });
+  }
+};
+
+export const updateParticipant = async (req: Request, res: Response) => {
+  try {
+    const { championshipId, participantId } = req.params;
+    const participantData = req.body;
+
+    // Buscar al participante por su ID
+    const participant = await Participant.findByPk(participantId);
+
+    if (!participant) {
+      return res.status(404).json({
+        status: 404,
+        error: "Participant not found",
+      });
+    }
+
+    // Actualizar los campos del participante según los datos proporcionados en el cuerpo de la solicitud
+    await participant.update(participantData);
+
+    res.status(200).json({
+      status: 200,
+      message: "Participant updated successfully",
+    });
+  } catch (error) {
+    console.error("Error updating participant:", error);
     res.status(500).json({
       status: 500,
       error: "There was an error processing the request.",
