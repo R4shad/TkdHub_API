@@ -7,36 +7,66 @@ export const getClubs = async (req: Request, res: Response) => {
   try {
     const championshipId = parseInt(req.params.championshipId, 10);
 
-    // Obtener los clubes asociados al campeonato a través de la tabla intermedia
     const clubsList = await ChampionshipClub.findAll({
       where: { championshipId: championshipId },
-      include: [
-        {
-          model: Club,
-          attributes: ["clubCode"],
-        },
-      ],
     });
 
-    // Mapear la respuesta para obtener solo los campos deseados
-    const mappedClubsList = await Promise.all(
-      clubsList.map(async (championshipClub) => {
-        const clubCode = championshipClub.getDataValue("clubCode");
-        const clubName = await Club.findOne({
-          where: { clubCode: clubCode },
-          attributes: ["name"],
-        });
-        return {
-          clubCode,
-          name: clubName ? clubName.getDataValue("name") : null,
-        };
-      })
-    );
+    const mappedClubsList = clubsList.map(async (championshipClub) => {
+      const club = await Club.findOne({
+        where: { clubCode: championshipClub.clubCode },
+      });
 
-    const response: ApiResponse<typeof mappedClubsList> = {
+      const clubData = {
+        clubCode: championshipClub.clubCode,
+        name: club ? club.name : null,
+        coachCi: club ? club.coachCi : null,
+        coachName: club ? club.coachName : null,
+      };
+
+      return clubData;
+    });
+
+    const clubs = await Promise.all(mappedClubsList);
+
+    const response: ApiResponse<typeof clubs> = {
       status: 200,
-      data: mappedClubsList,
+      data: clubs,
     };
+
+    res.json(response);
+  } catch (error) {
+    console.error("Error fetching clubs:", error);
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "There was an error processing the request.",
+    };
+    res.status(response.status).json(response);
+  }
+};
+
+export const getClubsOrganizer = async (req: Request, res: Response) => {
+  try {
+    const championshipId = parseInt(req.params.championshipId, 10);
+
+    const clubsList = await ChampionshipClub.findAll({
+      where: { championshipId: championshipId },
+    });
+
+    const mappedClubsList = clubsList.map(async (championshipClub) => {
+      const club = await Club.findOne({
+        where: { clubCode: championshipClub.clubCode },
+      });
+
+      return club;
+    });
+
+    const clubs = await Promise.all(mappedClubsList);
+
+    const response: ApiResponse<typeof clubs> = {
+      status: 200,
+      data: clubs,
+    };
+
     res.json(response);
   } catch (error) {
     console.error("Error fetching clubs:", error);
@@ -51,53 +81,40 @@ export const getClubs = async (req: Request, res: Response) => {
 export const createClub = async (req: Request, res: Response) => {
   try {
     const { championshipId } = req.params;
-    const { clubCode, name } = req.body;
-
-    // Verificar si el club ya existe en Club
-    const newClub = {
-      clubCode: clubCode,
-      name: name,
-    };
+    const { clubCode, name, coachCi, coachName } = req.body;
 
     const existingClub = await Club.findOne({
-      where: {
-        clubCode: clubCode,
-      },
+      where: { clubCode: clubCode },
     });
+
     if (!existingClub) {
-      await Club.create({
+      const newPassword = generatePassword(name, clubCode); // Generar el password
+
+      const newClub = await Club.create({
         clubCode: clubCode,
         name: name,
+        coachCi: coachCi,
+        coachName: coachName,
+        password: newPassword,
       });
-    }
-    // Verificar si el club ya existe en ChampionshipClub
-    const existingChampionshipClub = await ChampionshipClub.findOne({
-      where: {
-        clubCode: clubCode,
+
+      await ChampionshipClub.create({
         championshipId: parseInt(championshipId, 10),
-      },
-    });
-    if (existingChampionshipClub) {
+        clubCode: clubCode,
+      });
+
+      const response = {
+        status: 201,
+        data: newClub.toJSON(),
+      };
+      res.status(response.status).json(response);
+    } else {
       const response: ApiResponse<undefined> = {
         status: 400,
         error: "A club with this clubCode already exists.",
       };
       return res.status(response.status).json(response);
     }
-
-    // Asociar el club al campeonato en ChampionshipClub
-    await ChampionshipClub.create({
-      championshipId: parseInt(championshipId, 10),
-      clubCode: clubCode,
-    });
-
-    // Obtener los valores del modelo Club como un objeto simple
-
-    const response = {
-      status: 201,
-      data: newClub,
-    };
-    res.status(response.status).json(response);
   } catch (error) {
     console.error("Error creating the club:", error);
     const response: ApiResponse<undefined> = {
@@ -105,6 +122,19 @@ export const createClub = async (req: Request, res: Response) => {
       error: "There was an error processing the request.",
     };
     res.status(response.status).json(response);
+  }
+
+  function generatePassword(name: string, code: string): string {
+    const initials = name
+      .split(" ")
+      .map((word) => word.charAt(0))
+      .join("")
+      .toUpperCase();
+
+    const passwordBase = `${initials}${code}`; // Combinar partes del nombre y código del club
+    const randomComponent = Math.random().toString(36).substring(7);
+    const password = `${passwordBase}_${randomComponent}`;
+    return password;
   }
 };
 
@@ -114,10 +144,7 @@ export const updateClub = async (req: Request, res: Response) => {
     const { name } = req.body;
 
     const existingClub = await ChampionshipClub.findOne({
-      where: {
-        clubCode: clubCode,
-        championshipId: parseInt(championshipId, 10),
-      },
+      where: { championshipId: championshipId, clubCode: clubCode },
     });
 
     if (!existingClub) {
@@ -128,7 +155,6 @@ export const updateClub = async (req: Request, res: Response) => {
       return res.status(response.status).json(response);
     }
 
-    // Actualizar el nombre del club en la tabla Club
     await Club.update({ name: name }, { where: { clubCode: clubCode } });
 
     const response = {
@@ -151,7 +177,6 @@ export const deleteClub = async (req: Request, res: Response) => {
   const clubCode = req.params.clubCode;
 
   try {
-    // Buscar el club en ChampionshipClub
     const club = await ChampionshipClub.findOne({
       where: {
         championshipId: championshipId,
@@ -166,10 +191,8 @@ export const deleteClub = async (req: Request, res: Response) => {
       });
     }
 
-    // Eliminar el club de ChampionshipClub
     await club.destroy();
 
-    // Eliminar el club de la tabla Club si no está asociado a otro campeonato
     const remainingClub = await ChampionshipClub.findOne({
       where: {
         clubCode: clubCode,

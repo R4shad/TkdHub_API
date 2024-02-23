@@ -8,8 +8,6 @@ import Responsible from "./responsible";
 import ChampionshipResponsible from "./championshipResponsible";
 import Club from "./club";
 import ChampionshipClub from "./championshipClub";
-import Coach from "./coach";
-import ChampionshipCoach from "./championshipCoach";
 import Participant from "./participant";
 import ChampionshipParticipant from "./championshipParticipant";
 import Category from "./category";
@@ -25,7 +23,6 @@ import Match from "./match";
 import routesChampionship from "../routes/championship.routes";
 import routesResponsibles from "../routes/responsible.routes";
 import routesClub from "../routes/club.routes";
-import routesCoach from "../routes/coach.routes";
 
 import routesDivision from "../routes/division.routes";
 import routesCompetitor from "../routes/competitor.routes";
@@ -63,7 +60,6 @@ class Server {
     this.app.use("/api/participant", routesParticipant);
     this.app.use("/api/responsible", routesResponsibles);
     this.app.use("/api/club", routesClub);
-    this.app.use("/api/coach", routesCoach);
     this.app.use("/api/ageInterval", routesAgeInterval);
     this.app.use("/api/division", routesDivision);
     this.app.use("/api/category", routesCategory);
@@ -99,8 +95,6 @@ class Server {
       await ChampionshipResponsible.sync();
       await Club.sync();
       await ChampionshipClub.sync();
-      await Coach.sync();
-      await ChampionshipCoach.sync();
       await Participant.sync();
       await ChampionshipParticipant.sync();
       await Category.sync();

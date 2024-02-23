@@ -67,7 +67,7 @@ export const getBracketsWithCompetitorsByChampionshipId = async (
       const competitorsWithDetails = await Promise.all(
         competitors.map(async (competitor) => {
           const participant = await Participant.findOne({
-            where: { participantCi: competitor.participantCi },
+            where: { participantCi: competitor.participantId },
           });
           return { ...competitor.toJSON(), Participant: participant };
         })

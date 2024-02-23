@@ -12,7 +12,6 @@ const options = {
     "src/routes/participant.routes.ts",
     "src/routes/responsible.routes.ts",
     "src/routes/club.routes.ts",
-    "src/routes/coach.routes.ts",
     "src/routes/ageInterval.routes.ts",
     "src/routes/division.routes.ts",
     "src/routes/category.routes.ts",

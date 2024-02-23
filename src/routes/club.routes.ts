@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   getClubs,
+  getClubsOrganizer,
   createClub,
   updateClub,
   deleteClub,
@@ -29,14 +30,34 @@ const router = Router();
  *             schema:
  *               type: array
  *               items:
- *                 type: object
- *                 properties:
- *                   clubCode:
- *                     type: string
- *                   name:
- *                     type: string
+ *                 $ref: '#/components/schemas/Club'
  */
-router.get("/:championshipId", getClubs);
+router.get("/Organizer/:championshipId", getClubs);
+
+/**
+ * @openapi
+ * /api/club/{championshipId}:
+ *   get:
+ *     tags:
+ *       - Club
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID of the championship
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Club'
+ */
+router.get("/:championshipId", getClubsOrganizer);
 
 /**
  * @openapi
@@ -60,20 +81,27 @@ router.get("/:championshipId", getClubs);
  *             properties:
  *               clubCode:
  *                 type: string
+ *                 maxLength: 5
  *               name:
  *                 type: string
+ *                 maxLength: 50
+ *               coachCi:
+ *                 type: integer
+ *                 minimum: 0
+ *               coachName:
+ *                 type: string
+ *                 maxLength: 50
+ *             required:
+ *               - clubCode
+ *               - coachCi
+ *               - coachName
  *     responses:
  *       201:
  *         description: Created
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 clubCode:
- *                   type: string
- *                 name:
- *                   type: string
+ *               $ref: '#/components/schemas/Club'
  *       500:
  *         description: Error
  */
@@ -85,19 +113,19 @@ router.post("/:championshipId", createClub);
  *   patch:
  *     tags:
  *       - Club
- *     summary: Actualizar información de un club
- *     description: Actualiza la información de un club específico por su código de club y su ID de campeonato.
+ *     summary: Update club information
+ *     description: Update information of a specific club by its club code and championship ID.
  *     parameters:
  *       - name: championshipId
  *         in: path
  *         required: true
- *         description: ID del campeonato
+ *         description: ID of the championship
  *         schema:
  *           type: integer
  *       - name: clubCode
  *         in: path
  *         required: true
- *         description: Código del club
+ *         description: Club code
  *         schema:
  *           type: string
  *     requestBody:
@@ -109,16 +137,27 @@ router.post("/:championshipId", createClub);
  *             properties:
  *               name:
  *                 type: string
- *                 description: Nuevo nombre del club
+ *                 description: New name of the club
+ *               coachCi:
+ *                 type: integer
+ *                 description: New coach CI
+ *               coachName:
+ *                 type: string
+ *                 description: New coach name
+ *           required:
+ *             - clubCode
+ *             - name
+ *             - coachCi
+ *             - coachName
  *     responses:
  *       '200':
- *         description: Club actualizado exitosamente
+ *         description: Club updated successfully
  *       '400':
- *         description: Solicitud incorrecta
+ *         description: Bad request
  *       '404':
- *         description: No se encontró el club
+ *         description: Club not found
  *       '500':
- *         description: Error interno del servidor
+ *         description: Internal server error
  */
 router.patch("/:championshipId/:clubCode", updateClub);
 
@@ -128,28 +167,28 @@ router.patch("/:championshipId/:clubCode", updateClub);
  *   delete:
  *     tags:
  *       - Club
- *     summary: Eliminar un club
- *     description: Elimina un club asociado a un campeonato.
+ *     summary: Delete a club
+ *     description: Deletes a club associated with a championship.
  *     parameters:
  *       - name: championshipId
  *         in: path
  *         required: true
- *         description: ID del campeonato
+ *         description: ID of the championship
  *         schema:
  *           type: integer
  *       - name: clubCode
  *         in: path
  *         required: true
- *         description: Código del club a eliminar
+ *         description: Club code to delete
  *         schema:
  *           type: string
  *     responses:
  *       '200':
- *         description: Club eliminado exitosamente
+ *         description: Club deleted successfully
  *       '404':
- *         description: No se encontró el club
+ *         description: Club not found
  *       '500':
- *         description: Error interno del servidor
+ *         description: Internal server error
  */
 router.delete("/:championshipId/:clubCode", deleteClub);
 

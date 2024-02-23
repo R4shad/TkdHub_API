@@ -3,7 +3,6 @@ import { Request, Response } from "express";
 import Championship from "./../models/championship";
 import ApiResponse from "../interfaces/apiResponse";
 import jwt from "jsonwebtoken";
-import ChampionshipCoach from "../models/championshipCoach";
 
 export const getChampionships = async (req: Request, res: Response) => {
   try {
