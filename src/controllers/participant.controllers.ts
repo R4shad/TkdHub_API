@@ -165,11 +165,19 @@ export const createParticipant = async (req: Request, res: Response) => {
 export const updateParticipant = async (req: Request, res: Response) => {
   try {
     const { championshipId, participantId } = req.params;
-    const participantData = req.body;
+    const participantData = {
+      verified: true,
+    };
 
     // Buscar al participante por su ID
-    const participant = await Participant.findByPk(participantId);
-
+    const participant = await ChampionshipParticipant.findOne({
+      where: {
+        championshipId: championshipId,
+        participantId: participantId,
+      },
+    });
+    console.log(participant);
+    console.log(participantData);
     if (!participant) {
       return res.status(404).json({
         status: 404,
@@ -198,13 +206,13 @@ export const updateParticipantVerification = async (
   res: Response
 ) => {
   try {
-    const { championshipId, participantCi } = req.params;
+    const { championshipId, participantId } = req.params;
 
     // Buscar al participante en la tabla ChampionshipParticipant
     const championshipParticipant = await ChampionshipParticipant.findOne({
       where: {
         championshipId: championshipId,
-        participantCi: participantCi,
+        participantId: participantId,
       },
     });
     console.log(championshipParticipant);

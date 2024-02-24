@@ -51,10 +51,16 @@ export const getCategoriesByChampionshipId = async (
       where: { categoryName: categoryIds },
     });
 
+    const mappedCategories = categories.map((category) => ({
+      categoryName: category.categoryName,
+      gradeMin: category.gradeMin,
+      gradeMax: category.gradeMax,
+    }));
+
     // Construir la respuesta con la información completa de las categorías
-    const response: ApiResponse<typeof categories> = {
+    const response: ApiResponse<typeof mappedCategories> = {
       status: 200,
-      data: categories,
+      data: mappedCategories,
     };
 
     res.json(response);

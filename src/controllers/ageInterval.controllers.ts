@@ -51,10 +51,17 @@ export const getAgeIntervalByChampionshipId = async (
       where: { id: ageIntervalId },
     });
 
+    const mappedAgeIntervals = ageIntervals.map((ageInterval) => ({
+      id: ageInterval.id,
+      ageIntervalName: ageInterval.ageIntervalName,
+      minAge: ageInterval.minAge,
+      maxAge: ageInterval.maxAge,
+    }));
+
     // Construir la respuesta con la información completa de las divisiones
-    const response: ApiResponse<typeof ageIntervals> = {
+    const response: ApiResponse<typeof mappedAgeIntervals> = {
       status: 200,
-      data: ageIntervals,
+      data: mappedAgeIntervals,
     };
 
     res.json(response);

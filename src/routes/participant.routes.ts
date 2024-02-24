@@ -207,7 +207,7 @@ router.patch("/:championshipId/:participantId", updateParticipant);
 
 /**
  * @openapi
- * /api/participant/{championshipId}/{participantCi}:
+ * /api/participant/{championshipId}/{participantId}:
  *   patch:
  *     tags:
  *       - Participant
@@ -220,15 +220,15 @@ router.patch("/:championshipId/:participantId", updateParticipant);
  *         description: ID del campeonato
  *         schema:
  *           type: integer
- *       - name: participantCi
+ *       - name: participantId
  *         in: path
  *         required: true
- *         description: CI del participante
+ *         description: ID del participante
  *         schema:
- *           type: integer
+ *           type: string
  *       - in: body
  *         name: body
- *         description: Datos del participante a actualizar
+ *         description: Estado de verificación del participante
  *         required: true
  *         schema:
  *           type: object
@@ -247,7 +247,8 @@ router.patch("/:championshipId/:participantId", updateParticipant);
  *       '500':
  *         description: Error interno del servidor
  */
-router.patch("/:championshipId/:participantCi", updateParticipantVerification);
+
+router.patch("/:championshipId/:participantId", updateParticipantVerification);
 
 /**
  * @openapi

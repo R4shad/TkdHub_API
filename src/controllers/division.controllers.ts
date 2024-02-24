@@ -33,7 +33,7 @@ export const getDivisionsByChampionshipId = async (
     const championshipDivisions = await ChampionshipDivision.findAll({
       where: { championshipId: championshipId },
     });
-    console.log(championshipDivisions);
+
     // Verificar si no se encontraron divisiones asociadas al campeonato
     if (championshipDivisions.length === 0) {
       const response: ApiResponse<undefined> = {
@@ -43,19 +43,30 @@ export const getDivisionsByChampionshipId = async (
       return res.status(response.status).json(response);
     }
 
-    // Obtener la información completa de las divisiones desde la tabla Division
+    // Obtener los IDs de las divisiones asociadas al campeonato
     const divisionIds = championshipDivisions.map(
       (championshipDivision) => championshipDivision.divisionName
     );
 
+    // Obtener la información completa de las divisiones desde la tabla Division
     const divisions = await Division.findAll({
       where: { divisionName: divisionIds },
     });
 
-    // Construir la respuesta con la información completa de las divisiones
-    const response: ApiResponse<typeof divisions> = {
+    // Mapear las divisiones para obtener solo los datos deseados
+    const mappedDivisions = divisions.map((division) => ({
+      divisionName: division.divisionName,
+      ageIntervalId: division.ageIntervalId,
+      minWeight: division.minWeight,
+      maxWeight: division.maxWeight,
+      gender: division.gender,
+      grouping: division.grouping,
+    }));
+
+    // Construir la respuesta con la información mapeada de las divisiones
+    const response: ApiResponse<typeof mappedDivisions> = {
       status: 200,
-      data: divisions,
+      data: mappedDivisions,
     };
 
     res.json(response);
