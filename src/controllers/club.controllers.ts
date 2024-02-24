@@ -141,7 +141,7 @@ export const createClub = async (req: Request, res: Response) => {
 export const updateClub = async (req: Request, res: Response) => {
   try {
     const { championshipId, clubCode } = req.params;
-    const { name } = req.body;
+    const { name, coachCi, coachName } = req.body;
 
     const existingClub = await ChampionshipClub.findOne({
       where: { championshipId: championshipId, clubCode: clubCode },
@@ -155,7 +155,15 @@ export const updateClub = async (req: Request, res: Response) => {
       return res.status(response.status).json(response);
     }
 
-    await Club.update({ name: name }, { where: { clubCode: clubCode } });
+    await Club.update(
+      {
+        name: name,
+        coachCi: coachCi,
+        coachName: coachName,
+        clubCode: req.body.clubCode,
+      },
+      { where: { clubCode: clubCode } }
+    );
 
     const response = {
       status: 200,

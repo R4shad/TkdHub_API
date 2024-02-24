@@ -135,6 +135,9 @@ router.post("/:championshipId", createClub);
  *           schema:
  *             type: object
  *             properties:
+ *               clubCode:
+ *                 type: string
+ *                 description: New club code
  *               name:
  *                 type: string
  *                 description: New name of the club
@@ -145,7 +148,6 @@ router.post("/:championshipId", createClub);
  *                 type: string
  *                 description: New coach name
  *           required:
- *             - clubCode
  *             - name
  *             - coachCi
  *             - coachName
