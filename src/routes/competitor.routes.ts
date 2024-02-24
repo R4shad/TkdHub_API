@@ -51,9 +51,9 @@ router.get("/:championshipId", getCompetitors);
  *           schema:
  *             type: object
  *             properties:
- *               participantCi:
- *                 type: integer
- *                 description: CI of the participant
+ *               participantId:
+ *                 type: string
+ *                 description: Id of the participant
  *               divisionName:
  *                 type: string
  *                 description: Name of the division

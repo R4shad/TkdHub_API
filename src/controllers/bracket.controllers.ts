@@ -53,7 +53,6 @@ export const getBracketsWithCompetitorsByChampionshipId = async (
       where: { championshipId },
     });
 
-    // Iterar sobre cada bracket y agregar los competidores correspondientes
     for (const bracket of brackets) {
       const competitors = await Competitor.findAll({
         where: {
@@ -67,7 +66,7 @@ export const getBracketsWithCompetitorsByChampionshipId = async (
       const competitorsWithDetails = await Promise.all(
         competitors.map(async (competitor) => {
           const participant = await Participant.findOne({
-            where: { participantCi: competitor.participantId },
+            where: { Id: competitor.participantId },
           });
           return { ...competitor.toJSON(), Participant: participant };
         })

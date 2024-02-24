@@ -73,9 +73,17 @@ export const getChampionshipDivisionsWithCompetitors = async (
       },
     });
 
-    const response: ApiResponse<typeof divisionsWithCompetitors> = {
+    const mappedDivisionsWithCompetitors = divisionsWithCompetitors.map(
+      (division) => ({
+        championshipId: division.championshipId,
+        divisionName: division.divisionName,
+        numberOfCompetitors: division.numberOfCompetitors,
+      })
+    );
+
+    const response: ApiResponse<typeof mappedDivisionsWithCompetitors> = {
       status: 200,
-      data: divisionsWithCompetitors,
+      data: mappedDivisionsWithCompetitors,
     };
 
     res.json(response);
