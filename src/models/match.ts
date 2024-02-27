@@ -1,7 +1,10 @@
+// En el modelo Match
+
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 import Bracket from "./bracket";
 import Competitor from "./competitor";
+import Championship from "./championship"; // Importar el modelo Championship
 
 class Match extends Model {
   public matchId!: number;
@@ -11,6 +14,7 @@ class Match extends Model {
   public round!: string;
   public redRounds!: number | null;
   public blueRounds!: number | null;
+  public championshipId!: number;
 }
 
 Match.init(
@@ -47,6 +51,10 @@ Match.init(
       allowNull: true,
       defaultValue: 0,
     },
+    championshipId: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
   },
   {
     sequelize,
@@ -59,13 +67,18 @@ Match.belongsTo(Bracket, {
 });
 
 Match.belongsTo(Competitor, {
-  foreignKey: "redParticipantCi",
+  foreignKey: "redParticipantId",
   as: "redCompetitor",
 });
 
 Match.belongsTo(Competitor, {
-  foreignKey: "blueParticipantCi",
+  foreignKey: "blueParticipantId",
   as: "blueCompetitor",
+});
+
+Match.belongsTo(Championship, {
+  // Establecer la relación con Championship
+  foreignKey: "championshipId",
 });
 
 export default Match;

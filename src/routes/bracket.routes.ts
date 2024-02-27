@@ -3,6 +3,7 @@ import {
   getBrackets,
   getBracketsByChampionshipId,
   getBracketsWithCompetitorsByChampionshipId,
+  getBracketsWithMatchesByChampionshipId,
   createBracket,
   deleteBracket,
 } from "../controllers/bracket.controllers";
@@ -64,6 +65,30 @@ router.get("/:championshipId", getBracketsByChampionshipId);
 router.get(
   "/withCompetitors/:championshipId",
   getBracketsWithCompetitorsByChampionshipId
+);
+
+/**
+ * @openapi
+ * /api/bracket/withMatchs/{championshipId}:
+ *   get:
+ *     tags:
+ *       - Bracket
+ *     parameters:
+ *       - in: path
+ *         name: championshipId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: championshipId value to filter brackets
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Error
+ */
+router.get(
+  "/withMatchs/:championshipId",
+  getBracketsWithMatchesByChampionshipId
 );
 
 /**

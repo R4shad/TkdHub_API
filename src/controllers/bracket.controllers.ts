@@ -3,6 +3,7 @@ import Bracket from "../models/bracket";
 import ApiResponse from "../interfaces/apiResponse";
 import Competitor from "../models/competitor";
 import Participant from "../models/participant";
+import Match from "../models/match";
 
 export const getBrackets = async (req: Request, res: Response) => {
   try {
@@ -51,6 +52,7 @@ export const getBracketsWithCompetitorsByChampionshipId = async (
 
     const brackets = await Bracket.findAll({
       where: { championshipId },
+      attributes: { exclude: ["createdAt", "updatedAt"] }, // Excluir createdAt y updatedAt
     });
 
     for (const bracket of brackets) {
@@ -60,22 +62,78 @@ export const getBracketsWithCompetitorsByChampionshipId = async (
           divisionName: bracket.divisionName,
           categoryName: bracket.categoryName,
         },
+        attributes: { exclude: ["createdAt", "updatedAt"] }, // Excluir createdAt y updatedAt
       });
 
-      // Obtener los datos completos de los participantes y agregarlos al bracket
       const competitorsWithDetails = await Promise.all(
         competitors.map(async (competitor) => {
           const participant = await Participant.findOne({
             where: { Id: competitor.participantId },
+            attributes: { exclude: ["createdAt", "updatedAt"] }, // Excluir createdAt y updatedAt
           });
-          return { ...competitor.toJSON(), Participant: participant };
+          return {
+            ...competitor.get(),
+            Participant: participant ? participant.get() : null,
+          }; // Comprobar si participant es null antes de llamar a get()
         })
       );
 
-      // Agregar los competidores completos al bracket actual
-      bracket.dataValues.competitors = competitorsWithDetails;
+      bracket.dataValues.competitors = competitorsWithDetails.map(
+        (competitor) => {
+          return { ...competitor, Participant: competitor.Participant };
+        }
+      );
     }
 
+    res.status(200).json({ status: 200, data: brackets });
+  } catch (error) {
+    console.error("Error fetching brackets:", error);
+    res.status(500).json({
+      status: 500,
+      error: "There was an error processing the request.",
+    });
+  }
+};
+
+export const getBracketsWithMatchesByChampionshipId = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { championshipId } = req.params;
+
+    // Buscar todos los brackets para el campeonato dado
+    const brackets = await Bracket.findAll({
+      where: { championshipId },
+      attributes: { exclude: ["createdAt", "updatedAt"] }, // Excluir createdAt y updatedAt
+    });
+
+    // Iterar sobre cada bracket encontrado
+    for (const bracket of brackets) {
+      // Buscar todos los partidos asociados al bracket actual
+      const matches = await Match.findAll({
+        where: { bracketId: bracket.bracketId }, // Filtrar por el bracketId actual
+        attributes: { exclude: ["createdAt", "updatedAt"] }, // Excluir createdAt y updatedAt
+        include: [
+          // Incluir detalles de los competidores (participantes) en los partidos
+          {
+            model: Competitor,
+            as: "redCompetitor",
+            attributes: { exclude: ["createdAt", "updatedAt"] }, // Excluir createdAt y updatedAt
+          },
+          {
+            model: Competitor,
+            as: "blueCompetitor",
+            attributes: { exclude: ["createdAt", "updatedAt"] }, // Excluir createdAt y updatedAt
+          },
+        ],
+      });
+
+      // Agregar los partidos al bracket actual
+      bracket.dataValues.matches = matches;
+    }
+
+    // Enviar respuesta con los brackets y sus partidos asociados
     res.status(200).json({ status: 200, data: brackets });
   } catch (error) {
     console.error("Error fetching brackets:", error);

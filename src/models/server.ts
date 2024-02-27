@@ -34,6 +34,7 @@ import routesCategory from "../routes/category.routes";
 import routesChampionshipCategory from "../routes/championshipCategory.routes";
 import routesParticipant from "../routes/participant.routes";
 import routesBracket from "../routes/bracket.routes";
+import routesMatch from "../routes/match.routes";
 class Server {
   app: express.Application;
   port: string | number;
@@ -68,6 +69,7 @@ class Server {
     this.app.use("/api/championshipCategory", routesChampionshipCategory);
     this.app.use("/api/championshipAgeInterval", routesChampionshipAgeInterval);
     this.app.use("/api/championshipDivision", routesChampionshipDivision);
+    this.app.use("/api/match", routesMatch);
   }
 
   private launchSwagger() {
