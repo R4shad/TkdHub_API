@@ -3,6 +3,7 @@ import {
   getMatchesByChampionshipId,
   getMatchesByChampionshipIdAndBracketId,
   createMatch,
+  updateMatch,
 } from "../controllers/match.controllers";
 
 const router = Router();
@@ -93,5 +94,47 @@ router.get(
  *         description: Error
  */
 router.post("/:championshipId", createMatch);
+
+/**
+ * @openapi
+ * /api/match/{matchId}:
+ *   patch:
+ *     tags:
+ *       - Match
+ *     parameters:
+ *       - in: path
+ *         name: matchId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID del partido a actualizar
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               bracketId:
+ *                 type: integer
+ *               redParticipantId:
+ *                 type: string
+ *               blueParticipantId:
+ *                 type: string
+ *               round:
+ *                 type: string
+ *               redRounds:
+ *                 type: integer
+ *               blueRounds:
+ *                 type: integer
+ *               championshipId:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Error
+ */
+router.patch("/:matchId", updateMatch);
 
 export default router;

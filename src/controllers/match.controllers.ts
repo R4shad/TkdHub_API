@@ -108,3 +108,63 @@ export const createMatch = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const updateMatch = async (req: Request, res: Response) => {
+  try {
+    const { matchId } = req.params; // Obtener matchId de los parámetros de ruta
+    const {
+      bracketId,
+      redParticipantId,
+      blueParticipantId,
+      round,
+      redRounds,
+      blueRounds,
+      championshipId,
+    } = req.body;
+
+    // Buscar el partido por matchId
+    const match = await Match.findByPk(matchId);
+
+    if (!match) {
+      return res.status(404).json({
+        status: 404,
+        error: "Match not found",
+      });
+    }
+
+    // Actualizar los valores del partido si se proporcionan en el cuerpo de la solicitud
+    if (bracketId !== undefined) {
+      match.bracketId = bracketId;
+    }
+    if (redParticipantId !== undefined) {
+      match.redParticipantId = redParticipantId;
+    }
+    if (blueParticipantId !== undefined) {
+      match.blueParticipantId = blueParticipantId;
+    }
+    if (round !== undefined) {
+      match.round = round;
+    }
+    if (redRounds !== undefined) {
+      match.redRounds = redRounds;
+    }
+    if (blueRounds !== undefined) {
+      match.blueRounds = blueRounds;
+    }
+    if (championshipId !== undefined) {
+      match.championshipId = championshipId;
+    }
+
+    // Guardar los cambios
+    await match.save();
+
+    // Enviar respuesta con el partido actualizado
+    res.status(200).json({ status: 200, data: match });
+  } catch (error) {
+    console.error("Error updating match:", error);
+    res.status(500).json({
+      status: 500,
+      error: "There was an error processing the request.",
+    });
+  }
+};
