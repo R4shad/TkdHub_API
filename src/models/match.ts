@@ -31,11 +31,11 @@ Match.init(
     },
     redParticipantId: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true,
     },
     blueParticipantId: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true,
     },
     round: {
       type: DataTypes.STRING(25),

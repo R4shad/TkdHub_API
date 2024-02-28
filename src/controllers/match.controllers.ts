@@ -2,6 +2,8 @@
 
 import { Request, Response } from "express";
 import Match from "../models/match";
+import Competitor from "../models/competitor";
+import Participant from "../models/participant";
 
 // Controlador para obtener partidos por ID de campeonato
 export const getMatchesByChampionshipId = async (
@@ -39,7 +41,33 @@ export const getMatchesByChampionshipIdAndBracketId = async (
     // Buscar partidos por el ID del campeonato y el ID del bracket
     const matches = await Match.findAll({
       where: { championshipId, bracketId },
-      attributes: { exclude: ["createdAt", "updatedAt"] }, // Excluir createdAt y updatedAt
+      attributes: {
+        exclude: ["createdAt", "updatedAt"], // Excluir createdAt y updatedAt de Match
+      },
+      include: [
+        {
+          model: Competitor,
+          as: "redCompetitor",
+          attributes: ["competitorId"], // Solo incluir competitorId de redCompetitor
+          include: [
+            {
+              model: Participant,
+              attributes: ["lastNames", "firstNames", "clubCode"],
+            },
+          ],
+        },
+        {
+          model: Competitor,
+          as: "blueCompetitor",
+          attributes: ["competitorId"], // Solo incluir competitorId de blueCompetitor
+          include: [
+            {
+              model: Participant,
+              attributes: ["lastNames", "firstNames", "clubCode"],
+            },
+          ],
+        },
+      ],
     });
 
     // Enviar respuesta con los partidos encontrados
