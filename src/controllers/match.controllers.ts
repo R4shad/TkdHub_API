@@ -1,5 +1,3 @@
-// match.controllers.ts
-
 import { Request, Response } from "express";
 import Match from "../models/match";
 import Competitor from "../models/competitor";
@@ -17,6 +15,18 @@ export const getMatchesByChampionshipId = async (
     const matches = await Match.findAll({
       where: { championshipId },
       attributes: { exclude: ["createdAt", "updatedAt"] }, // Excluir createdAt y updatedAt
+      include: [
+        {
+          model: Competitor,
+          as: "redCompetitor",
+          include: [Participant], // Incluir detalles del participante
+        },
+        {
+          model: Competitor,
+          as: "blueCompetitor",
+          include: [Participant], // Incluir detalles del participante
+        },
+      ],
     });
 
     // Enviar respuesta con los partidos encontrados
@@ -48,24 +58,12 @@ export const getMatchesByChampionshipIdAndBracketId = async (
         {
           model: Competitor,
           as: "redCompetitor",
-          attributes: ["competitorId"], // Solo incluir competitorId de redCompetitor
-          include: [
-            {
-              model: Participant,
-              attributes: ["lastNames", "firstNames", "clubCode"],
-            },
-          ],
+          include: [Participant], // Incluir detalles del participante
         },
         {
           model: Competitor,
           as: "blueCompetitor",
-          attributes: ["competitorId"], // Solo incluir competitorId de blueCompetitor
-          include: [
-            {
-              model: Participant,
-              attributes: ["lastNames", "firstNames", "clubCode"],
-            },
-          ],
+          include: [Participant], // Incluir detalles del participante
         },
       ],
     });
@@ -85,14 +83,14 @@ export const getMatchesByChampionshipIdAndBracketId = async (
 export const createMatch = async (req: Request, res: Response) => {
   try {
     const { championshipId } = req.params; // Obtener championshipId de los parámetros de ruta
-    const { bracketId, redParticipantId, blueParticipantId, round } = req.body;
+    const { bracketId, redCompetitorId, blueCompetitorId, round } = req.body;
 
     // Crear un nuevo partido con championshipId
     const newMatch = await Match.create({
       championshipId, // Agregar championshipId al crear el partido
       bracketId,
-      redParticipantId,
-      blueParticipantId,
+      redCompetitorId,
+      blueCompetitorId,
       round,
       redRounds: 0, // Valor predeterminado para redRounds
       blueRounds: 0, // Valor predeterminado para blueRounds
@@ -114,8 +112,8 @@ export const updateMatch = async (req: Request, res: Response) => {
     const { matchId } = req.params; // Obtener matchId de los parámetros de ruta
     const {
       bracketId,
-      redParticipantId,
-      blueParticipantId,
+      redCompetitorId,
+      blueCompetitorId,
       round,
       redRounds,
       blueRounds,
@@ -136,12 +134,6 @@ export const updateMatch = async (req: Request, res: Response) => {
     if (bracketId !== undefined) {
       match.bracketId = bracketId;
     }
-    if (redParticipantId !== undefined) {
-      match.redParticipantId = redParticipantId;
-    }
-    if (blueParticipantId !== undefined) {
-      match.blueParticipantId = blueParticipantId;
-    }
     if (round !== undefined) {
       match.round = round;
     }
@@ -153,6 +145,20 @@ export const updateMatch = async (req: Request, res: Response) => {
     }
     if (championshipId !== undefined) {
       match.championshipId = championshipId;
+    }
+
+    // Intercambiar los IDs de los competidores rojo y azul
+    if (redCompetitorId !== undefined && blueCompetitorId !== undefined) {
+      match.redCompetitorId = redCompetitorId;
+      match.blueCompetitorId = blueCompetitorId;
+    } else {
+      if (redCompetitorId !== undefined) {
+        match.redCompetitorId = redCompetitorId;
+      } else {
+        if (blueCompetitorId !== undefined) {
+          match.blueCompetitorId = blueCompetitorId;
+        }
+      }
     }
 
     // Guardar los cambios

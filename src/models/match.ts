@@ -9,8 +9,8 @@ import Championship from "./championship"; // Importar el modelo Championship
 class Match extends Model {
   public matchId!: number;
   public bracketId!: number;
-  public redParticipantId!: string;
-  public blueParticipantId!: string;
+  public redCompetitorId!: string;
+  public blueCompetitorId!: string;
   public round!: string;
   public redRounds!: number | null;
   public blueRounds!: number | null;
@@ -29,11 +29,11 @@ Match.init(
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
     },
-    redParticipantId: {
+    redCompetitorId: {
       type: DataTypes.UUID,
       allowNull: true,
     },
-    blueParticipantId: {
+    blueCompetitorId: {
       type: DataTypes.UUID,
       allowNull: true,
     },
@@ -67,12 +67,12 @@ Match.belongsTo(Bracket, {
 });
 
 Match.belongsTo(Competitor, {
-  foreignKey: "redParticipantId",
+  foreignKey: "redCompetitorId",
   as: "redCompetitor",
 });
 
 Match.belongsTo(Competitor, {
-  foreignKey: "blueParticipantId",
+  foreignKey: "blueCompetitorId",
   as: "blueCompetitor",
 });
 

@@ -81,9 +81,9 @@ router.get(
  *             properties:
  *               bracketId:
  *                 type: integer
- *               redParticipantId:
+ *               redCompetitorId:
  *                 type: string
- *               blueParticipantId:
+ *               blueCompetitorId:
  *                 type: string
  *               round:
  *                 type: string
@@ -117,9 +117,9 @@ router.post("/:championshipId", createMatch);
  *             properties:
  *               bracketId:
  *                 type: integer
- *               redParticipantId:
+ *               redCompetitorId:
  *                 type: string
- *               blueParticipantId:
+ *               blueCompetitorId:
  *                 type: string
  *               round:
  *                 type: string
