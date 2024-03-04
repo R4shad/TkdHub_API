@@ -14,7 +14,7 @@ import Category from "./category";
 import ChampionshipCategory from "./championshipCategory";
 import Division from "./division";
 import DefaultAgeInterval from "./defaultAgeInterval";
-import championshipAgeInterval from "./championshipAgeInterval";
+
 import ChampionshipDivision from "./championshipDivision";
 import Competitor from "./competitor";
 import Bracket from "./bracket";
@@ -27,7 +27,6 @@ import routesClub from "../routes/club.routes";
 import routesDivision from "../routes/division.routes";
 import routesCompetitor from "../routes/competitor.routes";
 import routesAgeInterval from "../routes/ageInterval.routes";
-import routesChampionshipAgeInterval from "../routes/championshipAgeInterval.routes";
 import routesChampionshipDivision from "../routes/championshipDivision.routes";
 
 import routesCategory from "../routes/category.routes";
@@ -35,6 +34,7 @@ import routesChampionshipCategory from "../routes/championshipCategory.routes";
 import routesParticipant from "../routes/participant.routes";
 import routesBracket from "../routes/bracket.routes";
 import routesMatch from "../routes/match.routes";
+import ChampionshipAgeInterval from "./championshipAgeInterval";
 class Server {
   app: express.Application;
   port: string | number;
@@ -67,7 +67,6 @@ class Server {
     this.app.use("/api/competitor", routesCompetitor);
     this.app.use("/api/bracket", routesBracket);
     this.app.use("/api/championshipCategory", routesChampionshipCategory);
-    this.app.use("/api/championshipAgeInterval", routesChampionshipAgeInterval);
     this.app.use("/api/championshipDivision", routesChampionshipDivision);
     this.app.use("/api/match", routesMatch);
   }
@@ -102,7 +101,7 @@ class Server {
       await Category.sync();
       await ChampionshipCategory.sync();
       await DefaultAgeInterval.sync();
-      await championshipAgeInterval.sync({});
+      await ChampionshipAgeInterval.sync({});
       await Division.sync();
 
       await ChampionshipDivision.sync({});
