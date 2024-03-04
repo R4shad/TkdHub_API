@@ -34,6 +34,7 @@ Bracket.init(
   {
     sequelize,
     tableName: "Bracket",
+    timestamps: false,
   }
 );
 

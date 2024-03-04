@@ -2,3 +2,4 @@ npx tsc --watch
 node dist/db/divisionData.js
 node dist/db/participantData.js
 node dist/db/staticParticipantData.js
+node dist/db/initialData.js

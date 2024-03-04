@@ -1,38 +1,49 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 import Championship from "./championship";
-import AgeInterval from "./ageInterval";
 
 class ChampionshipAgeInterval extends Model {
+  public id!: number;
+  public ageIntervalName!: string;
+  public minAge!: number | null;
+  public maxAge!: number | null;
   public championshipId!: number;
-  public ageIntervalId!: number;
 }
 
 ChampionshipAgeInterval.init(
   {
-    championshipId: {
+    id: {
       type: DataTypes.INTEGER.UNSIGNED,
+      autoIncrement: true,
       allowNull: false,
       primaryKey: true,
     },
-    ageIntervalId: {
+    ageIntervalName: {
+      type: DataTypes.STRING(15),
+      allowNull: false,
+    },
+    minAge: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: true,
+    },
+    maxAge: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: true,
+    },
+    championshipId: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
-      primaryKey: true,
     },
   },
   {
     sequelize,
     tableName: "ChampionshipAgeInterval",
+    timestamps: false,
   }
 );
 
 ChampionshipAgeInterval.belongsTo(Championship, {
   foreignKey: "championshipId",
-});
-
-ChampionshipAgeInterval.belongsTo(AgeInterval, {
-  foreignKey: "ageIntervalId",
 });
 
 export default ChampionshipAgeInterval;

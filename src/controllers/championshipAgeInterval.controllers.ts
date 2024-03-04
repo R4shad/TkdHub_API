@@ -2,6 +2,7 @@
 import { Request, Response } from "express";
 import ChampionshipAgeInterval from "../models/championshipAgeInterval";
 import ApiResponse from "../interfaces/apiResponse";
+import DefaultAgeInterval from "../models/defaultAgeInterval";
 
 export const getChampionshipAgeIntervals = async (
   req: Request,
@@ -35,37 +36,50 @@ export const createChampionshipAgeInterval = async (
 ) => {
   try {
     const championshipId = parseInt(req.params.championshipId, 10);
-    const { ageIntervalId } = req.body;
 
-    // Verificar si el campeonato y el intervalo de edad existen
-    const championshipAgeIntervalExists = await ChampionshipAgeInterval.findOne(
-      {
-        where: { championshipId: championshipId, ageIntervalId: ageIntervalId },
-      }
-    );
+    // Verificar si ya existen registros para este championshipId en ChampionshipAgeInterval
+    const existingChampionshipAgeIntervals =
+      await ChampionshipAgeInterval.findAll({
+        where: { championshipId },
+      });
 
-    if (championshipAgeIntervalExists) {
+    // Si ya existen registros para este championshipId, responder con un mensaje indicando que ya se han ingresado los intervalos por defecto
+    if (existingChampionshipAgeIntervals.length > 0) {
       const response: ApiResponse<undefined> = {
         status: 400,
-        error: "Championship age interval already exists.",
+        error:
+          "Default age intervals have already been added to the championship.",
       };
       return res.status(response.status).json(response);
     }
 
-    // Crear una nueva relación entre el campeonato y el intervalo de edad
-    const newChampionshipAgeInterval = await ChampionshipAgeInterval.create({
-      championshipId: championshipId,
-      ageIntervalId: ageIntervalId,
-    });
+    // Obtener todos los valores de la tabla defaultAgeIntervals
+    const defaultAgeIntervals = await DefaultAgeInterval.findAll();
 
-    const response: ApiResponse<typeof newChampionshipAgeInterval> = {
+    // Crear las relaciones entre el campeonato y los intervalos de edad por defecto
+    const createdChampionshipAgeIntervals = await Promise.all(
+      defaultAgeIntervals.map(async (defaultAgeInterval) => {
+        // Copiar ageIntervalName, minAge y maxAge de los valores de defaultAgeInterval
+        const { ageIntervalName, minAge, maxAge } = defaultAgeInterval;
+
+        // Crear una nueva relación entre el campeonato y el intervalo de edad
+        return await ChampionshipAgeInterval.create({
+          championshipId,
+          ageIntervalName,
+          minAge,
+          maxAge,
+        });
+      })
+    );
+
+    const response: ApiResponse<typeof createdChampionshipAgeIntervals> = {
       status: 201,
-      data: newChampionshipAgeInterval,
+      data: createdChampionshipAgeIntervals,
     };
 
     res.status(response.status).json(response);
   } catch (error) {
-    console.error("Error creating championship age interval:", error);
+    console.error("Error creating championship age intervals:", error);
     const response: ApiResponse<undefined> = {
       status: 500,
       error: "There was an error processing the request.",

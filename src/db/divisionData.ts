@@ -1,6 +1,6 @@
 import Division from "../models/division";
 import { sequelize } from "../config/db";
-import AgeInterval from "../models/ageInterval";
+import AgeInterval from "../models/defaultAgeInterval";
 import Category from "../models/category";
 
 // Inserta los datos en la base de datos

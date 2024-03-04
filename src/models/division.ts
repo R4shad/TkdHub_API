@@ -1,6 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
-import AgeInterval from "./ageInterval";
+import AgeInterval from "./defaultAgeInterval";
 
 class Division extends Model {
   public divisionName!: string;
@@ -42,6 +42,7 @@ Division.init(
   {
     sequelize,
     tableName: "Division",
+    timestamps: false,
   }
 );
 

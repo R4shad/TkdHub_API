@@ -42,6 +42,7 @@ Competitor.init(
   {
     sequelize,
     tableName: "Competidor",
+    timestamps: false,
   }
 );
 

@@ -30,15 +30,12 @@ ChampionshipDivision.init(
   {
     sequelize,
     tableName: "ChampionshipDivision",
+    timestamps: false,
   }
 );
 
 ChampionshipDivision.belongsTo(Championship, {
   foreignKey: "championshipId",
-});
-
-ChampionshipDivision.belongsTo(Division, {
-  foreignKey: "divisionName",
 });
 
 export default ChampionshipDivision;

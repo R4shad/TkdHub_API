@@ -47,6 +47,7 @@ Championship.init(
   {
     sequelize,
     tableName: "Championship",
+    timestamps: false,
   }
 );
 

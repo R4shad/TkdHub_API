@@ -1,14 +1,14 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 
-class AgeInterval extends Model {
+class DefaultAgeInterval extends Model {
   public id!: number;
   public ageIntervalName!: string;
   public minAge!: number | null;
   public maxAge!: number | null;
 }
 
-AgeInterval.init(
+DefaultAgeInterval.init(
   {
     id: {
       type: DataTypes.INTEGER.UNSIGNED,
@@ -31,8 +31,9 @@ AgeInterval.init(
   },
   {
     sequelize,
-    tableName: "AgeInterval",
+    tableName: "DefaultAgeInterval", // Cambio de nombre de la tabla
+    timestamps: false,
   }
 );
 
-export default AgeInterval;
+export default DefaultAgeInterval;

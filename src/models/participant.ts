@@ -53,6 +53,7 @@ Participant.init(
   {
     sequelize,
     tableName: "Participant",
+    timestamps: false,
   }
 );
 

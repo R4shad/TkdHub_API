@@ -39,14 +39,8 @@ router.get("/:championshipId", getChampionshipAgeIntervals);
  *         schema:
  *           type: integer
  *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               ageIntervalId:
- *                 type: integer
+ *       required: false
+ *       content: {}
  *     responses:
  *       201:
  *         description: Created

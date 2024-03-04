@@ -36,6 +36,7 @@ Club.init(
   {
     sequelize,
     tableName: "Club",
+    timestamps: false,
   }
 );
 export default Club;

@@ -29,6 +29,7 @@ ChampionshipResponsible.init(
   {
     sequelize,
     tableName: "ChampionshipResponsible",
+    timestamps: false,
   }
 );
 

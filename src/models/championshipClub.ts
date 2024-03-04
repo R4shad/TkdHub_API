@@ -24,6 +24,7 @@ ChampionshipClub.init(
   {
     sequelize,
     tableName: "ChampionshipClub",
+    timestamps: false,
   }
 );
 

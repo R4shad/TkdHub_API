@@ -59,6 +59,7 @@ Match.init(
   {
     sequelize,
     tableName: "Match",
+    timestamps: false,
   }
 );
 

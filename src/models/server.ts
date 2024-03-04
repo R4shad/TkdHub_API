@@ -13,7 +13,7 @@ import ChampionshipParticipant from "./championshipParticipant";
 import Category from "./category";
 import ChampionshipCategory from "./championshipCategory";
 import Division from "./division";
-import AgeInterval from "./ageInterval";
+import DefaultAgeInterval from "./defaultAgeInterval";
 import championshipAgeInterval from "./championshipAgeInterval";
 import ChampionshipDivision from "./championshipDivision";
 import Competitor from "./competitor";
@@ -101,7 +101,7 @@ class Server {
       await ChampionshipParticipant.sync();
       await Category.sync();
       await ChampionshipCategory.sync();
-      await AgeInterval.sync();
+      await DefaultAgeInterval.sync();
       await championshipAgeInterval.sync({});
       await Division.sync();
 

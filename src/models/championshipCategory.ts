@@ -30,15 +30,12 @@ ChampionshipCategory.init(
   {
     sequelize,
     tableName: "ChampionshipCategory",
+    timestamps: false,
   }
 );
 
 ChampionshipCategory.belongsTo(Championship, {
   foreignKey: "championshipId",
-});
-
-ChampionshipCategory.belongsTo(Category, {
-  foreignKey: "categoryName",
 });
 
 export default ChampionshipCategory;
