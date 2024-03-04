@@ -1,18 +1,24 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 
-class Category extends Model {
+class DefaultCategory extends Model {
+  public id!: number; // Agregar la declaración del campo id
   public categoryName!: string;
   public gradeMin!: string | null;
   public gradeMax!: string | null;
 }
 
-Category.init(
+DefaultCategory.init(
   {
+    id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      autoIncrement: true,
+      allowNull: false,
+      primaryKey: true,
+    },
     categoryName: {
       type: DataTypes.STRING(25),
       allowNull: false,
-      primaryKey: true,
     },
     gradeMin: {
       type: DataTypes.STRING(25),
@@ -25,9 +31,9 @@ Category.init(
   },
   {
     sequelize,
-    tableName: "Category",
+    tableName: "DefaultCategory",
     timestamps: false,
   }
 );
 
-export default Category;
+export default DefaultCategory;

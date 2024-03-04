@@ -12,7 +12,7 @@ class ChampionshipAgeInterval extends Model {
 
 ChampionshipAgeInterval.init(
   {
-    id: {
+    ageIntervalId: {
       type: DataTypes.INTEGER.UNSIGNED,
       autoIncrement: true,
       allowNull: false,

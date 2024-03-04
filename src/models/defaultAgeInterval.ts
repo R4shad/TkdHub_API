@@ -31,7 +31,7 @@ DefaultAgeInterval.init(
   },
   {
     sequelize,
-    tableName: "DefaultAgeInterval", // Cambio de nombre de la tabla
+    tableName: "DefaultAgeInterval",
     timestamps: false,
   }
 );

@@ -1,12 +1,12 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
-import Division from "./division";
-import Category from "./category";
+import Division from "./defaultDivision";
+import Category from "./defaultCategory";
 
 class Bracket extends Model {
   public bracketId!: number;
-  public divisionName!: string;
-  public categoryName!: string;
+  public divisionId!: number; // Cambio de divisionName a divisionId
+  public categoryId!: number; // Cambio de categoryName a categoryId
   public championshipId!: number;
 }
 
@@ -18,12 +18,14 @@ Bracket.init(
       autoIncrement: true,
       primaryKey: true,
     },
-    divisionName: {
-      type: DataTypes.STRING(50),
+    divisionId: {
+      // Cambio de divisionName a divisionId
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
     },
-    categoryName: {
-      type: DataTypes.STRING(50),
+    categoryId: {
+      // Cambio de categoryName a categoryId
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
     },
     championshipId: {
@@ -39,11 +41,11 @@ Bracket.init(
 );
 
 Bracket.belongsTo(Division, {
-  foreignKey: "divisionName",
+  foreignKey: "divisionId", // Cambio de divisionName a divisionId
 });
 
 Bracket.belongsTo(Category, {
-  foreignKey: "categoryName",
+  foreignKey: "categoryId", // Cambio de categoryName a categoryId
 });
 
 export default Bracket;

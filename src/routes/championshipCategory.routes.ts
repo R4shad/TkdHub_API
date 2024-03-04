@@ -65,14 +65,8 @@ router.get(
  *         schema:
  *           type: integer
  *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               categoryName:
- *                 type: string
+ *       required: false
+ *       content: {}
  *     responses:
  *       201:
  *         description: Creado

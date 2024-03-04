@@ -1,7 +1,7 @@
-import Division from "../models/division";
+import Division from "../models/defaultDivision";
 import { sequelize } from "../config/db";
 import AgeInterval from "../models/defaultAgeInterval";
-import Category from "../models/category";
+import Category from "../models/defaultCategory";
 
 // Inserta los datos en la base de datos
 (async () => {

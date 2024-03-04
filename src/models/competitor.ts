@@ -8,8 +8,8 @@ class Competitor extends Model {
   public competitorId!: string;
   public participantId!: string;
   public championshipId!: number;
-  public divisionName!: string;
-  public categoryName!: string;
+  public divisionId!: number; // Cambio de divisionName a divisionId
+  public categoryId!: number; // Cambio de categoryName a categoryId
 }
 
 Competitor.init(
@@ -30,12 +30,14 @@ Competitor.init(
       allowNull: false,
       unique: "uniqueParticipantPerChampionship",
     },
-    divisionName: {
-      type: DataTypes.STRING(50),
+    divisionId: {
+      // Cambio de divisionName a divisionId
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
     },
-    categoryName: {
-      type: DataTypes.STRING(50),
+    categoryId: {
+      // Cambio de categoryName a categoryId
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
     },
   },
@@ -51,11 +53,11 @@ Competitor.belongsTo(Participant, {
 });
 
 Competitor.belongsTo(ChampionshipCategory, {
-  foreignKey: "championshipId",
+  foreignKey: "categoryId", // Cambio de championshipId a categoryId
 });
 
 Competitor.belongsTo(ChampionshipDivision, {
-  foreignKey: "championshipId",
+  foreignKey: "divisionId", // Cambio de championshipId a divisionId
 });
 
 export default Competitor;

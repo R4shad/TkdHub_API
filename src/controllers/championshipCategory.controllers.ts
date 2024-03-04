@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import ChampionshipCategory from "../models/championshipCategory";
 import ApiResponse from "../interfaces/apiResponse";
 import { Op } from "sequelize";
+import DefaultCategory from "../models/defaultCategory";
 
 export async function getChampionshipCategories(req: Request, res: Response) {
   const championshipId = parseInt(req.params.championshipId, 10);
@@ -27,32 +28,60 @@ export async function getChampionshipCategories(req: Request, res: Response) {
   }
 }
 
-export async function createChampionshipCategory(req: Request, res: Response) {
-  const championshipId = parseInt(req.params.championshipId, 10);
-  const { categoryName } = req.body;
-
+export const createChampionshipCategory = async (
+  req: Request,
+  res: Response
+) => {
   try {
-    const newCategory = await ChampionshipCategory.create({
-      championshipId,
-      categoryName,
-      numberOfCompetitors: 0,
+    const championshipId = parseInt(req.params.championshipId, 10);
+
+    // Verificar si ya existen registros para este championshipId en ChampionshipCategory
+    const existingChampionshipCategories = await ChampionshipCategory.findAll({
+      where: { championshipId },
     });
 
-    const response: ApiResponse<typeof newCategory> = {
+    // Si ya existen registros para este championshipId, responder con un mensaje indicando que ya se han agregado las categorías por defecto
+    if (existingChampionshipCategories.length > 0) {
+      const response: ApiResponse<undefined> = {
+        status: 400,
+        error:
+          "Default categories have already been added to the championship.",
+      };
+      return res.status(response.status).json(response);
+    }
+    const defaultCategories = await DefaultCategory.findAll();
+    // Crear las relaciones entre el campeonato y las categorías por defecto
+    const createdChampionshipCategories = await Promise.all(
+      defaultCategories.map(async (defaultCategory) => {
+        // Copiar categoryName de los valores de defaultCategory
+        const { categoryName, gradeMax, gradeMin } = defaultCategory;
+
+        // Crear una nueva relación entre el campeonato y la categoría
+        return await ChampionshipCategory.create({
+          championshipId,
+          categoryName,
+          gradeMax,
+          gradeMin,
+          numberOfCompetitors: 0,
+        });
+      })
+    );
+
+    const response: ApiResponse<typeof createdChampionshipCategories> = {
       status: 201,
-      data: newCategory,
+      data: createdChampionshipCategories,
     };
 
     res.status(response.status).json(response);
   } catch (error) {
-    console.error("Error creating championship category:", error);
+    console.error("Error creating championship categories:", error);
     const response: ApiResponse<undefined> = {
       status: 500,
-      error: "Error creating championship category",
+      error: "There was an error processing the request.",
     };
     res.status(response.status).json(response);
   }
-}
+};
 
 export async function getChampionshipCategoriesWithCompetitors(
   req: Request,

@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
-import Category from "../models/category";
-import ApiResponse from "../interfaces/apiResponse";
+import Category from "../models/defaultCategory";
 import ChampionshipCategory from "../models/championshipCategory";
+import ApiResponse from "../interfaces/apiResponse";
+import { Op } from "sequelize";
+import DefaultCategory from "../models/defaultCategory";
 
 export const getCategories = async (req: Request, res: Response) => {
   try {
@@ -25,109 +27,152 @@ export const getCategoriesByChampionshipId = async (
   req: Request,
   res: Response
 ) => {
-  try {
-    const { championshipId } = req.params;
+  const championshipId = parseInt(req.params.championshipId, 10);
 
-    // Buscar las categorías asociadas al campeonato en ChampionshipCategory
-    const championshipCategories = await ChampionshipCategory.findAll({
-      where: { championshipId: championshipId },
+  try {
+    const categories = await ChampionshipCategory.findAll({
+      where: { championshipId },
     });
-    console.log(championshipCategories);
-    // Verificar si no se encontraron categorías asociadas al campeonato
-    if (championshipCategories.length === 0) {
+
+    const response: ApiResponse<typeof categories> = {
+      status: 200,
+      data: categories,
+    };
+
+    res.json(response);
+  } catch (error) {
+    console.error("Error fetching championship categories:", error);
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "Error fetching championship categories",
+    };
+    res.status(response.status).json(response);
+  }
+};
+
+export const createChampionshipCategory = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const championshipId = parseInt(req.params.championshipId, 10);
+
+    // Verificar si ya existen registros para este championshipId en ChampionshipCategory
+    const existingChampionshipCategories = await ChampionshipCategory.findAll({
+      where: { championshipId },
+    });
+
+    // Si ya existen registros para este championshipId, responder con un mensaje indicando que ya se han agregado las categorías por defecto
+    if (existingChampionshipCategories.length > 0) {
       const response: ApiResponse<undefined> = {
-        status: 404,
-        error: "No categories found for the championship.",
+        status: 400,
+        error:
+          "Default categories have already been added to the championship.",
       };
       return res.status(response.status).json(response);
     }
+    const defaultCategories = await DefaultCategory.findAll();
+    // Crear las relaciones entre el campeonato y las categorías por defecto
+    const createdChampionshipCategories = await Promise.all(
+      defaultCategories.map(async (defaultCategory) => {
+        // Copiar categoryName de los valores de defaultCategory
+        const { categoryName, gradeMax, gradeMin } = defaultCategory;
 
-    // Obtener la información completa de las categorías desde la tabla Category
-    const categoryIds = championshipCategories.map(
-      (championshipCategory) => championshipCategory.categoryName
+        // Crear una nueva relación entre el campeonato y la categoría
+        return await ChampionshipCategory.create({
+          championshipId,
+          categoryName,
+          gradeMax,
+          gradeMin,
+          numberOfCompetitors: 0,
+        });
+      })
     );
 
-    const categories = await Category.findAll({
-      where: { categoryName: categoryIds },
+    const response: ApiResponse<typeof createdChampionshipCategories> = {
+      status: 201,
+      data: createdChampionshipCategories,
+    };
+
+    res.status(response.status).json(response);
+  } catch (error) {
+    console.error("Error creating championship categories:", error);
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "There was an error processing the request.",
+    };
+    res.status(response.status).json(response);
+  }
+};
+
+export const getChampionshipCategoriesWithCompetitors = async (
+  req: Request,
+  res: Response
+) => {
+  const championshipId = parseInt(req.params.championshipId, 10);
+
+  try {
+    const categoriesWithCompetitors = await ChampionshipCategory.findAll({
+      where: {
+        championshipId: championshipId,
+        numberOfCompetitors: {
+          [Op.gte]: 2, // Utilizamos Op.gte para mayor o igual que 2
+        },
+      },
     });
 
-    const mappedCategories = categories.map((category) => ({
-      categoryName: category.categoryName,
-      gradeMin: category.gradeMin,
-      gradeMax: category.gradeMax,
-    }));
-
-    // Construir la respuesta con la información completa de las categorías
-    const response: ApiResponse<typeof mappedCategories> = {
+    const response: ApiResponse<typeof categoriesWithCompetitors> = {
       status: 200,
-      data: mappedCategories,
+      data: categoriesWithCompetitors,
     };
 
     res.json(response);
   } catch (error) {
-    console.error("Error fetching categories by championship:", error);
+    console.error(
+      "Error fetching championship categories with competitors:",
+      error
+    );
     const response: ApiResponse<undefined> = {
       status: 500,
-      error: "There was an error processing the request.",
+      error: "Error fetching championship categories with competitors",
     };
     res.status(response.status).json(response);
   }
 };
 
-export const createCategory = async (req: Request, res: Response) => {
+export const incrementCompetitors = async (req: Request, res: Response) => {
+  const championshipId = parseInt(req.params.championshipId, 10);
+  const categoryName = req.params.categoryName;
+
   try {
-    const { categoryName, gradeMin, gradeMax } = req.body;
-    const newCategory = await Category.create({
-      categoryName: categoryName,
-      gradeMin: gradeMin,
-      gradeMax: gradeMax,
+    const category = await ChampionshipCategory.findOne({
+      where: { championshipId, categoryName },
     });
 
-    const response: ApiResponse<typeof newCategory> = {
-      status: 201,
-      data: newCategory,
-    };
-
-    res.status(response.status).json(response);
-  } catch (error) {
-    console.error("Error creating the category:", error);
-    const response: ApiResponse<undefined> = {
-      status: 500,
-      error: "There was an error processing the request.",
-    };
-    res.status(response.status).json(response);
-  }
-};
-
-export const deleteCategory = async (req: Request, res: Response) => {
-  try {
-    const { categoryName } = req.query;
-
-    const categoryToDelete = await Category.findOne({
-      where: { categoryName: categoryName as string },
-    });
-
-    if (!categoryToDelete) {
+    if (!category) {
       const response: ApiResponse<undefined> = {
         status: 404,
-        error: "Category not found.",
+        error: "Championship category not found",
       };
       return res.status(response.status).json(response);
     }
 
-    await categoryToDelete.destroy();
-
-    const response: ApiResponse<typeof categoryToDelete> = {
+    // Incrementar el valor de numberOfCompetitors
+    await category.increment("numberOfCompetitors");
+    const response: ApiResponse<typeof category> = {
       status: 200,
-      data: categoryToDelete,
+      data: category,
     };
 
-    res.json(response);
+    res.status(response.status).json(response);
   } catch (error) {
-    console.error("Error deleting the category:", error);
+    console.error(
+      "Error incrementing championship category competitors:",
+      error
+    );
     const response: ApiResponse<undefined> = {
       status: 500,
-      error: "There was an error processing the request.",
+      error: "Error incrementing championship category competitors",
     };
     res.status(response.status).json(response);
   }

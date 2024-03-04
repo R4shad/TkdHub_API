@@ -1,9 +1,10 @@
 import { Router } from "express";
 import {
   getCategories,
-  createCategory,
-  deleteCategory,
   getCategoriesByChampionshipId,
+  createChampionshipCategory,
+  getChampionshipCategoriesWithCompetitors,
+  incrementCompetitors,
 } from "../controllers/category.controllers";
 
 const router = Router();
@@ -42,53 +43,78 @@ router.get("/", getCategories);
 router.get("/:championshipId", getCategoriesByChampionshipId);
 
 /**
- * @openapi
- * /api/category:
+ * @swagger
+ * /api/category/{championshipId}:
  *   post:
  *     tags:
  *       - Category
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID del campeonato
+ *         schema:
+ *           type: integer
  *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               categoryName:
- *                 type: string
- *               gradeMin:
- *                 type: string
- *               gradeMax:
- *                 type: string
+ *       required: false
+ *       content: {}
  *     responses:
  *       201:
- *         description: Created
+ *         description: Creado
  *       500:
  *         description: Error
  */
-router.post("/", createCategory);
+router.post("/:championshipId", createChampionshipCategory);
 
 /**
- * @openapi
- * /api/category:
- *   delete:
+ * @swagger
+ * /api/category/{championshipId}/withCompetitors:
+ *   get:
  *     tags:
  *       - Category
  *     parameters:
- *       - name: categoryName
- *         in: query
+ *       - name: championshipId
+ *         in: path
  *         required: true
- *         description: Name of the category to delete
+ *         description: ID del campeonato
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Error
+ */
+router.get(
+  "/:championshipId/withCompetitors",
+  getChampionshipCategoriesWithCompetitors
+);
+
+/**
+ * @swagger
+ * /api/category/increment/{championshipId}/{categoryName}:
+ *   put:
+ *     tags:
+ *       - Category
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID del campeonato
+ *         schema:
+ *           type: integer
+ *       - name: categoryName
+ *         in: path
+ *         required: true
+ *         description: Nombre de la categoría
  *         schema:
  *           type: string
  *     responses:
  *       200:
  *         description: OK
- *       404:
- *         description: Category not found
  *       500:
  *         description: Error
  */
-router.delete("/", deleteCategory);
+router.put("/increment/:championshipId/:categoryName", incrementCompetitors);
 
 export default router;

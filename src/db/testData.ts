@@ -1,6 +1,29 @@
 import { sequelize } from "../config/db";
+import Championship from "../models/championship";
 import defaultAgeInterval from "../models/defaultAgeInterval";
-import Category from "../models/category";
+import DefaultCategory from "../models/defaultCategory";
+
+//Campeonato
+(async () => {
+  try {
+    await sequelize.sync();
+    await Championship.bulkCreate([
+      {
+        championshipName: "Campeonato 01",
+        organizer: "R4shad",
+        organizerCi: 7920880,
+        organizerPassword: "R4shad",
+        championshipDate: "04/04/2024",
+      },
+    ]);
+
+    console.log("Datos insertados correctamente.");
+  } catch (error) {
+    console.error("Error al insertar datos:", error);
+  } finally {
+    await sequelize.close(); // Cierra la conexión a la base de datos al finalizar
+  }
+})();
 //Age interval
 (async () => {
   try {
@@ -49,6 +72,35 @@ import Category from "../models/category";
         maxAge: 100,
       },
     ]);
+    console.log("Datos insertados correctamente.");
+  } catch (error) {
+    console.error("Error al insertar datos:", error);
+  } finally {
+    await sequelize.close(); // Cierra la conexión a la base de datos al finalizar
+  }
+})();
+//Categorias
+(async () => {
+  try {
+    await sequelize.sync(); // Sincroniza el modelo con la base de datos, eliminando las tablas existentes si existen
+    await DefaultCategory.bulkCreate([
+      {
+        categoryName: "Avanzado",
+        gradeMin: "rojo",
+        gradeMax: "negro",
+      },
+      {
+        categoryName: "Inicial",
+        gradeMin: "franja amarillo",
+        gradeMax: "franja verde",
+      },
+      {
+        categoryName: "Intermedio",
+        gradeMin: "verde",
+        gradeMax: "franja rojo",
+      },
+    ]); // Omitir timestamps
+
     console.log("Datos insertados correctamente.");
   } catch (error) {
     console.error("Error al insertar datos:", error);

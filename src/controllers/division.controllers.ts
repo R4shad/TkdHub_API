@@ -1,6 +1,6 @@
 // controllers/division.controllers.ts
 import { Request, Response } from "express";
-import Division from "../models/division";
+import Division from "../models/defaultDivision";
 import ApiResponse from "../interfaces/apiResponse";
 import ChampionshipDivision from "../models/championshipDivision";
 

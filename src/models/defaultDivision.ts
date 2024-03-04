@@ -1,8 +1,9 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
-import AgeInterval from "./defaultAgeInterval";
+import DefaultAgeInterval from "./defaultAgeInterval";
 
-class Division extends Model {
+class DefaultDivision extends Model {
+  public id!: number; // Agregar la declaración del campo id
   public divisionName!: string;
   public ageIntervalId!: number;
   public minWeight!: number | null;
@@ -11,12 +12,17 @@ class Division extends Model {
   public grouping!: string | null;
 }
 
-Division.init(
+DefaultDivision.init(
   {
+    id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      autoIncrement: true,
+      allowNull: false,
+      primaryKey: true,
+    },
     divisionName: {
       type: DataTypes.STRING(50),
       allowNull: false,
-      primaryKey: true,
     },
     ageIntervalId: {
       type: DataTypes.INTEGER.UNSIGNED,
@@ -41,13 +47,13 @@ Division.init(
   },
   {
     sequelize,
-    tableName: "Division",
+    tableName: "DefaultDivision",
     timestamps: false,
   }
 );
 
-Division.belongsTo(AgeInterval, {
+DefaultDivision.belongsTo(DefaultAgeInterval, {
   foreignKey: "ageIntervalId",
 });
 
-export default Division;
+export default DefaultDivision;
