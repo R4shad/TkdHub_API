@@ -25,7 +25,6 @@ import routesClub from "../routes/club.routes";
 import routesDivision from "../routes/division.routes";
 import routesCompetitor from "../routes/competitor.routes";
 import routesAgeInterval from "../routes/ageInterval.routes";
-import routesChampionshipDivision from "../routes/championshipDivision.routes";
 
 import routesCategory from "../routes/category.routes";
 import routesParticipant from "../routes/participant.routes";
@@ -65,7 +64,6 @@ class Server {
     this.app.use("/api/category", routesCategory);
     this.app.use("/api/competitor", routesCompetitor);
     this.app.use("/api/bracket", routesBracket);
-    this.app.use("/api/championshipDivision", routesChampionshipDivision);
     this.app.use("/api/match", routesMatch);
   }
 

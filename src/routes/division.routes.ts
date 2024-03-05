@@ -6,6 +6,8 @@ import {
   getChampionshipDivisions,
   getDivisionsByDivisionName,
   createChampionshipDivision,
+  incrementDivisionCompetitors,
+  getChampionshipDivisionsWithCompetitors,
 } from "../controllers/division.controllers";
 
 const router = Router();
@@ -110,5 +112,59 @@ router.get("/ages/:ageIntervalId", getDivisionsByAgeIntervalId);
  *         description: Error interno del servidor
  */
 router.post("/:championshipId", createChampionshipDivision);
+
+/**
+ * @swagger
+ * /api/championshipDivision/increment/{championshipId}/{divisionName}:
+ *   put:
+ *     tags:
+ *       - ChampionshipDivision
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID del campeonato
+ *         schema:
+ *           type: integer
+ *       - name: divisionName
+ *         in: path
+ *         required: true
+ *         description: Nombre de la división
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Error
+ */
+router.put(
+  "/increment/:championshipId/:divisionName",
+  incrementDivisionCompetitors
+);
+
+/**
+ * @swagger
+ * /api/championshipDivision/{championshipId}/withCompetitors:
+ *   get:
+ *     tags:
+ *       - ChampionshipDivision
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID del campeonato
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Error
+ */
+router.get(
+  "/:championshipId/withCompetitors",
+  getChampionshipDivisionsWithCompetitors
+);
 
 export default router;
