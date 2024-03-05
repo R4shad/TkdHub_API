@@ -1,12 +1,14 @@
 // controllers/division.controllers.ts
 import { Request, Response } from "express";
-import Division from "../models/defaultDivision";
+import defaultDivision from "../models/defaultDivision";
 import ApiResponse from "../interfaces/apiResponse";
 import ChampionshipDivision from "../models/championshipDivision";
+import ChampionshipCategory from "../models/championshipCategory";
+import DefaultDivision from "../models/defaultDivision";
 
 export const getDivisions = async (req: Request, res: Response) => {
   try {
-    const divisionsList = await Division.findAll();
+    const divisionsList = await defaultDivision.findAll();
     const response: ApiResponse<typeof divisionsList> = {
       status: 200,
       data: divisionsList,
@@ -22,56 +24,21 @@ export const getDivisions = async (req: Request, res: Response) => {
   }
 };
 
-export const getDivisionsByChampionshipId = async (
-  req: Request,
-  res: Response
-) => {
+export const getChampionshipDivisions = async (req: Request, res: Response) => {
   try {
-    const { championshipId } = req.params;
-
-    // Buscar las divisiones asociadas al campeonato en ChampionshipDivision
-    const championshipDivisions = await ChampionshipDivision.findAll({
+    const championshipId = parseInt(req.params.championshipId, 10);
+    const championshipDivisionsList = await ChampionshipDivision.findAll({
       where: { championshipId: championshipId },
     });
 
-    // Verificar si no se encontraron divisiones asociadas al campeonato
-    if (championshipDivisions.length === 0) {
-      const response: ApiResponse<undefined> = {
-        status: 404,
-        error: "No divisions found for the championship.",
-      };
-      return res.status(response.status).json(response);
-    }
-
-    // Obtener los IDs de las divisiones asociadas al campeonato
-    const divisionIds = championshipDivisions.map(
-      (championshipDivision) => championshipDivision.divisionName
-    );
-
-    // Obtener la información completa de las divisiones desde la tabla Division
-    const divisions = await Division.findAll({
-      where: { divisionName: divisionIds },
-    });
-
-    // Mapear las divisiones para obtener solo los datos deseados
-    const mappedDivisions = divisions.map((division) => ({
-      divisionName: division.divisionName,
-      ageIntervalId: division.ageIntervalId,
-      minWeight: division.minWeight,
-      maxWeight: division.maxWeight,
-      gender: division.gender,
-      grouping: division.grouping,
-    }));
-
-    // Construir la respuesta con la información mapeada de las divisiones
-    const response: ApiResponse<typeof mappedDivisions> = {
+    const response: ApiResponse<typeof championshipDivisionsList> = {
       status: 200,
-      data: mappedDivisions,
+      data: championshipDivisionsList,
     };
 
     res.json(response);
   } catch (error) {
-    console.error("Error fetching divisions by championship:", error);
+    console.error("Error fetching championship divisions:", error);
     const response: ApiResponse<undefined> = {
       status: 500,
       error: "There was an error processing the request.",
@@ -86,7 +53,9 @@ export const getDivisionsByAgeIntervalId = async (
 ) => {
   try {
     const { ageIntervalId } = req.params;
-    const divisionsList = await Division.findAll({ where: { ageIntervalId } });
+    const divisionsList = await ChampionshipDivision.findAll({
+      where: { ageIntervalId },
+    });
 
     const response: ApiResponse<typeof divisionsList> = {
       status: 200,
@@ -112,7 +81,9 @@ export const getDivisionsByDivisionName = async (
 ) => {
   try {
     const { divisionName } = req.params;
-    const division = await Division.findOne({ where: { divisionName } });
+    const division = await ChampionshipDivision.findOne({
+      where: { divisionName },
+    });
 
     const response: ApiResponse<typeof division> = {
       status: 200,
@@ -132,68 +103,65 @@ export const getDivisionsByDivisionName = async (
   }
 };
 
-export const createDivision = async (req: Request, res: Response) => {
+export const createChampionshipDivision = async (
+  req: Request,
+  res: Response
+) => {
   try {
-    const {
-      divisionName,
-      ageIntervalId, // Cambiado de ageIntervalName a ageIntervalId
-      minWeight,
-      maxWeight,
-      gender,
-      grouping,
-    } = req.body;
-    console.log(req.body);
-    const newDivision = await Division.create({
-      divisionName: divisionName,
-      ageIntervalId: ageIntervalId, // Cambiado de ageIntervalName a ageIntervalId
-      minWeight: minWeight,
-      maxWeight: maxWeight,
-      gender: gender,
-      grouping: grouping,
+    const championshipId = parseInt(req.params.championshipId, 10);
+
+    // Verificar si ya existen registros para este championshipId en ChampionshipCategory
+    const existingChampionshipCategories = await ChampionshipDivision.findAll({
+      where: { championshipId },
     });
 
-    const response: ApiResponse<typeof newDivision> = {
-      status: 201,
-      data: newDivision,
-    };
-
-    res.status(response.status).json(response);
-  } catch (error) {
-    console.error("Error creating the division:", error);
-    const response: ApiResponse<undefined> = {
-      status: 500,
-      error: "There was an error processing the request.",
-    };
-    res.status(response.status).json(response);
-  }
-};
-
-export const deleteDivision = async (req: Request, res: Response) => {
-  try {
-    const { divisionName } = req.query;
-
-    const divisionToDelete = await Division.findOne({
-      where: { divisionName: divisionName as string },
-    });
-
-    if (!divisionToDelete) {
+    // Si ya existen registros para este championshipId, responder con un mensaje indicando que ya se han agregado las categorías por defecto
+    if (existingChampionshipCategories.length > 0) {
       const response: ApiResponse<undefined> = {
-        status: 404,
-        error: "Division not found.",
+        status: 400,
+        error:
+          "Default categories have already been added to the championship.",
       };
       return res.status(response.status).json(response);
     }
 
-    await divisionToDelete.destroy();
+    // Obtener las divisiones de la tabla defaultDivision
+    const defaultDivisions = await DefaultDivision.findAll();
 
-    const response: ApiResponse<typeof divisionToDelete> = {
-      status: 200,
-      data: divisionToDelete,
+    // Crear las relaciones entre el campeonato y las divisiones por defecto
+    const createdChampionshipCategories = await Promise.all(
+      defaultDivisions.map(async (defaultDivision) => {
+        const {
+          divisionName,
+          ageIntervalId,
+          minWeight,
+          maxWeight,
+          gender,
+          grouping,
+        } = defaultDivision;
+
+        // Crear una nueva relación entre el campeonato y la división
+        return await ChampionshipDivision.create({
+          championshipId,
+          divisionName: divisionName,
+          ageIntervalId: ageIntervalId,
+          maxWeight: maxWeight,
+          minWeight: minWeight,
+          gender: gender,
+          grouping: grouping,
+          numberOfCompetitors: 0,
+        });
+      })
+    );
+
+    const response: ApiResponse<typeof createdChampionshipCategories> = {
+      status: 201,
+      data: createdChampionshipCategories,
     };
 
-    res.json(response);
+    res.status(response.status).json(response);
   } catch (error) {
-    console.error("Error deleting the division:", error);
+    console.error("Error creating championship categories:", error);
     const response: ApiResponse<undefined> = {
       status: 500,
       error: "There was an error processing the request.",

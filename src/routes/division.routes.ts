@@ -2,11 +2,10 @@
 import { Router } from "express";
 import {
   getDivisions,
-  createDivision,
-  deleteDivision,
   getDivisionsByAgeIntervalId,
-  getDivisionsByChampionshipId,
+  getChampionshipDivisions,
   getDivisionsByDivisionName,
+  createChampionshipDivision,
 } from "../controllers/division.controllers";
 
 const router = Router();
@@ -42,7 +41,7 @@ router.get("/", getDivisions);
  *       500:
  *         description: Error
  */
-router.get("/:championshipId", getDivisionsByChampionshipId);
+router.get("/:championshipId", getChampionshipDivisions);
 
 /**
  * @openapi
@@ -87,59 +86,29 @@ router.get("/data/:divisionName", getDivisionsByDivisionName);
 router.get("/ages/:ageIntervalId", getDivisionsByAgeIntervalId);
 
 /**
- * @openapi
- * /api/division:
+ * @swagger
+ * /api/division/{championshipId}:
  *   post:
  *     tags:
  *       - Division
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               divisionName:
- *                 type: string
- *               ageIntervalId:
- *                 type: integer
- *               minWeight:
- *                 type: integer
- *               maxWeight:
- *                 type: integer
- *               gender:
- *                 type: string
- *               grouping:
- *                 type: string
- *     responses:
- *       201:
- *         description: Created
- *       500:
- *         description: Error
- */
-router.post("/", createDivision);
-
-/**
- * @openapi
- * /api/division:
- *   delete:
- *     tags:
- *       - Division
+ *     summary: Crear divisiones para un campeonato
+ *     description: Crea divisiones para un campeonato específico utilizando el ID del campeonato proporcionado.
  *     parameters:
- *       - name: divisionName
- *         in: query
+ *       - name: championshipId
+ *         in: path
  *         required: true
- *         description: Name of the division to delete
+ *         description: ID del campeonato
  *         schema:
- *           type: string
+ *           type: integer
+ *     requestBody:
+ *       required: false
+ *       content: {}
  *     responses:
- *       200:
- *         description: OK
- *       404:
- *         description: Division not found
- *       500:
- *         description: Error
+ *       '201':
+ *         description: Divisiones creadas con éxito
+ *       '500':
+ *         description: Error interno del servidor
  */
-router.delete("/", deleteDivision);
+router.post("/:championshipId", createChampionshipDivision);
 
 export default router;
