@@ -164,20 +164,16 @@ export const createParticipant = async (req: Request, res: Response) => {
 
 export const updateParticipant = async (req: Request, res: Response) => {
   try {
-    const { championshipId, participantId } = req.params;
-    const participantData = {
-      verified: true,
-    };
+    const { participantId } = req.params;
+    const { lastNames, firstNames, age, weight, grade, gender } = req.body;
 
     // Buscar al participante por su ID
-    const participant = await ChampionshipParticipant.findOne({
+    const participant = await Participant.findOne({
       where: {
-        championshipId: championshipId,
-        participantId: participantId,
+        id: participantId,
       },
     });
-    console.log(participant);
-    console.log(participantData);
+
     if (!participant) {
       return res.status(404).json({
         status: 404,
@@ -186,7 +182,14 @@ export const updateParticipant = async (req: Request, res: Response) => {
     }
 
     // Actualizar los campos del participante según los datos proporcionados en el cuerpo de la solicitud
-    await participant.update(participantData);
+    participant.lastNames = lastNames;
+    participant.firstNames = firstNames;
+    participant.age = age;
+    participant.weight = weight;
+    participant.grade = grade;
+    participant.gender = gender;
+
+    await participant.save();
 
     res.status(200).json({
       status: 200,
@@ -247,8 +250,11 @@ export const deleteParticipant = async (req: Request, res: Response) => {
     const result = await ChampionshipParticipant.destroy({
       where: { championshipId, participantId },
     });
+    const result2 = await Participant.destroy({
+      where: { id: participantId },
+    });
     console.log(result);
-    if (result === 1) {
+    if (result === 1 && result2 === 1) {
       res
         .status(200)
         .json({ status: 200, message: "Participante eliminado exitosamente" });

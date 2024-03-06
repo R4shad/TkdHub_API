@@ -75,14 +75,11 @@ export const getDivisionsByAgeIntervalId = async (
   }
 };
 
-export const getDivisionsByDivisionName = async (
-  req: Request,
-  res: Response
-) => {
+export const getDivisionsByDivisionId = async (req: Request, res: Response) => {
   try {
-    const { divisionName } = req.params;
+    const { divisionId } = req.params;
     const division = await ChampionshipDivision.findOne({
-      where: { divisionName },
+      where: { divisionId },
     });
 
     const response: ApiResponse<typeof division> = {
@@ -175,11 +172,11 @@ export const incrementDivisionCompetitors = async (
   res: Response
 ) => {
   const championshipId = parseInt(req.params.championshipId, 10);
-  const divisionName = req.params.divisionName;
+  const divisionId = parseInt(req.params.divisionId, 10);
 
   try {
     const division = await ChampionshipDivision.findOne({
-      where: { championshipId, divisionName },
+      where: { championshipId, divisionId },
     });
 
     if (!division) {
@@ -210,6 +207,7 @@ export const incrementDivisionCompetitors = async (
     res.status(response.status).json(response);
   }
 };
+
 export const getChampionshipDivisionsWithCompetitors = async (
   req: Request,
   res: Response
@@ -228,6 +226,7 @@ export const getChampionshipDivisionsWithCompetitors = async (
 
     const mappedDivisionsWithCompetitors = divisionsWithCompetitors.map(
       (division) => ({
+        divisionId: division.divisionId,
         championshipId: division.championshipId,
         divisionName: division.divisionName,
         numberOfCompetitors: division.numberOfCompetitors,

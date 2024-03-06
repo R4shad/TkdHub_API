@@ -4,7 +4,7 @@ import {
   getDivisions,
   getDivisionsByAgeIntervalId,
   getChampionshipDivisions,
-  getDivisionsByDivisionName,
+  getDivisionsByDivisionId,
   createChampionshipDivision,
   incrementDivisionCompetitors,
   getChampionshipDivisionsWithCompetitors,
@@ -47,16 +47,16 @@ router.get("/:championshipId", getChampionshipDivisions);
 
 /**
  * @openapi
- * /api/division/data/{divisionName}:
+ * /api/division/data/{divisionId}:
  *   get:
  *     tags:
  *       - Division
  *     parameters:
  *       - in: path
- *         name: divisionName
+ *         name: divisionId
  *         required: true
  *         schema:
- *           type: string
+ *           type: number
  *         description: championshipId value to filter divisions
  *     responses:
  *       200:
@@ -64,7 +64,7 @@ router.get("/:championshipId", getChampionshipDivisions);
  *       500:
  *         description: Error
  */
-router.get("/data/:divisionName", getDivisionsByDivisionName);
+router.get("/data/:divisionId", getDivisionsByDivisionId);
 
 /**
  * @openapi
@@ -115,10 +115,10 @@ router.post("/:championshipId", createChampionshipDivision);
 
 /**
  * @swagger
- * /api/championshipDivision/increment/{championshipId}/{divisionName}:
+ * /api/division/increment/{championshipId}/{divisionId}:
  *   put:
  *     tags:
- *       - ChampionshipDivision
+ *       - Division
  *     parameters:
  *       - name: championshipId
  *         in: path
@@ -126,12 +126,12 @@ router.post("/:championshipId", createChampionshipDivision);
  *         description: ID del campeonato
  *         schema:
  *           type: integer
- *       - name: divisionName
+ *       - name: divisionId
  *         in: path
  *         required: true
- *         description: Nombre de la división
+ *         description: ID de la división
  *         schema:
- *           type: string
+ *           type: integer
  *     responses:
  *       200:
  *         description: OK
@@ -139,16 +139,16 @@ router.post("/:championshipId", createChampionshipDivision);
  *         description: Error
  */
 router.put(
-  "/increment/:championshipId/:divisionName",
+  "/increment/:championshipId/:divisionId",
   incrementDivisionCompetitors
 );
 
 /**
  * @swagger
- * /api/championshipDivision/{championshipId}/withCompetitors:
+ * /api/division/{championshipId}/withCompetitors:
  *   get:
  *     tags:
- *       - ChampionshipDivision
+ *       - Division
  *     parameters:
  *       - name: championshipId
  *         in: path

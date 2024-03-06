@@ -104,10 +104,10 @@ router.get(
  *           schema:
  *             type: object
  *             properties:
- *               divisionName:
- *                 type: string
- *               categoryName:
- *                 type: string
+ *               divisionId:
+ *                 type: number
+ *               categoryId:
+ *                 type: number
  *               championshipId:
  *                 type: integer
  *     responses:

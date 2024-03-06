@@ -3,6 +3,7 @@ import {
   getAgeIntervals,
   getChampionshipAgeIntervals,
   createChampionshipAgeInterval,
+  deleteChampionshipAgeInterval,
 } from "../controllers/ageInterval.controllers";
 
 const router = Router();
@@ -61,5 +62,36 @@ router.get("/:championshipId", getChampionshipAgeIntervals);
  *         description: Error
  */
 router.post("/:championshipId", createChampionshipAgeInterval);
+
+/**
+ * @openapi
+ * /api/participant/{championshipId}/{ageIntervalId}:
+ *   delete:
+ *     tags:
+ *       - Participant
+ *     summary: Eliminar intervalo de edad del campeonato
+ *     description: Elimina un intervalo de edad de un campeonato mediante su ID de campeonato y el ID del intervalo de edad.
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID del campeonato
+ *         schema:
+ *           type: integer
+ *       - name: ageIntervalId
+ *         in: path
+ *         required: true
+ *         description: ID del intervalo de edad
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       '200':
+ *         description: Intervalo de edad eliminado exitosamente
+ *       '404':
+ *         description: Intervalo de edad no encontrado
+ *       '500':
+ *         description: Error al procesar la solicitud
+ */
+router.delete("/:championshipId/:ageIntervalId", deleteChampionshipAgeInterval);
 
 export default router;

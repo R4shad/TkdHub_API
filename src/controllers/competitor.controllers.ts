@@ -24,7 +24,7 @@ export const getCompetitors = async (req: Request, res: Response) => {
           ],
         },
       ],
-      attributes: ["participantId", "divisionName", "categoryName"],
+      attributes: ["participantId", "divisionId", "categoryId"],
     });
 
     res.status(200).json({ status: 200, data: competitors });

@@ -59,8 +59,8 @@ export const getBracketsWithCompetitorsByChampionshipId = async (
       const competitors = await Competitor.findAll({
         where: {
           championshipId,
-          divisionName: bracket.divisionName,
-          categoryName: bracket.categoryName,
+          divisionId: bracket.divisionId,
+          categoryId: bracket.categoryId,
         },
         attributes: { exclude: ["createdAt", "updatedAt"] }, // Excluir createdAt y updatedAt
       });
@@ -146,10 +146,10 @@ export const getBracketsWithMatchesByChampionshipId = async (
 
 export const createBracket = async (req: Request, res: Response) => {
   try {
-    const { divisionName, categoryName, championshipId } = req.body;
+    const { divisionId, categoryId, championshipId } = req.body;
     const newBracket = await Bracket.create({
-      divisionName: divisionName,
-      categoryName: categoryName,
+      divisionId: divisionId,
+      categoryId: categoryId,
       championshipId: championshipId,
     });
 

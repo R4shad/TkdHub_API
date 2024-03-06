@@ -207,7 +207,7 @@ router.patch("/:championshipId/:participantId", updateParticipant);
 
 /**
  * @openapi
- * /api/participant/{championshipId}/{participantId}:
+ * /api/participant/validate/{championshipId}/{participantId}:
  *   patch:
  *     tags:
  *       - Participant
@@ -248,7 +248,10 @@ router.patch("/:championshipId/:participantId", updateParticipant);
  *         description: Error interno del servidor
  */
 
-router.patch("/:championshipId/:participantId", updateParticipantVerification);
+router.patch(
+  "/validate/:championshipId/:participantId",
+  updateParticipantVerification
+);
 
 /**
  * @openapi

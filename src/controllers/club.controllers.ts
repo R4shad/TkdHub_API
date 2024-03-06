@@ -201,6 +201,21 @@ export const deleteClub = async (req: Request, res: Response) => {
 
     await club.destroy();
 
+    const clubData = await Club.findOne({
+      where: {
+        clubCode: clubCode,
+      },
+    });
+
+    if (!clubData) {
+      return res.status(404).json({
+        status: 404,
+        error: "Club not found",
+      });
+    }
+
+    await clubData.destroy();
+
     const remainingClub = await ChampionshipClub.findOne({
       where: {
         clubCode: clubCode,

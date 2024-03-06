@@ -142,11 +142,11 @@ export const getChampionshipCategoriesWithCompetitors = async (
 
 export const incrementCompetitors = async (req: Request, res: Response) => {
   const championshipId = parseInt(req.params.championshipId, 10);
-  const categoryName = req.params.categoryName;
+  const categoryId = parseInt(req.params.categoryId, 10);
 
   try {
     const category = await ChampionshipCategory.findOne({
-      where: { championshipId, categoryName },
+      where: { championshipId, categoryId },
     });
 
     if (!category) {

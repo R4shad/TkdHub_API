@@ -104,3 +104,33 @@ export const createChampionshipAgeInterval = async (
     res.status(response.status).json(response);
   }
 };
+
+export const deleteChampionshipAgeInterval = async (
+  req: Request,
+  res: Response
+) => {
+  const championshipId = parseInt(req.params.championshipId);
+  const ageIntervalId = parseInt(req.params.ageIntervalId);
+
+  try {
+    const result = await ChampionshipAgeInterval.destroy({
+      where: { championshipId, ageIntervalId },
+    });
+
+    if (result === 1) {
+      res.status(200).json({
+        status: 200,
+        message: "Intervalo de edad eliminado exitosamente",
+      });
+    } else {
+      res
+        .status(404)
+        .json({ status: 404, message: "Intervalo de edad no encontrado" });
+    }
+  } catch (error) {
+    console.error("Error al eliminar intervalo de edad:", error);
+    res
+      .status(500)
+      .json({ status: 500, message: "Error al procesar la solicitud" });
+  }
+};

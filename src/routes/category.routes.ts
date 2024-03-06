@@ -44,30 +44,6 @@ router.get("/:championshipId", getCategoriesByChampionshipId);
 
 /**
  * @swagger
- * /api/category/{championshipId}:
- *   post:
- *     tags:
- *       - Category
- *     parameters:
- *       - name: championshipId
- *         in: path
- *         required: true
- *         description: ID del campeonato
- *         schema:
- *           type: integer
- *     requestBody:
- *       required: false
- *       content: {}
- *     responses:
- *       201:
- *         description: Creado
- *       500:
- *         description: Error
- */
-router.post("/:championshipId", createChampionshipCategory);
-
-/**
- * @swagger
  * /api/category/{championshipId}/withCompetitors:
  *   get:
  *     tags:
@@ -92,7 +68,31 @@ router.get(
 
 /**
  * @swagger
- * /api/category/increment/{championshipId}/{categoryName}:
+ * /api/category/{championshipId}:
+ *   post:
+ *     tags:
+ *       - Category
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID del campeonato
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: false
+ *       content: {}
+ *     responses:
+ *       201:
+ *         description: Creado
+ *       500:
+ *         description: Error
+ */
+router.post("/:championshipId", createChampionshipCategory);
+
+/**
+ * @swagger
+ * /api/category/increment/{championshipId}/{categoryId}:
  *   put:
  *     tags:
  *       - Category
@@ -103,18 +103,18 @@ router.get(
  *         description: ID del campeonato
  *         schema:
  *           type: integer
- *       - name: categoryName
+ *       - name: categoryId
  *         in: path
  *         required: true
  *         description: Nombre de la categoría
  *         schema:
- *           type: string
+ *           type: number
  *     responses:
  *       200:
  *         description: OK
  *       500:
  *         description: Error
  */
-router.put("/increment/:championshipId/:categoryName", incrementCompetitors);
+router.put("/increment/:championshipId/:categoryId", incrementCompetitors);
 
 export default router;
