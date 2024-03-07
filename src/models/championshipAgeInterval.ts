@@ -8,6 +8,7 @@ class ChampionshipAgeInterval extends Model {
   public minAge!: number | null;
   public maxAge!: number | null;
   public championshipId!: number;
+  public ageIntervalId!: number;
 }
 
 ChampionshipAgeInterval.init(

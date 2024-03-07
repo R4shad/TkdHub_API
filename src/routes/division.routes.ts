@@ -5,7 +5,7 @@ import {
   getDivisionsByAgeIntervalId,
   getChampionshipDivisions,
   getDivisionsByDivisionId,
-  createChampionshipDivision,
+  createChampionshipDivisionsAndAgeIntervals,
   incrementDivisionCompetitors,
   getChampionshipDivisionsWithCompetitors,
 } from "../controllers/division.controllers";
@@ -111,7 +111,7 @@ router.get("/ages/:ageIntervalId", getDivisionsByAgeIntervalId);
  *       '500':
  *         description: Error interno del servidor
  */
-router.post("/:championshipId", createChampionshipDivision);
+router.post("/:championshipId", createChampionshipDivisionsAndAgeIntervals);
 
 /**
  * @swagger

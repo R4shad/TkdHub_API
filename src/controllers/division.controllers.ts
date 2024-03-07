@@ -3,9 +3,12 @@ import { Request, Response } from "express";
 import defaultDivision from "../models/defaultDivision";
 import ApiResponse from "../interfaces/apiResponse";
 import ChampionshipDivision from "../models/championshipDivision";
-import ChampionshipCategory from "../models/championshipCategory";
+
 import DefaultDivision from "../models/defaultDivision";
 import { Op } from "sequelize";
+
+import DefaultAgeInterval from "../models/defaultAgeInterval";
+import ChampionshipAgeInterval from "../models/championshipAgeInterval";
 export const getDivisions = async (req: Request, res: Response) => {
   try {
     const divisionsList = await defaultDivision.findAll();
@@ -100,65 +103,100 @@ export const getDivisionsByDivisionId = async (req: Request, res: Response) => {
   }
 };
 
-export const createChampionshipDivision = async (
+export const createChampionshipDivisionsAndAgeIntervals = async (
   req: Request,
   res: Response
 ) => {
   try {
     const championshipId = parseInt(req.params.championshipId, 10);
 
-    // Verificar si ya existen registros para este championshipId en ChampionshipCategory
-    const existingChampionshipCategories = await ChampionshipDivision.findAll({
-      where: { championshipId },
-    });
+    // Verificar si ya existen registros para este championshipId en ChampionshipAgeInterval
+    const existingChampionshipAgeIntervals =
+      await ChampionshipAgeInterval.findAll({
+        where: { championshipId },
+      });
 
-    // Si ya existen registros para este championshipId, responder con un mensaje indicando que ya se han agregado las categorías por defecto
-    if (existingChampionshipCategories.length > 0) {
+    // Si ya existen registros para este championshipId, responder con un mensaje indicando que ya se han ingresado los intervalos por defecto
+    if (existingChampionshipAgeIntervals.length > 0) {
       const response: ApiResponse<undefined> = {
         status: 400,
         error:
-          "Default categories have already been added to the championship.",
+          "Default age intervals have already been added to the championship.",
       };
       return res.status(response.status).json(response);
     }
 
-    // Obtener las divisiones de la tabla defaultDivision
-    const defaultDivisions = await DefaultDivision.findAll();
+    // Obtener todos los valores de la tabla defaultAgeIntervals
+    const defaultAgeIntervals = await DefaultAgeInterval.findAll();
 
-    // Crear las relaciones entre el campeonato y las divisiones por defecto
-    const createdChampionshipCategories = await Promise.all(
-      defaultDivisions.map(async (defaultDivision) => {
-        const {
-          divisionName,
-          ageIntervalId,
-          minWeight,
-          maxWeight,
-          gender,
-          grouping,
-        } = defaultDivision;
+    // Crear las relaciones entre el campeonato y los intervalos de edad por defecto
+    const createdChampionshipAgeIntervals = await Promise.all(
+      defaultAgeIntervals.map(async (defaultAgeInterval) => {
+        // Copiar ageIntervalName, minAge y maxAge de los valores de defaultAgeInterval
+        const { ageIntervalName, minAge, maxAge } = defaultAgeInterval;
 
-        // Crear una nueva relación entre el campeonato y la división
-        return await ChampionshipDivision.create({
+        // Crear una nueva relación entre el campeonato y el intervalo de edad
+        return await ChampionshipAgeInterval.create({
           championshipId,
-          divisionName: divisionName,
-          ageIntervalId: ageIntervalId,
-          maxWeight: maxWeight,
-          minWeight: minWeight,
-          gender: gender,
-          grouping: grouping,
-          numberOfCompetitors: 0,
+          ageIntervalName,
+          minAge,
+          maxAge,
         });
       })
     );
 
-    const response: ApiResponse<typeof createdChampionshipCategories> = {
+    // Obtener las divisiones de la tabla defaultDivision
+    const defaultDivisions = await DefaultDivision.findAll();
+
+    let ageIntervalIndex = 0; // Índice para seguir el orden de los ageIntervalId
+
+    // Asignar los ageIntervalId a las divisiones basándonos en el orden en que se crearon los ChampionshipAgeInterval
+    const createdChampionshipDivisions = await Promise.all(
+      defaultDivisions.map(async (defaultDivision) => {
+        const { divisionName, minWeight, maxWeight, gender, grouping } =
+          defaultDivision;
+        console.log("ASDASDASDS", grouping);
+        // Obtener el ageIntervalId correspondiente del array de ChampionshipAgeInterval creados
+        let ageIntervalId =
+          createdChampionshipAgeIntervals.find((interval) => {
+            if (grouping && typeof grouping === "string") {
+              // Si grouping no es null, undefined y es una cadena
+              return (
+                interval.ageIntervalName === grouping ||
+                interval.ageIntervalName === grouping.split(" ")[0]
+              ); // Comparar con el primer elemento después de dividir el string
+            }
+            return false; // Si grouping es null, undefined o de otro tipo, retornar false
+          })?.ageIntervalId ?? null;
+
+        // Crear una nueva relación entre el campeonato y la división
+        if (ageIntervalId != null) {
+          const championshipDivision = await ChampionshipDivision.create({
+            championshipId,
+            divisionName,
+            ageIntervalId,
+            maxWeight,
+            minWeight,
+            gender,
+            grouping,
+            numberOfCompetitors: 0,
+          });
+          return championshipDivision;
+        }
+      })
+    );
+
+    const response: ApiResponse<typeof createdChampionshipDivisions> = {
       status: 201,
-      data: createdChampionshipCategories,
+      data: createdChampionshipDivisions,
     };
 
     res.status(response.status).json(response);
   } catch (error) {
-    console.error("Error creating championship categories:", error);
+    console.error(
+      "Error creating championship divisions and age intervals:",
+      error
+    );
     const response: ApiResponse<undefined> = {
       status: 500,
       error: "There was an error processing the request.",

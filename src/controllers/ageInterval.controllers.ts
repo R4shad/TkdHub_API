@@ -47,64 +47,6 @@ export const getChampionshipAgeIntervals = async (
   }
 };
 
-export const createChampionshipAgeInterval = async (
-  req: Request,
-  res: Response
-) => {
-  try {
-    const championshipId = parseInt(req.params.championshipId, 10);
-
-    // Verificar si ya existen registros para este championshipId en ChampionshipAgeInterval
-    const existingChampionshipAgeIntervals =
-      await ChampionshipAgeInterval.findAll({
-        where: { championshipId },
-      });
-
-    // Si ya existen registros para este championshipId, responder con un mensaje indicando que ya se han ingresado los intervalos por defecto
-    if (existingChampionshipAgeIntervals.length > 0) {
-      const response: ApiResponse<undefined> = {
-        status: 400,
-        error:
-          "Default age intervals have already been added to the championship.",
-      };
-      return res.status(response.status).json(response);
-    }
-
-    // Obtener todos los valores de la tabla defaultAgeIntervals
-    const defaultAgeIntervals = await DefaultAgeInterval.findAll();
-
-    // Crear las relaciones entre el campeonato y los intervalos de edad por defecto
-    const createdChampionshipAgeIntervals = await Promise.all(
-      defaultAgeIntervals.map(async (defaultAgeInterval) => {
-        // Copiar ageIntervalName, minAge y maxAge de los valores de defaultAgeInterval
-        const { ageIntervalName, minAge, maxAge } = defaultAgeInterval;
-
-        // Crear una nueva relación entre el campeonato y el intervalo de edad
-        return await ChampionshipAgeInterval.create({
-          championshipId,
-          ageIntervalName,
-          minAge,
-          maxAge,
-        });
-      })
-    );
-
-    const response: ApiResponse<typeof createdChampionshipAgeIntervals> = {
-      status: 201,
-      data: createdChampionshipAgeIntervals,
-    };
-
-    res.status(response.status).json(response);
-  } catch (error) {
-    console.error("Error creating championship age intervals:", error);
-    const response: ApiResponse<undefined> = {
-      status: 500,
-      error: "There was an error processing the request.",
-    };
-    res.status(response.status).json(response);
-  }
-};
-
 export const deleteChampionshipAgeInterval = async (
   req: Request,
   res: Response
