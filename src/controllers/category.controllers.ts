@@ -177,3 +177,47 @@ export const incrementCompetitors = async (req: Request, res: Response) => {
     res.status(response.status).json(response);
   }
 };
+
+export const updateChampionshipCategory = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { championshipId, categoryId } = req.params;
+    const { categoryName, gradeMin, gradeMax, numberOfCompetitors } = req.body;
+
+    // Buscar la categoría en la tabla ChampionshipCategory
+    const category = await ChampionshipCategory.findOne({
+      where: {
+        championshipId: championshipId,
+        categoryId: categoryId,
+      },
+    });
+
+    if (!category) {
+      return res.status(404).json({
+        status: 404,
+        error: "Category not found for the championship",
+      });
+    }
+
+    // Actualizar los detalles de la categoría
+    await category.update({
+      categoryName: categoryName,
+      gradeMin: gradeMin,
+      gradeMax: gradeMax,
+      numberOfCompetitors: numberOfCompetitors,
+    });
+
+    return res.status(200).json({
+      status: 200,
+      message: "Category updated successfully",
+    });
+  } catch (error) {
+    console.error("Error updating category:", error);
+    return res.status(500).json({
+      status: 500,
+      error: "There was an error processing the request.",
+    });
+  }
+};

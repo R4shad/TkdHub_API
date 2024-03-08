@@ -4,6 +4,7 @@ import {
   getCategoriesByChampionshipId,
   createChampionshipCategory,
   getChampionshipCategoriesWithCompetitors,
+  updateChampionshipCategory,
   incrementCompetitors,
 } from "../controllers/category.controllers";
 
@@ -116,5 +117,57 @@ router.post("/:championshipId", createChampionshipCategory);
  *         description: Error
  */
 router.put("/increment/:championshipId/:categoryId", incrementCompetitors);
+
+/**
+ * @openapi
+ * /api/category/{championshipId}/{categoryId}:
+ *   patch:
+ *     tags:
+ *       - Category
+ *     summary: Actualizar categoría de un campeonato
+ *     description: Actualiza los detalles de una categoría de un campeonato específico.
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID del campeonato
+ *         schema:
+ *           type: integer
+ *       - name: categoryId
+ *         in: path
+ *         required: true
+ *         description: ID de la categoría
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               categoryName:
+ *                 type: string
+ *                 description: Nombre de la categoría
+ *               gradeMin:
+ *                 type: string
+ *                 description: Grado mínimo
+ *               gradeMax:
+ *                 type: string
+ *                 description: Grado máximo
+ *               numberOfCompetitors:
+ *                 type: integer
+ *                 description: Número de competidores en la categoría
+ *     responses:
+ *       '200':
+ *         description: Categoría actualizada exitosamente
+ *       '400':
+ *         description: Solicitud incorrecta
+ *       '404':
+ *         description: No se encontró la categoría o el campeonato
+ *       '500':
+ *         description: Error interno del servidor
+ */
+router.patch("/:championshipId/:categoryId", updateChampionshipCategory);
 
 export default router;

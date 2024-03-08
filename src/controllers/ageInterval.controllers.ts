@@ -47,6 +47,54 @@ export const getChampionshipAgeIntervals = async (
   }
 };
 
+export const updateChampionshipAgeInterval = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { championshipId, ageIntervalId } = req.params;
+    const { ageIntervalName, minAge, maxAge } = req.body;
+
+    // Buscar el intervalo de edad en la tabla ChampionshipAgeInterval
+    const ageInterval = await ChampionshipAgeInterval.findOne({
+      where: {
+        championshipId: championshipId,
+        ageIntervalId: ageIntervalId,
+      },
+    });
+
+    if (!ageInterval) {
+      return res.status(404).json({
+        status: 404,
+        error: "Age interval not found for the championship",
+      });
+    }
+
+    // Actualizar los datos del intervalo de edad
+    console.log("entrada");
+    console.log(ageIntervalName, minAge, maxAge);
+    await ageInterval.update({
+      ageIntervalName: ageIntervalName,
+      minAge: minAge,
+      maxAge: maxAge,
+    });
+
+    console.log("DESPUES");
+    console.log(ageInterval);
+
+    return res.status(200).json({
+      status: 200,
+      message: "Age interval updated successfully",
+    });
+  } catch (error) {
+    console.error("Error updating age interval:", error);
+    return res.status(500).json({
+      status: 500,
+      error: "There was an error processing the request.",
+    });
+  }
+};
+
 export const deleteChampionshipAgeInterval = async (
   req: Request,
   res: Response

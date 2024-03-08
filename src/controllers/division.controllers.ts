@@ -205,6 +205,61 @@ export const createChampionshipDivisionsAndAgeIntervals = async (
   }
 };
 
+export const updateChampionshipDivision = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { championshipId, divisionId } = req.params;
+    const {
+      divisionName,
+      ageIntervalId,
+      minWeight,
+      maxWeight,
+      gender,
+      grouping,
+      numberOfCompetitors,
+    } = req.body;
+
+    // Buscar la división en la tabla ChampionshipDivision
+    const division = await ChampionshipDivision.findOne({
+      where: {
+        championshipId: championshipId,
+        divisionId: divisionId,
+      },
+    });
+
+    if (!division) {
+      return res.status(404).json({
+        status: 404,
+        error: "Division not found for the championship",
+      });
+    }
+
+    // Actualizar los detalles de la división
+    await division.update({
+      divisionName: divisionName,
+      ageIntervalId: ageIntervalId,
+      minWeight: minWeight,
+      maxWeight: maxWeight,
+      gender: gender,
+      grouping: grouping,
+      numberOfCompetitors: numberOfCompetitors,
+    });
+
+    return res.status(200).json({
+      status: 200,
+      message: "Division updated successfully",
+    });
+  } catch (error) {
+    console.error("Error updating division:", error);
+    return res.status(500).json({
+      status: 500,
+      error: "There was an error processing the request.",
+    });
+  }
+};
+
 export const incrementDivisionCompetitors = async (
   req: Request,
   res: Response

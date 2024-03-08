@@ -69,6 +69,42 @@ export const getCompetitorsByClubCode = async (req: Request, res: Response) => {
   }
 };
 
+export const updateCompetitor = async (req: Request, res: Response) => {
+  try {
+    const { competitorId } = req.params;
+    const { participantId, championshipId, divisionId, categoryId } = req.body;
+
+    // Buscar el competidor en la tabla Competitor
+    const competitor = await Competitor.findByPk(competitorId);
+
+    if (!competitor) {
+      return res.status(404).json({
+        status: 404,
+        error: "Competitor not found",
+      });
+    }
+
+    // Actualizar los detalles del competidor
+    await competitor.update({
+      participantId: participantId,
+      championshipId: championshipId,
+      divisionId: divisionId,
+      categoryId: categoryId,
+    });
+
+    return res.status(200).json({
+      status: 200,
+      message: "Competitor updated successfully",
+    });
+  } catch (error) {
+    console.error("Error updating competitor:", error);
+    return res.status(500).json({
+      status: 500,
+      error: "There was an error processing the request.",
+    });
+  }
+};
+
 export const createCompetitor = async (req: Request, res: Response) => {
   try {
     const { championshipId } = req.params;
