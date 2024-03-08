@@ -344,3 +344,35 @@ export const getChampionshipDivisionsWithCompetitors = async (
     res.status(response.status).json(response);
   }
 };
+export const deleteChampionshipDivision = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const divisionId = req.params.divisionId;
+
+    // Buscar la división de campeonato en la tabla ChampionshipDivision
+    const division = await ChampionshipDivision.findByPk(divisionId);
+
+    if (!division) {
+      return res.status(404).json({
+        status: 404,
+        error: "División de campeonato no encontrada",
+      });
+    }
+
+    // Eliminar la división de campeonato
+    await division.destroy();
+
+    return res.status(200).json({
+      status: 200,
+      message: "División de campeonato eliminada exitosamente",
+    });
+  } catch (error) {
+    console.error("Error al eliminar la división de campeonato:", error);
+    return res.status(500).json({
+      status: 500,
+      error: "Hubo un error al procesar la solicitud.",
+    });
+  }
+};

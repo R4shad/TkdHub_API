@@ -9,6 +9,7 @@ import {
   createChampionshipDivisionsAndAgeIntervals,
   incrementDivisionCompetitors,
   getChampionshipDivisionsWithCompetitors,
+  deleteChampionshipDivision,
 } from "../controllers/division.controllers";
 
 const router = Router();
@@ -228,5 +229,30 @@ router.get(
   "/:championshipId/withCompetitors",
   getChampionshipDivisionsWithCompetitors
 );
+
+/**
+ * @openapi
+ * /api/division/{divisionId}:
+ *   delete:
+ *     tags:
+ *       - Division
+ *     summary: Eliminar división de campeonato
+ *     description: Elimina una división de campeonato específica por su ID.
+ *     parameters:
+ *       - name: divisionId
+ *         in: path
+ *         required: true
+ *         description: ID de la división de campeonato
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       '200':
+ *         description: División de campeonato eliminada exitosamente
+ *       '404':
+ *         description: No se encontró la división de campeonato
+ *       '500':
+ *         description: Error interno del servidor
+ */
+router.delete("/:divisionId", deleteChampionshipDivision);
 
 export default router;

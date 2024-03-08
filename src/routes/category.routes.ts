@@ -6,6 +6,8 @@ import {
   getChampionshipCategoriesWithCompetitors,
   updateChampionshipCategory,
   incrementCompetitors,
+  deleteChampionshipCategory,
+  deleteAllChampionshipCategories,
 } from "../controllers/category.controllers";
 
 const router = Router();
@@ -169,5 +171,55 @@ router.put("/increment/:championshipId/:categoryId", incrementCompetitors);
  *         description: Error interno del servidor
  */
 router.patch("/:championshipId/:categoryId", updateChampionshipCategory);
+
+/**
+ * @openapi
+ * /api/category/{categoryId}:
+ *   delete:
+ *     tags:
+ *       - Category
+ *     summary: Eliminar categoría de campeonato
+ *     description: Elimina una categoría de campeonato específica por su ID.
+ *     parameters:
+ *       - name: categoryId
+ *         in: path
+ *         required: true
+ *         description: ID de la categoría de campeonato
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       '200':
+ *         description: Categoría de campeonato eliminada exitosamente
+ *       '404':
+ *         description: No se encontró la categoría de campeonato
+ *       '500':
+ *         description: Error interno del servidor
+ */
+router.delete("/:categoryId", deleteChampionshipCategory);
+
+/**
+ * @openapi
+ * /api/category/deleteAll/{championshipId}:
+ *   delete:
+ *     tags:
+ *       - Category
+ *     summary: Eliminar todas las categorías de campeonato asociadas
+ *     description: Elimina todas las categorías de campeonato asociadas a un campeonato específico por su ID.
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID del campeonato
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       '200':
+ *         description: Todas las categorías de campeonato asociadas han sido eliminadas exitosamente
+ *       '404':
+ *         description: No se encontraron categorías de campeonato asociadas al campeonato
+ *       '500':
+ *         description: Error interno del servidor
+ */
+router.delete("/deleteAll/:championshipId", deleteAllChampionshipCategories);
 
 export default router;

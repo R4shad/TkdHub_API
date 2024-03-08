@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import ChampionshipAgeInterval from "../models/championshipAgeInterval";
 import ApiResponse from "../interfaces/apiResponse";
 import DefaultAgeInterval from "../models/defaultAgeInterval";
+import ChampionshipDivision from "../models/championshipDivision";
 
 export const getAgeIntervals = async (req: Request, res: Response) => {
   try {
@@ -99,28 +100,76 @@ export const deleteChampionshipAgeInterval = async (
   req: Request,
   res: Response
 ) => {
-  const championshipId = parseInt(req.params.championshipId);
-  const ageIntervalId = parseInt(req.params.ageIntervalId);
-
   try {
-    const result = await ChampionshipAgeInterval.destroy({
-      where: { championshipId, ageIntervalId },
+    const ageIntervalId = req.params.ageIntervalId;
+
+    // Buscar el intervalo de edad en la tabla ChampionshipAgeInterval
+    const ageInterval = await ChampionshipAgeInterval.findByPk(ageIntervalId);
+
+    if (!ageInterval) {
+      return res.status(404).json({
+        status: 404,
+        error: "Intervalo de edad no encontrado",
+      });
+    }
+
+    // Eliminar las divisiones asociadas al ageIntervalId en la tabla ChampionshipDivision
+    await ChampionshipDivision.destroy({ where: { ageIntervalId } });
+
+    // Eliminar el intervalo de edad
+    await ageInterval.destroy();
+
+    return res.status(200).json({
+      status: 200,
+      message: "Intervalo de edad eliminado exitosamente",
+    });
+  } catch (error) {
+    console.error("Error al eliminar el intervalo de edad:", error);
+    return res.status(500).json({
+      status: 500,
+      error: "Hubo un error al procesar la solicitud.",
+    });
+  }
+};
+
+export const deleteAllChampionshipAgeIntervals = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const championshipId = req.params.championshipId;
+
+    // Buscar todos los intervalos de edad asociados al campeonato
+    const ageIntervals = await ChampionshipAgeInterval.findAll({
+      where: { championshipId },
     });
 
-    if (result === 1) {
-      res.status(200).json({
-        status: 200,
-        message: "Intervalo de edad eliminado exitosamente",
+    if (!ageIntervals || ageIntervals.length === 0) {
+      return res.status(404).json({
+        status: 404,
+        error: "No se encontraron intervalos de edad asociados al campeonato",
       });
-    } else {
-      res
-        .status(404)
-        .json({ status: 404, message: "Intervalo de edad no encontrado" });
     }
+
+    // Eliminar todas las divisiones asociadas a los intervalos de edad eliminados
+    await ChampionshipDivision.destroy({ where: { championshipId } });
+
+    // Eliminar todos los intervalos de edad asociados al campeonato
+    await ChampionshipAgeInterval.destroy({ where: { championshipId } });
+
+    return res.status(200).json({
+      status: 200,
+      message:
+        "Todos los intervalos de edad asociados al campeonato han sido eliminados exitosamente, junto con sus divisiones",
+    });
   } catch (error) {
-    console.error("Error al eliminar intervalo de edad:", error);
-    res
-      .status(500)
-      .json({ status: 500, message: "Error al procesar la solicitud" });
+    console.error(
+      "Error al eliminar los intervalos de edad asociados al campeonato:",
+      error
+    );
+    return res.status(500).json({
+      status: 500,
+      error: "Hubo un error al procesar la solicitud.",
+    });
   }
 };

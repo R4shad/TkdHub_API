@@ -4,6 +4,7 @@ import {
   getChampionshipAgeIntervals,
   updateChampionshipAgeInterval,
   deleteChampionshipAgeInterval,
+  deleteAllChampionshipAgeIntervals,
 } from "../controllers/ageInterval.controllers";
 
 const router = Router();
@@ -90,19 +91,13 @@ router.patch("/:championshipId/:ageIntervalId", updateChampionshipAgeInterval);
 
 /**
  * @openapi
- * /api/participant/{championshipId}/{ageIntervalId}:
+ * /api/ageInterval/{ageIntervalId}:
  *   delete:
  *     tags:
- *       - Participant
- *     summary: Eliminar intervalo de edad del campeonato
- *     description: Elimina un intervalo de edad de un campeonato mediante su ID de campeonato y el ID del intervalo de edad.
+ *       - AgeInterval
+ *     summary: Eliminar intervalo de edad de un campeonato
+ *     description: Elimina un intervalo de edad específico de un campeonato.
  *     parameters:
- *       - name: championshipId
- *         in: path
- *         required: true
- *         description: ID del campeonato
- *         schema:
- *           type: integer
  *       - name: ageIntervalId
  *         in: path
  *         required: true
@@ -112,11 +107,40 @@ router.patch("/:championshipId/:ageIntervalId", updateChampionshipAgeInterval);
  *     responses:
  *       '200':
  *         description: Intervalo de edad eliminado exitosamente
+ *       '400':
+ *         description: Solicitud incorrecta
  *       '404':
- *         description: Intervalo de edad no encontrado
+ *         description: No se encontró el intervalo de edad
  *       '500':
- *         description: Error al procesar la solicitud
+ *         description: Error interno del servidor
  */
-router.delete("/:championshipId/:ageIntervalId", deleteChampionshipAgeInterval);
+router.delete("/:ageIntervalId", deleteChampionshipAgeInterval);
+
+/**
+ * @openapi
+ * /api/ageInterval/deleteAll/{championshipId}:
+ *   delete:
+ *     tags:
+ *       - AgeInterval
+ *     summary: Eliminar todos los intervalos de edad de un campeonato
+ *     description: Elimina todos los intervalos de edad asociados a un campeonato específico.
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID del campeonato
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       '200':
+ *         description: Todos los intervalos de edad asociados al campeonato han sido eliminados exitosamente
+ *       '400':
+ *         description: Solicitud incorrecta
+ *       '404':
+ *         description: No se encontraron intervalos de edad asociados al campeonato
+ *       '500':
+ *         description: Error interno del servidor
+ */
+router.delete("/deleteAll/:championshipId", deleteAllChampionshipAgeIntervals);
 
 export default router;

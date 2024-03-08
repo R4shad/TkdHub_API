@@ -221,3 +221,81 @@ export const updateChampionshipCategory = async (
     });
   }
 };
+
+export const deleteChampionshipCategory = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { categoryId } = req.params;
+
+    // Buscar la categoría de campeonato en la tabla ChampionshipCategory
+    const category = await ChampionshipCategory.findOne({
+      where: {
+        categoryId: categoryId,
+      },
+    });
+    console.log("XQ TOY AQUI");
+    if (!category) {
+      return res.status(404).json({
+        status: 404,
+        error: "Categoría de campeonato no encontrada",
+      });
+    }
+
+    // Eliminar la categoría de campeonato
+    await category.destroy();
+
+    return res.status(200).json({
+      status: 200,
+      message: "Categoría de campeonato eliminada exitosamente",
+    });
+  } catch (error) {
+    console.error("Error al eliminar la categoría de campeonato:", error);
+    return res.status(500).json({
+      status: 500,
+      error: "Hubo un error al procesar la solicitud.",
+    });
+  }
+};
+
+export const deleteAllChampionshipCategories = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const championshipId = req.params.championshipId;
+    console.log("datos:");
+    console.log(championshipId);
+    // Buscar todas las categorías de campeonato asociadas al campeonato
+    const categories = await ChampionshipCategory.findAll({
+      where: { championshipId },
+    });
+
+    if (!categories || categories.length === 0) {
+      return res.status(404).json({
+        status: 404,
+        error:
+          "No se encontraron categorías de campeonato asociadas al campeonato",
+      });
+    }
+
+    // Eliminar todas las categorías de campeonato asociadas al campeonato
+    await ChampionshipCategory.destroy({ where: { championshipId } });
+
+    return res.status(200).json({
+      status: 200,
+      message:
+        "Todas las categorías de campeonato asociadas han sido eliminadas exitosamente",
+    });
+  } catch (error) {
+    console.error(
+      "Error al eliminar las categorías de campeonato asociadas al campeonato:",
+      error
+    );
+    return res.status(500).json({
+      status: 500,
+      error: "Hubo un error al procesar la solicitud.",
+    });
+  }
+};
