@@ -40,7 +40,6 @@ export const getMatchesByChampionshipId = async (
   }
 };
 
-// Controlador para obtener partidos por ID de campeonato y ID de bracket
 export const getMatchesByChampionshipIdAndBracketId = async (
   req: Request,
   res: Response
@@ -51,9 +50,6 @@ export const getMatchesByChampionshipIdAndBracketId = async (
     // Buscar partidos por el ID del campeonato y el ID del bracket
     const matches = await Match.findAll({
       where: { championshipId, bracketId },
-      attributes: {
-        exclude: ["createdAt", "updatedAt"], // Excluir createdAt y updatedAt de Match
-      },
       include: [
         {
           model: Competitor,
@@ -72,6 +68,39 @@ export const getMatchesByChampionshipIdAndBracketId = async (
     res.status(200).json({ status: 200, data: matches });
   } catch (error) {
     console.error("Error fetching matches:", error);
+    res.status(500).json({
+      status: 500,
+      error: "There was an error processing the request.",
+    });
+  }
+};
+
+export const getMatchIdByBracketIdAndRound = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { bracketId, round } = req.params;
+
+    // Buscar el partido por el ID del bracket y la ronda
+    const match = await Match.findOne({
+      where: { bracketId, round },
+      attributes: ["matchId"], // Solo obtener el matchId
+    });
+
+    // Si no se encuentra el partido, enviar una respuesta 404
+    if (!match) {
+      return res.status(404).json({
+        status: 404,
+        error:
+          "No se encontraron partidos para el bracket y la ronda especificados.",
+      });
+    }
+
+    // Enviar respuesta con el matchId encontrado
+    res.status(200).json({ status: 200, data: match.matchId });
+  } catch (error) {
+    console.error("Error fetching match:", error);
     res.status(500).json({
       status: 500,
       error: "There was an error processing the request.",
@@ -168,6 +197,43 @@ export const updateMatch = async (req: Request, res: Response) => {
     res.status(200).json({ status: 200, data: match });
   } catch (error) {
     console.error("Error updating match:", error);
+    res.status(500).json({
+      status: 500,
+      error: "There was an error processing the request.",
+    });
+  }
+};
+
+export const updateMatchRounds = async (req: Request, res: Response) => {
+  try {
+    const { matchId } = req.params; // Obtener matchId de los parámetros de ruta
+    const { redRounds, blueRounds } = req.body;
+
+    // Buscar el partido por matchId
+    const match = await Match.findByPk(matchId);
+
+    if (!match) {
+      return res.status(404).json({
+        status: 404,
+        error: "Match not found",
+      });
+    }
+
+    // Actualizar los valores de las rondas si se proporcionan en el cuerpo de la solicitud
+    if (redRounds !== undefined) {
+      match.redRounds = redRounds;
+    }
+    if (blueRounds !== undefined) {
+      match.blueRounds = blueRounds;
+    }
+
+    // Guardar los cambios
+    await match.save();
+
+    // Enviar respuesta con el partido actualizado
+    res.status(200).json({ status: 200, data: match });
+  } catch (error) {
+    console.error("Error updating match rounds:", error);
     res.status(500).json({
       status: 500,
       error: "There was an error processing the request.",

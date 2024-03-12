@@ -50,7 +50,7 @@ import DefaultDivision from "../models/defaultDivision";
       },
       {
         id: 4,
-        ageIntervalName: "Infanil",
+        ageIntervalName: "Infantiles",
         minAge: 10,
         maxAge: 11,
       },

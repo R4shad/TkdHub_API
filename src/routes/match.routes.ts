@@ -2,8 +2,10 @@ import { Router } from "express";
 import {
   getMatchesByChampionshipId,
   getMatchesByChampionshipIdAndBracketId,
+  getMatchIdByBracketIdAndRound,
   createMatch,
   updateMatch,
+  updateMatchRounds,
 } from "../controllers/match.controllers";
 
 const router = Router();
@@ -97,6 +99,35 @@ router.post("/:championshipId", createMatch);
 
 /**
  * @openapi
+ * /api/match/getId/{bracketId}/{round}:
+ *   get:
+ *     tags:
+ *       - Match
+ *     parameters:
+ *       - in: path
+ *         name: bracketId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID del bracket para filtrar partidos
+ *       - in: path
+ *         name: round
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Ronda del partido
+ *     responses:
+ *       200:
+ *         description: OK
+ *       404:
+ *         description: No se encontraron partidos para el bracket y la ronda especificados
+ *       500:
+ *         description: Error
+ */
+router.get("/getId/:bracketId/:round", getMatchIdByBracketIdAndRound);
+
+/**
+ * @openapi
  * /api/match/{matchId}:
  *   patch:
  *     tags:
@@ -136,5 +167,39 @@ router.post("/:championshipId", createMatch);
  *         description: Error
  */
 router.patch("/:matchId", updateMatch);
+
+/**
+ * @swagger
+ * /api/match/{matchId}/updateRounds:
+ *   patch:
+ *     tags:
+ *       - Match
+ *     parameters:
+ *       - in: path
+ *         name: matchId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID del partido a actualizar
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               redRounds:
+ *                 type: integer
+ *               blueRounds:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: OK
+ *       404:
+ *         description: Partido no encontrado
+ *       500:
+ *         description: Error
+ */
+router.patch("/:matchId/updateRounds", updateMatchRounds);
 
 export default router;
