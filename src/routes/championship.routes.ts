@@ -7,6 +7,7 @@ import {
 } from "../controllers/championship.controllers";
 
 const router = Router();
+
 /**
  * @openapi
  * /api/championship:
@@ -57,9 +58,7 @@ router.get("/:championshipId", getChampionshipById);
  *                 type: string
  *               organizer:
  *                 type: string
- *               organizerCi:
- *                 type: number
- *               organizerPassword:
+ *               email:
  *                 type: string
  *               championshipDate:
  *                 type: string
@@ -102,4 +101,5 @@ router.post("/", createChampionship);
  *         description: Error
  */
 router.post("/login/:championshipId", loginOrganizer);
+
 export default router;

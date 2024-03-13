@@ -33,6 +33,7 @@ import routesMatch from "../routes/match.routes";
 import ChampionshipAgeInterval from "./championshipAgeInterval";
 import DefaultCategory from "./defaultCategory";
 import DefaultDivision from "./defaultDivision";
+import Organizer from "./organizer";
 class Server {
   app: express.Application;
   port: string | number;
@@ -87,6 +88,7 @@ class Server {
 
   async dbConnect() {
     try {
+      await Organizer.sync();
       await Championship.sync({});
       await Responsible.sync();
       await ChampionshipResponsible.sync();

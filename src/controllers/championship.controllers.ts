@@ -1,6 +1,6 @@
-// controllers/championship.controllers.ts
 import { Request, Response } from "express";
 import Championship from "./../models/championship";
+import Organizer from "./../models/organizer";
 import ApiResponse from "../interfaces/apiResponse";
 import jwt from "jsonwebtoken";
 
@@ -24,13 +24,7 @@ export const getChampionships = async (req: Request, res: Response) => {
 
 export const createChampionship = async (req: Request, res: Response) => {
   try {
-    const {
-      championshipName,
-      organizer,
-      organizerCi,
-      organizerPassword,
-      championshipDate,
-    } = req.body;
+    const { championshipName, organizer, email, championshipDate } = req.body;
 
     // Check if a championship with the same name already exists
     const existingChampionship = await Championship.findOne({
@@ -45,14 +39,23 @@ export const createChampionship = async (req: Request, res: Response) => {
       return res.status(response.status).json(response);
     }
 
-    // If it doesn't exist, create a new championship
+    // If it doesn't exist, create a new organizer
+    const newOrganizer = await Organizer.create({
+      email: email,
+      password: "",
+    });
+
+    // Create a new championship with organizerId set to the newly created organizer's ID
     const newChampionship = await Championship.create({
       championshipName: championshipName,
       organizer: organizer,
-      organizerCi: organizerCi,
-      organizerPassword: organizerPassword, // Aquí se guarda la contraseña
+      organizerId: newOrganizer.organizerId, // Set organizerId to the newly created organizer's ID
       active: 1,
       championshipDate: championshipDate,
+      stage: "InitialConfiguration",
+      goldPoints: 7,
+      silverPoints: 4,
+      bronzePoints: 1,
     });
 
     const response: ApiResponse<typeof newChampionship> = {
@@ -75,12 +78,12 @@ export const loginOrganizer = async (req: Request, res: Response) => {
     const { championshipId } = req.params;
     const { organizerCi, organizerPassword } = req.body;
 
-    // Validamos si existe en la base de datos
-    const championship = await Championship.findOne({
-      where: { organizerCi: organizerCi, championshipId: championshipId },
+    // Buscar al organizador en la tabla Organizer
+    const organizer = await Organizer.findOne({
+      where: { organizerCi: organizerCi },
     });
 
-    if (!championship) {
+    if (!organizer) {
       const response: ApiResponse<undefined> = {
         status: 404,
         error: "Organizer not found.",
@@ -88,8 +91,8 @@ export const loginOrganizer = async (req: Request, res: Response) => {
       return res.status(response.status).json(response);
     }
 
-    // Verificamos la contraseña
-    if (organizerPassword !== championship.organizerPassword) {
+    // Verificar la contraseña del organizador
+    if (organizerPassword !== organizer.password) {
       const response: ApiResponse<undefined> = {
         status: 400,
         error: "Incorrect Password.",
@@ -97,10 +100,10 @@ export const loginOrganizer = async (req: Request, res: Response) => {
       return res.status(response.status).json(response);
     }
 
-    // Generamos el token
+    // Generar el token
     const token = jwt.sign(
       {
-        name: championship.organizer,
+        name: organizer.email, // Aquí deberías tener el nombre del organizador
       },
       process.env.SECRET_KEY || "R4shad"
     );

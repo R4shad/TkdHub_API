@@ -5,9 +5,10 @@ import Category from "./defaultCategory";
 
 class Bracket extends Model {
   public bracketId!: number;
-  public divisionId!: number; // Cambio de divisionName a divisionId
-  public categoryId!: number; // Cambio de categoryName a categoryId
+  public divisionId!: number;
+  public categoryId!: number;
   public championshipId!: number;
+  public scoreable!: boolean; // Nuevo campo scoreable
 }
 
 Bracket.init(
@@ -19,18 +20,20 @@ Bracket.init(
       primaryKey: true,
     },
     divisionId: {
-      // Cambio de divisionName a divisionId
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
     },
     categoryId: {
-      // Cambio de categoryName a categoryId
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
     },
     championshipId: {
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
+    },
+    scoreable: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
     },
   },
   {
@@ -41,11 +44,11 @@ Bracket.init(
 );
 
 Bracket.belongsTo(Division, {
-  foreignKey: "divisionId", // Cambio de divisionName a divisionId
+  foreignKey: "divisionId",
 });
 
 Bracket.belongsTo(Category, {
-  foreignKey: "categoryId", // Cambio de categoryName a categoryId
+  foreignKey: "categoryId",
 });
 
 export default Bracket;
