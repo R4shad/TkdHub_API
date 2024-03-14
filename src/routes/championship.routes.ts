@@ -1,7 +1,9 @@
 import { Router } from "express";
 import {
   getChampionships,
+  getChampionshipStage,
   createChampionship,
+  updateStage,
   loginOrganizer,
   getChampionshipById,
 } from "../controllers/championship.controllers";
@@ -40,6 +42,56 @@ router.get("/", getChampionships);
  *         description: Error
  */
 router.get("/:championshipId", getChampionshipById);
+
+/**
+ * @openapi
+ * /api/championship/stage/{championshipId}:
+ *   get:
+ *     tags:
+ *       - Championship
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID of the championship
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 stage:
+ *                   type: string
+ *                   description: Current stage of the championship
+ *       500:
+ *         description: Error
+ */
+router.get("/stage/:championshipId", getChampionshipStage);
+
+/**
+ * @openapi
+ * /api/championship/updateStage/{championshipId}:
+ *   put:
+ *     tags:
+ *       - Championship
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID of the championship
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Error
+ */
+router.put("/updateStage/:championshipId", updateStage);
 
 /**
  * @openapi

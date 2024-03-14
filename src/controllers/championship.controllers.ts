@@ -4,6 +4,18 @@ import Organizer from "./../models/organizer";
 import ApiResponse from "../interfaces/apiResponse";
 import jwt from "jsonwebtoken";
 
+enum ChampionshipStage {
+  Etapa1 = "InitialConfiguration",
+  Etapa2 = "ClubRegistration",
+  Etapa3 = "Registrations",
+  Etapa4 = "Weigh-in",
+  Etapa5 = "Groupings",
+  Etapa6 = "BracketDraw",
+  Etapa7 = "ResponsiblesRegistration",
+  Etapa8 = "CombatRecord",
+  Etapa9 = "End",
+}
+
 export const getChampionships = async (req: Request, res: Response) => {
   try {
     const championshipsList = await Championship.findAll();
@@ -15,6 +27,96 @@ export const getChampionships = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error fetching championships:", error);
     const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "There was an error processing the request.",
+    };
+    res.status(response.status).json(response);
+  }
+};
+
+export const getChampionshipStage = async (req: Request, res: Response) => {
+  try {
+    const { championshipId } = req.params;
+
+    // Obtener el campeonato por ID
+    const championship = await Championship.findByPk(championshipId);
+
+    if (!championship) {
+      const response: ApiResponse<undefined> = {
+        status: 404,
+        error: "Championship not found.",
+      };
+      return res.status(response.status).json(response);
+    }
+
+    // Convertir el tipo ChampionshipStage | null a string
+    const stage: string = championship.stage ?? "Unknown";
+
+    const response: ApiResponse<{ stage: string }> = {
+      status: 200,
+      data: { stage },
+    };
+    res.json(response);
+  } catch (error) {
+    console.error("Error fetching championship stage by ID:", error);
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "There was an error processing the request.",
+    };
+    res.status(response.status).json(response);
+  }
+};
+
+export const updateStage = async (req: Request, res: Response) => {
+  try {
+    const { championshipId } = req.params;
+
+    const championship = await Championship.findByPk(Number(championshipId));
+
+    if (!championship) {
+      const response = {
+        status: 404,
+        error: "Championship not found.",
+      };
+      return res.status(response.status).json(response);
+    }
+
+    // Verificar si la propiedad stage no es null
+    if (championship.stage === null) {
+      const response = {
+        status: 400,
+        error: "Championship stage is null.",
+      };
+      return res.status(response.status).json(response);
+    }
+
+    // Obtener el índice actual del enum ChampionshipStage
+    const currentStageIndex = Object.values(ChampionshipStage).indexOf(
+      championship.stage
+    );
+    console.log("BBBBBBBBBBBBB", currentStageIndex);
+    // Verificar si el campeonato está en la última etapa
+    if (currentStageIndex === Object.values(ChampionshipStage).length - 1) {
+      const response = {
+        status: 400,
+        error: "The championship is already in the last stage.",
+      };
+      return res.status(response.status).json(response);
+    }
+    console.log("CCCCCCCCCCCCc");
+    // Actualizar la etapa del campeonato al siguiente
+    const nextStage = Object.values(ChampionshipStage)[currentStageIndex + 1];
+    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAA", nextStage);
+    await championship.update({ stage: nextStage });
+
+    const response = {
+      status: 200,
+      message: "Championship stage updated successfully.",
+    };
+    res.status(response.status).json(response);
+  } catch (error) {
+    console.error("Error updating championship stage:", error);
+    const response = {
       status: 500,
       error: "There was an error processing the request.",
     };
