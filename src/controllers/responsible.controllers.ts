@@ -22,10 +22,10 @@ export const getResponsibles = async (req: Request, res: Response) => {
 
     for (const responsible of responsiblesList) {
       const responsibleData = await Responsible.findByPk(
-        responsible.responsibleCi
+        responsible.responsibleId
       ); // Consultar los datos de Responsible usando el responsableCi de ChampionshipResponsible
       const formattedData = {
-        responsibleCi: responsible.responsibleCi,
+        responsibleCi: responsible.responsibleId,
         name: responsibleData?.name || null, // Acceder al nombre de Responsible
         password: responsible.password,
       };

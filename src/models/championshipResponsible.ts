@@ -5,7 +5,7 @@ import Responsible from "./responsible";
 
 class ChampionshipResponsible extends Model {
   public championshipId!: number;
-  public responsibleCi!: number;
+  public responsibleId!: string; // Cambiado de number a string para usar UUID
   public password!: string;
 }
 
@@ -16,8 +16,8 @@ ChampionshipResponsible.init(
       allowNull: false,
       primaryKey: true,
     },
-    responsibleCi: {
-      type: DataTypes.INTEGER.UNSIGNED,
+    responsibleId: {
+      type: DataTypes.UUID, // Cambiado el tipo de dato a UUID
       allowNull: false,
       primaryKey: true,
     },
@@ -38,7 +38,7 @@ ChampionshipResponsible.belongsTo(Championship, {
 });
 
 ChampionshipResponsible.belongsTo(Responsible, {
-  foreignKey: "responsibleCi",
+  foreignKey: "responsibleId",
 });
 
 export default ChampionshipResponsible;

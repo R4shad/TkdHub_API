@@ -1,7 +1,6 @@
 import { Router } from "express";
 import {
   getClubs,
-  getClubsOrganizer,
   createClub,
   updateClub,
   deleteClub,
@@ -11,7 +10,7 @@ const router = Router();
 
 /**
  * @openapi
- * /api/club/{championshipId}:
+ * /api/club/Organizer/{championshipId}:
  *   get:
  *     tags:
  *       - Club
@@ -19,7 +18,7 @@ const router = Router();
  *       - name: championshipId
  *         in: path
  *         required: true
- *         description: ID of the championship
+ *         description: ID del campeonato
  *         schema:
  *           type: integer
  *     responses:
@@ -37,31 +36,6 @@ router.get("/Organizer/:championshipId", getClubs);
 /**
  * @openapi
  * /api/club/{championshipId}:
- *   get:
- *     tags:
- *       - Club
- *     parameters:
- *       - name: championshipId
- *         in: path
- *         required: true
- *         description: ID of the championship
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: OK
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Club'
- */
-router.get("/:championshipId", getClubsOrganizer);
-
-/**
- * @openapi
- * /api/club/{championshipId}:
  *   post:
  *     tags:
  *       - Club
@@ -69,7 +43,7 @@ router.get("/:championshipId", getClubsOrganizer);
  *       - name: championshipId
  *         in: path
  *         required: true
- *         description: ID of the championship
+ *         description: ID del campeonato
  *         schema:
  *           type: integer
  *     requestBody:
@@ -81,23 +55,20 @@ router.get("/:championshipId", getClubsOrganizer);
  *             properties:
  *               clubCode:
  *                 type: string
- *                 maxLength: 5
  *               name:
  *                 type: string
- *                 maxLength: 50
- *               coachCi:
- *                 type: integer
- *                 minimum: 0
  *               coachName:
  *                 type: string
- *                 maxLength: 50
+ *               email:
+ *                 type: string
  *             required:
  *               - clubCode
- *               - coachCi
+ *               - name
  *               - coachName
+ *               - email
  *     responses:
  *       201:
- *         description: Created
+ *         description: Creado
  *         content:
  *           application/json:
  *             schema:
@@ -113,19 +84,19 @@ router.post("/:championshipId", createClub);
  *   patch:
  *     tags:
  *       - Club
- *     summary: Update club information
- *     description: Update information of a specific club by its club code and championship ID.
+ *     summary: Actualizar información del club
+ *     description: Actualiza la información de un club específico por su código de club e ID de campeonato.
  *     parameters:
  *       - name: championshipId
  *         in: path
  *         required: true
- *         description: ID of the championship
+ *         description: ID del campeonato
  *         schema:
  *           type: integer
  *       - name: clubCode
  *         in: path
  *         required: true
- *         description: Club code
+ *         description: Código del club
  *         schema:
  *           type: string
  *     requestBody:
@@ -137,29 +108,22 @@ router.post("/:championshipId", createClub);
  *             properties:
  *               clubCode:
  *                 type: string
- *                 description: New club code
  *               name:
  *                 type: string
- *                 description: New name of the club
- *               coachCi:
- *                 type: integer
- *                 description: New coach CI
  *               coachName:
  *                 type: string
- *                 description: New coach name
- *           required:
- *             - name
- *             - coachCi
- *             - coachName
+ *               email:
+ *                 type: string
+ *                 format: email
  *     responses:
  *       '200':
- *         description: Club updated successfully
+ *         description: Club actualizado correctamente
  *       '400':
- *         description: Bad request
+ *         description: Solicitud incorrecta
  *       '404':
- *         description: Club not found
+ *         description: Club no encontrado
  *       '500':
- *         description: Internal server error
+ *         description: Error interno del servidor
  */
 router.patch("/:championshipId/:clubCode", updateClub);
 
@@ -169,28 +133,28 @@ router.patch("/:championshipId/:clubCode", updateClub);
  *   delete:
  *     tags:
  *       - Club
- *     summary: Delete a club
- *     description: Deletes a club associated with a championship.
+ *     summary: Eliminar un club
+ *     description: Elimina un club asociado a un campeonato.
  *     parameters:
  *       - name: championshipId
  *         in: path
  *         required: true
- *         description: ID of the championship
+ *         description: ID del campeonato
  *         schema:
  *           type: integer
  *       - name: clubCode
  *         in: path
  *         required: true
- *         description: Club code to delete
+ *         description: Código del club a eliminar
  *         schema:
  *           type: string
  *     responses:
  *       '200':
- *         description: Club deleted successfully
+ *         description: Club eliminado correctamente
  *       '404':
- *         description: Club not found
+ *         description: Club no encontrado
  *       '500':
- *         description: Internal server error
+ *         description: Error interno del servidor
  */
 router.delete("/:championshipId/:clubCode", deleteClub);
 

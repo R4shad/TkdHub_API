@@ -4,8 +4,8 @@ import { sequelize } from "../config/db";
 class Club extends Model {
   public clubCode!: string;
   public name!: string | null;
-  public coachCi!: number;
   public coachName!: string;
+  public email!: string;
   public password!: string;
 }
 
@@ -20,16 +20,16 @@ Club.init(
       type: DataTypes.STRING(50),
       allowNull: true,
     },
-    coachCi: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      allowNull: false,
-    },
     coachName: {
       type: DataTypes.STRING(50),
       allowNull: false,
     },
+    email: {
+      type: DataTypes.STRING(100),
+      allowNull: false,
+    },
     password: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING,
       allowNull: false,
     },
   },
@@ -39,4 +39,5 @@ Club.init(
     timestamps: false,
   }
 );
+
 export default Club;
