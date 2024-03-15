@@ -124,11 +124,12 @@ export const createClub = async (req: Request, res: Response) => {
 
 export const updateClub = async (req: Request, res: Response) => {
   try {
-    const { championshipId, clubCode } = req.params;
-    const { name, coachName } = req.body; // Cambiado coachCi a coachName, eliminado coachCi
+    const { championshipId, oldClubCode } = req.params;
+    const { name, coachName, email, clubCode } = req.body;
 
+    // Verificar si el club existe en ChampionshipClub
     const existingClub = await ChampionshipClub.findOne({
-      where: { championshipId: championshipId, clubCode: clubCode },
+      where: { championshipId: championshipId, clubCode: oldClubCode },
     });
 
     if (!existingClub) {
@@ -139,13 +140,15 @@ export const updateClub = async (req: Request, res: Response) => {
       return res.status(response.status).json(response);
     }
 
+    // Actualizar los valores del club
     await Club.update(
       {
+        clubCode: clubCode,
         name: name,
         coachName: coachName,
-        clubCode: req.body.clubCode,
+        email: email,
       },
-      { where: { clubCode: clubCode } }
+      { where: { clubCode: oldClubCode } }
     );
 
     const response = {
@@ -183,35 +186,6 @@ export const deleteClub = async (req: Request, res: Response) => {
     }
 
     await club.destroy();
-
-    const clubData = await Club.findOne({
-      where: {
-        clubCode: clubCode,
-      },
-    });
-
-    if (!clubData) {
-      return res.status(404).json({
-        status: 404,
-        error: "Club not found",
-      });
-    }
-
-    await clubData.destroy();
-
-    const remainingClub = await ChampionshipClub.findOne({
-      where: {
-        clubCode: clubCode,
-      },
-    });
-
-    if (!remainingClub) {
-      await Club.destroy({
-        where: {
-          clubCode: clubCode,
-        },
-      });
-    }
 
     const response = {
       status: 200,

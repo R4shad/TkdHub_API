@@ -10,7 +10,7 @@ const router = Router();
 
 /**
  * @openapi
- * /api/club/Organizer/{championshipId}:
+ * /api/club/{championshipId}:
  *   get:
  *     tags:
  *       - Club
@@ -31,7 +31,7 @@ const router = Router();
  *               items:
  *                 $ref: '#/components/schemas/Club'
  */
-router.get("/Organizer/:championshipId", getClubs);
+router.get("/:championshipId", getClubs);
 
 /**
  * @openapi
@@ -80,7 +80,7 @@ router.post("/:championshipId", createClub);
 
 /**
  * @openapi
- * /api/club/{championshipId}/{clubCode}:
+ * /api/club/{championshipId}/{oldClubCode}:
  *   patch:
  *     tags:
  *       - Club
@@ -93,7 +93,7 @@ router.post("/:championshipId", createClub);
  *         description: ID del campeonato
  *         schema:
  *           type: integer
- *       - name: clubCode
+ *       - name: oldClubCode
  *         in: path
  *         required: true
  *         description: Código del club
@@ -125,7 +125,7 @@ router.post("/:championshipId", createClub);
  *       '500':
  *         description: Error interno del servidor
  */
-router.patch("/:championshipId/:clubCode", updateClub);
+router.patch("/:championshipId/:oldClubCode", updateClub);
 
 /**
  * @openapi

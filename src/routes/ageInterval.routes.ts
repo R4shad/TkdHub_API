@@ -5,6 +5,7 @@ import {
   updateChampionshipAgeInterval,
   deleteChampionshipAgeInterval,
   deleteAllChampionshipAgeIntervals,
+  getAgeIntervalByChampionshipAndAge,
 } from "../controllers/ageInterval.controllers";
 
 const router = Router();
@@ -39,6 +40,33 @@ router.get("/", getAgeIntervals);
  *         description: OK
  */
 router.get("/:championshipId", getChampionshipAgeIntervals);
+
+/**
+ * @openapi
+ * /api/ageInterval/{championshipId}/{age}:
+ *   get:
+ *     tags:
+ *       - AgeInterval
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID del campeonato
+ *         schema:
+ *           type: integer
+ *       - name: age
+ *         in: path
+ *         required: true
+ *         description: Edad del participante
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get("/:championshipId/:age", getAgeIntervalByChampionshipAndAge);
 
 /**
  * @openapi

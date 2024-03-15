@@ -103,6 +103,43 @@ export const getDivisionsByDivisionId = async (req: Request, res: Response) => {
   }
 };
 
+export const getDivisionsByGenderAgeAndWeight = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { championshipId, gender, ageIntervalId, weight } = req.params;
+    const divisionsList = await ChampionshipDivision.findAll({
+      where: {
+        championshipId,
+        gender,
+        ageIntervalId,
+        minWeight: { [Op.lte]: weight },
+        maxWeight: { [Op.gte]: weight },
+      },
+    });
+
+    const response: ApiResponse<(typeof divisionsList)[0]> = {
+      status: 200,
+      data: divisionsList[0],
+    };
+
+    // Envía la respuesta
+    res.json(response);
+  } catch (error) {
+    // Manejo de errores
+    console.error(
+      "Error fetching divisions by championship, gender, age, and weight:",
+      error
+    );
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "There was an error processing the request.",
+    };
+    res.status(response.status).json(response);
+  }
+};
+
 export const createChampionshipDivisionsAndAgeIntervals = async (
   req: Request,
   res: Response

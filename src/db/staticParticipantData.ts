@@ -8,14 +8,58 @@ import ChampionshipParticipant from "../models/championshipParticipant";
     const championshipId: number = 1;
     await sequelize.sync(); // Sincroniza el modelo con la base de datos, eliminando las tablas existentes si existen
     const participants = [];
+    const firstNames = [
+      "Juan",
+      "Pedro",
+      "María",
+      "Luis",
+      "Ana",
+      "Carlos",
+      "Laura",
+      "Diego",
+      "Sofía",
+      "Javier",
+      "Manuel",
+      "Carmen",
+      "José",
+      "Elena",
+      "Antonio",
+      "Isabel",
+      "Miguel",
+      "Natalia",
+      "Francisco",
+      "Lucía",
+    ];
+    const lastNames = [
+      "García",
+      "Martínez",
+      "López",
+      "González",
+      "Rodríguez",
+      "Fernández",
+      "Pérez",
+      "Sánchez",
+      "Ramírez",
+      "Torres",
+      "Álvarez",
+      "Romero",
+      "Serrano",
+      "Muñoz",
+      "Blanco",
+      "Gómez",
+      "Herrera",
+      "Díaz",
+      "Ruiz",
+      "Castro",
+    ];
     for (let i = 0; i < 16; i++) {
       const clubCode = "LIN";
       const age = 18;
       const weight = 65;
       const grade = "franja amarillo";
       const gender = "Masculino";
-      const firstName = "Nombre" + i;
-      const lastName = "Apellido" + i;
+      const firstName = firstNames[i % firstNames.length];
+      const lastName = lastNames[i % lastNames.length];
       const participant = await Participant.create({
         clubCode,
         age,
@@ -34,8 +78,8 @@ import ChampionshipParticipant from "../models/championshipParticipant";
       const weight = 65;
       const grade = "franja azul";
       const gender = "Masculino";
-      const firstName = "Nombre" + i;
-      const lastName = "Apellido" + i;
+      const firstName = firstNames[i % firstNames.length];
+      const lastName = lastNames[i % lastNames.length];
       const participant = await Participant.create({
         clubCode,
         age,
@@ -54,8 +98,8 @@ import ChampionshipParticipant from "../models/championshipParticipant";
       const weight = 49;
       const grade = "franja amarillo";
       const gender = "Femenino";
-      const firstName = "Nombre" + i;
-      const lastName = "Apellido" + i;
+      const firstName = firstNames[i % firstNames.length];
+      const lastName = lastNames[i % lastNames.length];
       const participant = await Participant.create({
         clubCode,
         age,
@@ -74,8 +118,8 @@ import ChampionshipParticipant from "../models/championshipParticipant";
       const weight = 49;
       const grade = "franja rojo";
       const gender = "Femenino";
-      const firstName = "Nombre" + i;
-      const lastName = "Apellido" + i;
+      const firstName = firstNames[i % firstNames.length];
+      const lastName = lastNames[i % lastNames.length];
       const participant = await Participant.create({
         clubCode,
         age,
@@ -94,8 +138,8 @@ import ChampionshipParticipant from "../models/championshipParticipant";
       const weight = 34;
       const grade = "franja amarillo";
       const gender = "Femenino";
-      const firstName = "Nombre" + i;
-      const lastName = "Apellido" + i;
+      const firstName = firstNames[i % firstNames.length];
+      const lastName = lastNames[i % lastNames.length];
       const participant = await Participant.create({
         clubCode,
         age,
@@ -114,8 +158,8 @@ import ChampionshipParticipant from "../models/championshipParticipant";
       const weight = 43;
       const grade = "franja amarillo";
       const gender = "Masculino";
-      const firstName = "Nombre" + i;
-      const lastName = "Apellido" + i;
+      const firstName = firstNames[i % firstNames.length];
+      const lastName = lastNames[i % lastNames.length];
       const participant = await Participant.create({
         clubCode,
         age,
@@ -134,8 +178,8 @@ import ChampionshipParticipant from "../models/championshipParticipant";
       const weight = 58;
       const grade = "franja verde";
       const gender = "Masculino";
-      const firstName = "Nombre" + i;
-      const lastName = "Apellido" + i;
+      const firstName = firstNames[i % firstNames.length];
+      const lastName = lastNames[i % lastNames.length];
       const participant = await Participant.create({
         clubCode,
         age,
@@ -154,8 +198,8 @@ import ChampionshipParticipant from "../models/championshipParticipant";
       const weight = 58;
       const grade = "franja verde";
       const gender = "Femenino";
-      const firstName = "Nombre" + i;
-      const lastName = "Apellido" + i;
+      const firstName = firstNames[i % firstNames.length];
+      const lastName = lastNames[i % lastNames.length];
       const participant = await Participant.create({
         clubCode,
         age,
@@ -174,8 +218,8 @@ import ChampionshipParticipant from "../models/championshipParticipant";
       const weight = 48;
       const grade = "franja negro";
       const gender = "Femenino";
-      const firstName = "Nombre" + i;
-      const lastName = "Apellido" + i;
+      const firstName = firstNames[i % firstNames.length];
+      const lastName = lastNames[i % lastNames.length];
       const participant = await Participant.create({
         clubCode,
         age,
@@ -194,8 +238,8 @@ import ChampionshipParticipant from "../models/championshipParticipant";
       const weight = 48;
       const grade = "franja negro";
       const gender = "Masculino";
-      const firstName = "Nombre" + i;
-      const lastName = "Apellido" + i;
+      const firstName = firstNames[i % firstNames.length];
+      const lastName = lastNames[i % lastNames.length];
       const participant = await Participant.create({
         clubCode,
         age,
@@ -214,8 +258,8 @@ import ChampionshipParticipant from "../models/championshipParticipant";
       const weight = 90;
       const grade = "franja negro";
       const gender = "Masculino";
-      const firstName = "Nombre" + i;
-      const lastName = "Apellido" + i;
+      const firstName = firstNames[i % firstNames.length];
+      const lastName = lastNames[i % lastNames.length];
       const participant = await Participant.create({
         clubCode,
         age,
@@ -234,8 +278,8 @@ import ChampionshipParticipant from "../models/championshipParticipant";
       const weight = 80;
       const grade = "franja negro";
       const gender = "Femenino";
-      const firstName = "Nombre" + i;
-      const lastName = "Apellido" + i;
+      const firstName = firstNames[i % firstNames.length];
+      const lastName = lastNames[i % lastNames.length];
       const participant = await Participant.create({
         clubCode,
         age,
@@ -254,8 +298,8 @@ import ChampionshipParticipant from "../models/championshipParticipant";
       const weight = 67;
       const grade = "franja amarillo";
       const gender = "Femenino";
-      const firstName = "Nombre" + i;
-      const lastName = "Apellido" + i;
+      const firstName = firstNames[i % firstNames.length];
+      const lastName = lastNames[i % lastNames.length];
       const participant = await Participant.create({
         clubCode,
         age,
@@ -274,8 +318,8 @@ import ChampionshipParticipant from "../models/championshipParticipant";
       const weight = 67;
       const grade = "franja amarillo";
       const gender = "Masculino";
-      const firstName = "Nombre" + i;
-      const lastName = "Apellido" + i;
+      const firstName = firstNames[i % firstNames.length];
+      const lastName = lastNames[i % lastNames.length];
       const participant = await Participant.create({
         clubCode,
         age,
@@ -294,8 +338,8 @@ import ChampionshipParticipant from "../models/championshipParticipant";
       const weight = 67;
       const grade = "franja rojo";
       const gender = "Masculino";
-      const firstName = "Nombre" + i;
-      const lastName = "Apellido" + i;
+      const firstName = firstNames[i % firstNames.length];
+      const lastName = lastNames[i % lastNames.length];
       const participant = await Participant.create({
         clubCode,
         age,
@@ -314,8 +358,8 @@ import ChampionshipParticipant from "../models/championshipParticipant";
       const weight = 67;
       const grade = "franja rojo";
       const gender = "Femenino";
-      const firstName = "Nombre" + i;
-      const lastName = "Apellido" + i;
+      const firstName = firstNames[i % firstNames.length];
+      const lastName = lastNames[i % lastNames.length];
       const participant = await Participant.create({
         clubCode,
         age,

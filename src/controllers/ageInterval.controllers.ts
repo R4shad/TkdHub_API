@@ -3,6 +3,7 @@ import ChampionshipAgeInterval from "../models/championshipAgeInterval";
 import ApiResponse from "../interfaces/apiResponse";
 import DefaultAgeInterval from "../models/defaultAgeInterval";
 import ChampionshipDivision from "../models/championshipDivision";
+import { Op } from "sequelize";
 
 export const getAgeIntervals = async (req: Request, res: Response) => {
   try {
@@ -14,6 +15,39 @@ export const getAgeIntervals = async (req: Request, res: Response) => {
     res.json(response);
   } catch (error) {
     console.error("Error fetching age intervals:", error);
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "Hubo un error al procesar la solicitud.",
+    };
+    res.status(response.status).json(response);
+  }
+};
+
+export const getAgeIntervalByChampionshipAndAge = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { championshipId, age } = req.params;
+    const ageIntervalsList = await ChampionshipAgeInterval.findAll({
+      where: {
+        championshipId,
+        minAge: { [Op.lte]: age },
+        maxAge: { [Op.gte]: age },
+      },
+    });
+
+    const response: ApiResponse<(typeof ageIntervalsList)[0]> = {
+      status: 200,
+      data: ageIntervalsList[0],
+    };
+
+    res.json(response);
+  } catch (error) {
+    console.error(
+      "Error fetching age intervals by championship and age:",
+      error
+    );
     const response: ApiResponse<undefined> = {
       status: 500,
       error: "Hubo un error al procesar la solicitud.",

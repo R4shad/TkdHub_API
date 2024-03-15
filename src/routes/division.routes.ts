@@ -10,6 +10,7 @@ import {
   incrementDivisionCompetitors,
   getChampionshipDivisionsWithCompetitors,
   deleteChampionshipDivision,
+  getDivisionsByGenderAgeAndWeight,
 } from "../controllers/division.controllers";
 
 const router = Router();
@@ -88,6 +89,48 @@ router.get("/data/:divisionId", getDivisionsByDivisionId);
  *         description: Error
  */
 router.get("/ages/:ageIntervalId", getDivisionsByAgeIntervalId);
+
+/**
+ * @openapi
+ * /api/division/weight/{championshipId}/{gender}/{ageIntervalId}/{weight}:
+ *   get:
+ *     tags:
+ *       - Division
+ *     parameters:
+ *       - in: path
+ *         name: championshipId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID del campeonato para filtrar las divisiones
+ *       - in: path
+ *         name: gender
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Género para filtrar las divisiones
+ *       - in: path
+ *         name: ageIntervalId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID del intervalo de edad para filtrar las divisiones
+ *       - in: path
+ *         name: weight
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Peso para filtrar las divisiones
+ *     responses:
+ *       '200':
+ *         description: Éxito
+ *       '500':
+ *         description: Error interno del servidor
+ */
+router.get(
+  "/weight/:championshipId/:gender/:ageIntervalId/:weight",
+  getDivisionsByGenderAgeAndWeight
+);
 
 /**
  * @swagger
