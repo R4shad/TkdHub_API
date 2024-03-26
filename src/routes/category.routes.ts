@@ -8,6 +8,7 @@ import {
   incrementCompetitors,
   deleteChampionshipCategory,
   deleteAllChampionshipCategories,
+  decrementCompetitors,
 } from "../controllers/category.controllers";
 
 const router = Router();
@@ -119,6 +120,33 @@ router.post("/:championshipId", createChampionshipCategory);
  *         description: Error
  */
 router.put("/increment/:championshipId/:categoryId", incrementCompetitors);
+
+/**
+ * @swagger
+ * /api/category/decrement/{championshipId}/{categoryId}:
+ *   put:
+ *     tags:
+ *       - Category
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID del campeonato
+ *         schema:
+ *           type: integer
+ *       - name: categoryId
+ *         in: path
+ *         required: true
+ *         description: Nombre de la categoría
+ *         schema:
+ *           type: number
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Error
+ */
+router.put("/decrement/:championshipId/:categoryId", decrementCompetitors);
 
 /**
  * @openapi

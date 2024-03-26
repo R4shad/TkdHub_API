@@ -1,6 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
-import Participant from "./participant";
+import participant from "./participant";
 import ChampionshipCategory from "./championshipCategory";
 import ChampionshipDivision from "./championshipDivision";
 
@@ -48,7 +48,7 @@ Competitor.init(
   }
 );
 
-Competitor.belongsTo(Participant, {
+Competitor.belongsTo(participant, {
   foreignKey: "participantId",
 });
 

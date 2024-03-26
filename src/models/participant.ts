@@ -2,7 +2,7 @@ import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 import Club from "./club";
 
-class Participant extends Model {
+class participant extends Model {
   public id!: string;
   public clubCode!: string;
   public lastNames!: string | null;
@@ -13,7 +13,7 @@ class Participant extends Model {
   public gender!: string | null;
 }
 
-Participant.init(
+participant.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -52,13 +52,13 @@ Participant.init(
   },
   {
     sequelize,
-    tableName: "Participant",
+    tableName: "participant",
     timestamps: false,
   }
 );
 
-Participant.belongsTo(Club, {
+participant.belongsTo(Club, {
   foreignKey: "clubCode",
 });
 
-export default Participant;
+export default participant;

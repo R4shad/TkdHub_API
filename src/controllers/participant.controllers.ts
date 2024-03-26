@@ -26,7 +26,7 @@ export const getParticipants = async (req: Request, res: Response) => {
             };
           } else {
             console.error(
-              "Participant not found for ID:",
+              "participant not found for ID:",
               participant.participantId
             );
             return null;
@@ -177,7 +177,7 @@ export const updateParticipant = async (req: Request, res: Response) => {
     if (!participant) {
       return res.status(404).json({
         status: 404,
-        error: "Participant not found",
+        error: "participant not found",
       });
     }
 
@@ -193,7 +193,7 @@ export const updateParticipant = async (req: Request, res: Response) => {
 
     res.status(200).json({
       status: 200,
-      message: "Participant updated successfully",
+      message: "participant updated successfully",
     });
   } catch (error) {
     console.error("Error updating participant:", error);
@@ -222,7 +222,7 @@ export const updateParticipantVerification = async (
     if (!championshipParticipant) {
       return res.status(404).json({
         status: 404,
-        error: "Participant not found in the championship",
+        error: "participant not found in the championship",
       });
     }
 
@@ -231,7 +231,7 @@ export const updateParticipantVerification = async (
 
     return res.status(200).json({
       status: 200,
-      message: "Participant verification updated successfully",
+      message: "participant verification updated successfully",
     });
   } catch (error) {
     console.error("Error updating participant verification:", error);

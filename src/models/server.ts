@@ -8,7 +8,7 @@ import Responsible from "./responsible";
 import ChampionshipResponsible from "./championshipResponsible";
 import Club from "./club";
 import ChampionshipClub from "./championshipClub";
-import Participant from "./participant";
+import participant from "./participant";
 import ChampionshipParticipant from "./championshipParticipant";
 import ChampionshipCategory from "./championshipCategory";
 import DefaultAgeInterval from "./defaultAgeInterval";
@@ -94,7 +94,7 @@ class Server {
       await ChampionshipResponsible.sync();
       await Club.sync();
       await ChampionshipClub.sync();
-      await Participant.sync();
+      await participant.sync();
       await ChampionshipParticipant.sync();
 
       await DefaultAgeInterval.sync();

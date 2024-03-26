@@ -1,6 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
-import Participant from "./participant";
+import participant from "./participant";
 import Championship from "./championship";
 
 class ChampionshipParticipant extends Model {
@@ -33,7 +33,7 @@ ChampionshipParticipant.init(
   }
 );
 
-ChampionshipParticipant.belongsTo(Participant, {
+ChampionshipParticipant.belongsTo(participant, {
   foreignKey: "participantId",
 });
 

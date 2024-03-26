@@ -116,7 +116,7 @@ export const getChampionshipCategoriesWithCompetitors = async (
       where: {
         championshipId: championshipId,
         numberOfCompetitors: {
-          [Op.gte]: 2, // Utilizamos Op.gte para mayor o igual que 2
+          [Op.gte]: 1, // Utilizamos Op.gte para mayor o igual que 2
         },
       },
     });
@@ -159,6 +159,44 @@ export const incrementCompetitors = async (req: Request, res: Response) => {
 
     // Incrementar el valor de numberOfCompetitors
     await category.increment("numberOfCompetitors");
+    const response: ApiResponse<typeof category> = {
+      status: 200,
+      data: category,
+    };
+
+    res.status(response.status).json(response);
+  } catch (error) {
+    console.error(
+      "Error incrementing championship category competitors:",
+      error
+    );
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "Error incrementing championship category competitors",
+    };
+    res.status(response.status).json(response);
+  }
+};
+
+export const decrementCompetitors = async (req: Request, res: Response) => {
+  const championshipId = parseInt(req.params.championshipId, 10);
+  const categoryId = parseInt(req.params.categoryId, 10);
+
+  try {
+    const category = await ChampionshipCategory.findOne({
+      where: { championshipId, categoryId },
+    });
+
+    if (!category) {
+      const response: ApiResponse<undefined> = {
+        status: 404,
+        error: "Championship category not found",
+      };
+      return res.status(response.status).json(response);
+    }
+
+    // Incrementar el valor de numberOfCompetitors
+    await category.decrement("numberOfCompetitors");
     const response: ApiResponse<typeof category> = {
       status: 200,
       data: category,

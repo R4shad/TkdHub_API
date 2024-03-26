@@ -11,6 +11,8 @@ import {
   getChampionshipDivisionsWithCompetitors,
   deleteChampionshipDivision,
   getDivisionsByGenderAgeAndWeight,
+  deleteChampionshipDivisions,
+  decrementDivisionCompetitors,
 } from "../controllers/division.controllers";
 
 const router = Router();
@@ -189,6 +191,36 @@ router.put(
 );
 
 /**
+ * @swagger
+ * /api/division/decrement/{championshipId}/{divisionId}:
+ *   put:
+ *     tags:
+ *       - Division
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID del campeonato
+ *         schema:
+ *           type: integer
+ *       - name: divisionId
+ *         in: path
+ *         required: true
+ *         description: ID de la división
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Error
+ */
+router.put(
+  "/decrement/:championshipId/:divisionId",
+  decrementDivisionCompetitors
+);
+
+/**
  * @openapi
  * /api/division/{championshipId}/{divisionId}:
  *   patch:
@@ -297,5 +329,36 @@ router.get(
  *         description: Error interno del servidor
  */
 router.delete("/:divisionId", deleteChampionshipDivision);
+
+/**
+ * @openapi
+ * /api/division/{championshipId}/{grouping}:
+ *   delete:
+ *     tags:
+ *       - Division
+ *     summary: Eliminar divisiones de campeonato por championshipId y grouping
+ *     description: Elimina todas las divisiones de campeonato asociadas a un championshipId y grouping específicos.
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID del campeonato
+ *         schema:
+ *           type: integer
+ *       - name: grouping
+ *         in: path
+ *         required: true
+ *         description: Tipo de agrupación (Mayores Mundiales o Mayores Olímpicos)
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Divisiones de campeonato eliminadas exitosamente
+ *       '404':
+ *         description: No se encontraron divisiones de campeonato para el championshipId y grouping especificados
+ *       '500':
+ *         description: Error interno del servidor
+ */
+router.delete("/:championshipId/:grouping", deleteChampionshipDivisions);
 
 export default router;

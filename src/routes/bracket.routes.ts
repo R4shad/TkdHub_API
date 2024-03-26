@@ -3,6 +3,7 @@ import {
   getBrackets,
   getBracketsByChampionshipId,
   getBracketsWithCompetitorsByChampionshipId,
+  getBracketsWithOneCompetitorByChampionshipId,
   getBracketsWithMatchesByChampionshipId,
   createBracket,
   deleteBracket,
@@ -69,6 +70,30 @@ router.get(
 
 /**
  * @openapi
+ * /api/bracket/withOneCompetitor/{championshipId}:
+ *   get:
+ *     tags:
+ *       - Bracket
+ *     parameters:
+ *       - in: path
+ *         name: championshipId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: championshipId value to filter brackets
+ *     responses:
+ *       200:
+ *         description: OK
+ *       500:
+ *         description: Error
+ */
+router.get(
+  "/withOneCompetitor/:championshipId",
+  getBracketsWithOneCompetitorByChampionshipId
+);
+
+/**
+ * @openapi
  * /api/bracket/withMatchs/{championshipId}:
  *   get:
  *     tags:
@@ -120,25 +145,27 @@ router.post("/", createBracket);
 
 /**
  * @openapi
- * /api/bracket:
+ * /api/bracket/{bracketId}:
  *   delete:
  *     tags:
- *       - Bracket
+ *       - bracket
+ *     summary: Eliminar competidor del campeonato
+ *     description: Elimina un competidor de un campeonato mediante su ID de competidor.
  *     parameters:
  *       - name: bracketId
- *         in: query
+ *         in: path
  *         required: true
- *         description: ID of the bracket to delete
+ *         description: ID del participante
  *         schema:
- *           type: integer
+ *           type: number
  *     responses:
- *       200:
- *         description: OK
- *       404:
- *         description: Bracket not found
- *       500:
- *         description: Error
+ *       '200':
+ *         description: Participante eliminado exitosamente
+ *       '404':
+ *         description: Participante no encontrado
+ *       '500':
+ *         description: Error al procesar la solicitud
  */
-router.delete("/", deleteBracket);
+router.delete("/:bracketId", deleteBracket);
 
 export default router;

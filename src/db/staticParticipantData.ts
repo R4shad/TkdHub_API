@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
-import Participant from "../models/participant";
 import ChampionshipParticipant from "../models/championshipParticipant";
+import Participant from "../models/participant";
 
 (async () => {
   try {

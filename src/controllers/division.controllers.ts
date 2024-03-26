@@ -338,6 +338,47 @@ export const incrementDivisionCompetitors = async (
   }
 };
 
+export const decrementDivisionCompetitors = async (
+  req: Request,
+  res: Response
+) => {
+  const championshipId = parseInt(req.params.championshipId, 10);
+  const divisionId = parseInt(req.params.divisionId, 10);
+
+  try {
+    const division = await ChampionshipDivision.findOne({
+      where: { championshipId, divisionId },
+    });
+
+    if (!division) {
+      const response: ApiResponse<undefined> = {
+        status: 404,
+        error: "Championship division not found",
+      };
+      return res.status(response.status).json(response);
+    }
+
+    // Incrementar el valor de numberOfCompetitors
+    await division.decrement("numberOfCompetitors");
+    const response: ApiResponse<typeof division> = {
+      status: 200,
+      data: division,
+    };
+
+    res.status(response.status).json(response);
+  } catch (error) {
+    console.error(
+      "Error incrementing championship division competitors:",
+      error
+    );
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "Error incrementing championship division competitors",
+    };
+    res.status(response.status).json(response);
+  }
+};
+
 export const getChampionshipDivisionsWithCompetitors = async (
   req: Request,
   res: Response
@@ -349,7 +390,7 @@ export const getChampionshipDivisionsWithCompetitors = async (
       where: {
         championshipId: championshipId,
         numberOfCompetitors: {
-          [Op.gte]: 2, // Utilizamos Op.gte para mayor o igual que 2
+          [Op.gte]: 1, // Utilizamos Op.gte para mayor o igual que 2
         },
       },
     });
@@ -407,6 +448,33 @@ export const deleteChampionshipDivision = async (
     });
   } catch (error) {
     console.error("Error al eliminar la división de campeonato:", error);
+    return res.status(500).json({
+      status: 500,
+      error: "Hubo un error al procesar la solicitud.",
+    });
+  }
+};
+export const deleteChampionshipDivisions = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { championshipId, grouping } = req.params;
+
+    // Eliminar todas las divisiones de campeonato asociadas al championshipId y grouping especificados
+    await ChampionshipDivision.destroy({
+      where: {
+        championshipId: championshipId,
+        grouping: grouping,
+      },
+    });
+
+    return res.status(200).json({
+      status: 200,
+      message: "Divisiones de campeonato eliminadas exitosamente",
+    });
+  } catch (error) {
+    console.error("Error al eliminar las divisiones de campeonato:", error);
     return res.status(500).json({
       status: 500,
       error: "Hubo un error al procesar la solicitud.",

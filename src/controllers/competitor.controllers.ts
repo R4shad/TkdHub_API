@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import Competitor from "../models/competitor";
 import ChampionshipCategory from "../models/championshipCategory";
 import ChampionshipDivision from "../models/championshipDivision";
-import Participant from "../models/participant";
+import participant from "../models/participant";
 
 export const getCompetitors = async (req: Request, res: Response) => {
   try {
@@ -12,7 +12,7 @@ export const getCompetitors = async (req: Request, res: Response) => {
       where: { championshipId },
       include: [
         {
-          model: Participant,
+          model: participant,
           attributes: [
             "clubCode",
             "firstNames",
@@ -46,7 +46,7 @@ export const getCompetitorsByClubCode = async (req: Request, res: Response) => {
       where: { championshipId: championshipId },
       include: [
         {
-          model: Participant,
+          model: participant,
           where: { clubCode: clubCode },
         },
       ],
@@ -72,7 +72,7 @@ export const getCompetitorsByClubCode = async (req: Request, res: Response) => {
 export const updateCompetitor = async (req: Request, res: Response) => {
   try {
     const { competitorId } = req.params;
-    const { participantId, championshipId, divisionId, categoryId } = req.body;
+    const { divisionId, categoryId } = req.body;
 
     // Buscar el competidor en la tabla Competitor
     const competitor = await Competitor.findByPk(competitorId);
@@ -86,8 +86,6 @@ export const updateCompetitor = async (req: Request, res: Response) => {
 
     // Actualizar los detalles del competidor
     await competitor.update({
-      participantId: participantId,
-      championshipId: championshipId,
       divisionId: divisionId,
       categoryId: categoryId,
     });
@@ -122,5 +120,28 @@ export const createCompetitor = async (req: Request, res: Response) => {
       status: 500,
       error: "There was an error processing the request.",
     });
+  }
+};
+export const deleteCompetitor = async (req: Request, res: Response) => {
+  const competitorId = req.params.competitorId;
+  try {
+    const result = await Competitor.destroy({
+      where: { competitorId },
+    });
+    console.log(result);
+    if (result === 1) {
+      res
+        .status(200)
+        .json({ status: 200, message: "Competidor eliminado exitosamente" });
+    } else {
+      res
+        .status(404)
+        .json({ status: 404, message: "Competidor no encontrado" });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ status: 500, message: "Error al procesar la solicitud" });
+    console.log(error);
   }
 };

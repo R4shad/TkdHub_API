@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Match from "../models/match";
 import Competitor from "../models/competitor";
-import Participant from "../models/participant";
+import participant from "../models/participant";
 
 // Controlador para obtener partidos por ID de campeonato
 export const getMatchesByChampionshipId = async (
@@ -19,12 +19,12 @@ export const getMatchesByChampionshipId = async (
         {
           model: Competitor,
           as: "redCompetitor",
-          include: [Participant], // Incluir detalles del participante
+          include: [participant], // Incluir detalles del participante
         },
         {
           model: Competitor,
           as: "blueCompetitor",
-          include: [Participant], // Incluir detalles del participante
+          include: [participant], // Incluir detalles del participante
         },
       ],
     });
@@ -54,12 +54,12 @@ export const getMatchesByChampionshipIdAndBracketId = async (
         {
           model: Competitor,
           as: "redCompetitor",
-          include: [Participant], // Incluir detalles del participante
+          include: [participant], // Incluir detalles del participante
         },
         {
           model: Competitor,
           as: "blueCompetitor",
-          include: [Participant], // Incluir detalles del participante
+          include: [participant], // Incluir detalles del participante
         },
       ],
     });

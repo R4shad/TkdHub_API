@@ -16,7 +16,7 @@ const router = Router();
  * /api/participant/{championshipId}:
  *   get:
  *     tags:
- *       - Participant
+ *       - participant
  *     parameters:
  *       - name: championshipId
  *         in: path
@@ -40,7 +40,7 @@ router.get("/:championshipId", getParticipants);
  * /api/participant/club/{championshipId}/{clubCode}:
  *   get:
  *     tags:
- *       - Participant
+ *       - participant
  *     parameters:
  *       - name: championshipId
  *         in: path
@@ -70,7 +70,7 @@ router.get("/club/:championshipId/:clubCode", getParticipantsByClubCode);
  * /api/participant/toRegister/{championshipId}/{clubCode}:
  *   get:
  *     tags:
- *       - Participant
+ *       - participant
  *     parameters:
  *       - name: championshipId
  *         in: path
@@ -100,7 +100,7 @@ router.get("/toRegister/:championshipId/:clubCode", getParticipantsToRegister);
  * /api/participant/{championshipId}:
  *   post:
  *     tags:
- *       - Participant
+ *       - participant
  *     parameters:
  *       - name: championshipId
  *         in: path
@@ -152,7 +152,7 @@ router.post("/:championshipId", createParticipant);
  * /api/participant/{championshipId}/{participantId}:
  *   patch:
  *     tags:
- *       - Participant
+ *       - participant
  *     summary: Modificar participante
  *     description: Modifica un participante específico por su ID.
  *     parameters:
@@ -210,7 +210,7 @@ router.patch("/:championshipId/:participantId", updateParticipant);
  * /api/participant/validate/{championshipId}/{participantId}:
  *   patch:
  *     tags:
- *       - Participant
+ *       - participant
  *     summary: Actualizar estado de verificación del participante
  *     description: Actualiza el estado de verificación del participante para inscribirlo en un campeonato.
  *     parameters:
@@ -258,7 +258,7 @@ router.patch(
  * /api/participant/{championshipId}/{participantId}:
  *   delete:
  *     tags:
- *       - Participant
+ *       - participant
  *     summary: Eliminar participante del campeonato
  *     description: Elimina un participante de un campeonato mediante su ID de participante y el ID del campeonato.
  *     parameters:

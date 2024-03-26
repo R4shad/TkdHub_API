@@ -2,6 +2,8 @@ import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../config/db";
 import Division from "./defaultDivision";
 import Category from "./defaultCategory";
+import ChampionshipDivision from "./championshipDivision";
+import ChampionshipCategory from "./championshipCategory";
 
 class Bracket extends Model {
   public bracketId!: number;
@@ -43,11 +45,11 @@ Bracket.init(
   }
 );
 
-Bracket.belongsTo(Division, {
+Bracket.belongsTo(ChampionshipDivision, {
   foreignKey: "divisionId",
 });
 
-Bracket.belongsTo(Category, {
+Bracket.belongsTo(ChampionshipCategory, {
   foreignKey: "categoryId",
 });
 

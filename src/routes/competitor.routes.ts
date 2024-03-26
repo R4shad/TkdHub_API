@@ -4,6 +4,7 @@ import {
   getCompetitorsByClubCode,
   createCompetitor,
   updateCompetitor,
+  deleteCompetitor,
 } from "../controllers/competitor.controllers";
 
 const router = Router();
@@ -121,12 +122,6 @@ router.get("/club/:championshipId/:clubCode", getCompetitorsByClubCode);
  *           schema:
  *             type: object
  *             properties:
- *               participantId:
- *                 type: string
- *                 description: ID del participante
- *               championshipId:
- *                 type: integer
- *                 description: ID del campeonato
  *               divisionId:
  *                 type: integer
  *                 description: ID de la división
@@ -144,5 +139,30 @@ router.get("/club/:championshipId/:clubCode", getCompetitorsByClubCode);
  *         description: Error interno del servidor
  */
 router.patch("/:competitorId", updateCompetitor);
+
+/**
+ * @openapi
+ * /api/competitor/{competitorId}:
+ *   delete:
+ *     tags:
+ *       - competitor
+ *     summary: Eliminar competidor del campeonato
+ *     description: Elimina un competidor de un campeonato mediante su ID de competidor.
+ *     parameters:
+ *       - name: competitorId
+ *         in: path
+ *         required: true
+ *         description: ID del participante
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Participante eliminado exitosamente
+ *       '404':
+ *         description: Participante no encontrado
+ *       '500':
+ *         description: Error al procesar la solicitud
+ */
+router.delete("/:competitorId", deleteCompetitor);
 
 export default router;

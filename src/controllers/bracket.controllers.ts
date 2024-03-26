@@ -4,6 +4,8 @@ import ApiResponse from "../interfaces/apiResponse";
 import Competitor from "../models/competitor";
 import Participant from "../models/participant";
 import Match from "../models/match";
+import ChampionshipDivision from "../models/championshipDivision";
+import ChampionshipCategory from "../models/championshipCategory";
 
 export const getBrackets = async (req: Request, res: Response) => {
   try {
@@ -73,19 +75,75 @@ export const getBracketsWithCompetitorsByChampionshipId = async (
           });
           return {
             ...competitor.get(),
-            Participant: participant ? participant.get() : null,
+            participant: participant ? participant.get() : null,
           }; // Comprobar si participant es null antes de llamar a get()
         })
       );
 
       bracket.dataValues.competitors = competitorsWithDetails.map(
         (competitor) => {
-          return { ...competitor, Participant: competitor.Participant };
+          return { ...competitor, participant: competitor.participant };
         }
       );
     }
 
     res.status(200).json({ status: 200, data: brackets });
+  } catch (error) {
+    console.error("Error fetching brackets:", error);
+    res.status(500).json({
+      status: 500,
+      error: "There was an error processing the request.",
+    });
+  }
+};
+
+export const getBracketsWithOneCompetitorByChampionshipId = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { championshipId } = req.params;
+
+    const brackets = await Bracket.findAll({
+      where: { championshipId },
+      attributes: { exclude: ["createdAt", "updatedAt"] }, // Excluir createdAt y updatedAt
+    });
+
+    const bracketsWithOneCompetitor = await Promise.all(
+      brackets.map(async (bracket) => {
+        const competitors = await Competitor.findAll({
+          where: {
+            championshipId,
+            divisionId: bracket.divisionId,
+            categoryId: bracket.categoryId,
+          },
+          attributes: { exclude: ["createdAt", "updatedAt"] }, // Excluir createdAt y updatedAt
+        });
+
+        if (competitors.length === 1) {
+          const competitor = competitors[0];
+          const participant = await Participant.findOne({
+            where: { Id: competitor.participantId },
+            attributes: { exclude: ["createdAt", "updatedAt"] }, // Excluir createdAt y updatedAt
+          });
+
+          const competitorWithDetails = {
+            ...competitor.get(),
+            participant: participant ? participant.get() : null,
+          }; // Comprobar si participant es null antes de llamar a get()
+
+          return { ...bracket.get(), competitor: competitorWithDetails };
+        } else {
+          return null;
+        }
+      })
+    );
+
+    const filteredBrackets = bracketsWithOneCompetitor.filter(
+      (bracket) => bracket !== null
+    );
+
+    res.status(200).json({ status: 200, data: filteredBrackets });
   } catch (error) {
     console.error("Error fetching brackets:", error);
     res.status(500).json({
@@ -170,33 +228,23 @@ export const createBracket = async (req: Request, res: Response) => {
 };
 
 export const deleteBracket = async (req: Request, res: Response) => {
+  const bracketId = req.params.bracketId;
   try {
-    const { bracketId } = req.query;
-
-    const bracketToDelete = await Bracket.findByPk(bracketId as string);
-
-    if (!bracketToDelete) {
-      const response: ApiResponse<undefined> = {
-        status: 404,
-        error: "Bracket not found.",
-      };
-      return res.status(response.status).json(response);
+    const result = await Bracket.destroy({
+      where: { bracketId },
+    });
+    console.log(result);
+    if (result === 1) {
+      res
+        .status(200)
+        .json({ status: 200, message: "Bracket eliminado exitosamente" });
+    } else {
+      res.status(404).json({ status: 404, message: "Bracket no encontrado" });
     }
-
-    await bracketToDelete.destroy();
-
-    const response: ApiResponse<typeof bracketToDelete> = {
-      status: 200,
-      data: bracketToDelete,
-    };
-
-    res.json(response);
   } catch (error) {
-    console.error("Error deleting the bracket:", error);
-    const response: ApiResponse<undefined> = {
-      status: 500,
-      error: "There was an error processing the request.",
-    };
-    res.status(response.status).json(response);
+    res
+      .status(500)
+      .json({ status: 500, message: "Error al procesar la solicitud" });
+    console.log(error);
   }
 };
