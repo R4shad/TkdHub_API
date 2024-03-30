@@ -6,6 +6,7 @@ import {
   createMatch,
   updateMatch,
   updateMatchRounds,
+  enumarateMatches,
 } from "../controllers/match.controllers";
 
 const router = Router();
@@ -201,5 +202,28 @@ router.patch("/:matchId", updateMatch);
  *         description: Error
  */
 router.patch("/:matchId/updateRounds", updateMatchRounds);
+
+/**
+ * @swagger
+ * /api/match/enumarateMatches/{championshipId}:
+ *   patch:
+ *     tags:
+ *       - Match
+ *     parameters:
+ *       - in: path
+ *         name: championshipId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Id del campeonato a enumerar
+ *     responses:
+ *       200:
+ *         description: OK
+ *       404:
+ *         description: Partido no encontrado
+ *       500:
+ *         description: Error
+ */
+router.patch("/enumarateMatches/:championshipId", enumarateMatches);
 
 export default router;
