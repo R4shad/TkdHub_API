@@ -6,6 +6,7 @@ import Participant from "../models/participant";
 import Match from "../models/match";
 import ChampionshipDivision from "../models/championshipDivision";
 import ChampionshipCategory from "../models/championshipCategory";
+import ChampionshipAgeInterval from "../models/championshipAgeInterval";
 
 export const getBrackets = async (req: Request, res: Response) => {
   try {
@@ -45,6 +46,7 @@ export const getBracketsByChampionshipId = async (
     });
   }
 };
+
 export const getBracketsWithCompetitorsByChampionshipId = async (
   req: Request,
   res: Response
@@ -58,6 +60,12 @@ export const getBracketsWithCompetitorsByChampionshipId = async (
     });
 
     for (const bracket of brackets) {
+      const division = await ChampionshipDivision.findByPk(bracket.divisionId, {
+        include: [ChampionshipAgeInterval],
+      });
+
+      const category = await ChampionshipCategory.findByPk(bracket.categoryId);
+
       const competitors = await Competitor.findAll({
         where: {
           championshipId,
@@ -70,22 +78,57 @@ export const getBracketsWithCompetitorsByChampionshipId = async (
       const competitorsWithDetails = await Promise.all(
         competitors.map(async (competitor) => {
           const participant = await Participant.findOne({
-            where: { Id: competitor.participantId },
+            where: { id: competitor.participantId },
             attributes: { exclude: ["createdAt", "updatedAt"] }, // Excluir createdAt y updatedAt
           });
           return {
-            ...competitor.get(),
-            participant: participant ? participant.get() : null,
-          }; // Comprobar si participant es null antes de llamar a get()
+            ...competitor.toJSON(),
+            participant: participant ? participant.toJSON() : null,
+          };
         })
       );
 
-      bracket.dataValues.competitors = competitorsWithDetails.map(
-        (competitor) => {
-          return { ...competitor, participant: competitor.participant };
-        }
-      );
+      bracket.dataValues.competitors = competitorsWithDetails;
+      bracket.dataValues.division = division?.toJSON();
+      bracket.dataValues.category = category?.toJSON();
     }
+
+    // Ordenar brackets según los criterios especificados
+    brackets.sort((a, b) => {
+      const aDivision = a.dataValues.division;
+      const bDivision = b.dataValues.division;
+      const aCategory = a.dataValues.category;
+      const bCategory = b.dataValues.category;
+
+      // Ordenar por gradeMin de la categoría
+      const gradeMinComparison = (aCategory?.gradeMin || "").localeCompare(
+        bCategory?.gradeMin || ""
+      );
+      if (gradeMinComparison !== 0) {
+        return gradeMinComparison;
+      }
+
+      const aAgeInterval = aDivision ? aDivision.ChampionshipAgeInterval : null;
+      const bAgeInterval = bDivision ? bDivision.ChampionshipAgeInterval : null;
+
+      // Ordenar por minAge de ChampionshipAgeInterval
+      if (aAgeInterval?.minAge !== bAgeInterval?.minAge) {
+        return (aAgeInterval?.minAge || 0) - (bAgeInterval?.minAge || 0);
+      }
+
+      // Ordenar por minWeight de la división
+      if (aDivision?.minWeight !== bDivision?.minWeight) {
+        return (aDivision?.minWeight || 0) - (bDivision?.minWeight || 0);
+      }
+
+      // Ordenar por gender de la división
+      if (aDivision?.gender && bDivision?.gender) {
+        return aDivision.gender.localeCompare(bDivision.gender);
+      }
+
+      // Si todos los criterios son iguales, mantener el orden original
+      return 0;
+    });
 
     res.status(200).json({ status: 200, data: brackets });
   } catch (error) {

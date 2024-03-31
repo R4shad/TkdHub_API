@@ -148,7 +148,7 @@ router.post("/", createBracket);
  * /api/bracket/{bracketId}:
  *   delete:
  *     tags:
- *       - bracket
+ *       - Bracket
  *     summary: Eliminar competidor del campeonato
  *     description: Elimina un competidor de un campeonato mediante su ID de competidor.
  *     parameters:
