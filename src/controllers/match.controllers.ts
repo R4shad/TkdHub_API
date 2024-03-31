@@ -5,6 +5,7 @@ import participant from "../models/participant";
 import ChampionshipDivision from "../models/championshipDivision";
 import Bracket from "../models/bracket";
 import ChampionshipCategory from "../models/championshipCategory";
+import ChampionshipAgeInterval from "../models/championshipAgeInterval";
 
 // Controlador para obtener partidos por ID de campeonato
 export const getMatchesByChampionshipId = async (
@@ -252,16 +253,64 @@ export const enumarateMatches = async (req: Request, res: Response) => {
       where: { championshipId },
     });
 
-    brackets.sort((a, b) => {
-      // Ordenar por divisionId
-      if (a.divisionId !== b.divisionId) {
-        return a.divisionId - b.divisionId;
-      } else {
-        // Si divisionId es el mismo, ordenar por categoryId
-        return a.categoryId - b.categoryId;
-      }
-    });
+    for (const bracket of brackets) {
+      const division = await ChampionshipDivision.findByPk(bracket.divisionId, {
+        include: [ChampionshipAgeInterval],
+      });
 
+      const category = await ChampionshipCategory.findByPk(bracket.categoryId);
+      bracket.dataValues.division = division?.toJSON();
+      bracket.dataValues.category = category?.toJSON();
+    }
+
+    // Ordenar brackets según los criterios especificados
+    brackets.sort((a, b) => {
+      const aDivision = a.dataValues.division;
+      const bDivision = b.dataValues.division;
+      const aCategory = a.dataValues.category;
+      const bCategory = b.dataValues.category;
+
+      // Ordenar por gradeMin de la categoría
+      const aNumericValue = obtenerValorNumerico(aCategory?.gradeMin);
+      const bNumericValue = obtenerValorNumerico(bCategory?.gradeMin);
+
+      if (aNumericValue !== bNumericValue) {
+        return (aNumericValue || 0) - (bNumericValue || 0);
+      }
+
+      const aAgeInterval = aDivision ? aDivision.ChampionshipAgeInterval : null;
+      const bAgeInterval = bDivision ? bDivision.ChampionshipAgeInterval : null;
+
+      // Ordenar por minAge de ChampionshipAgeInterval
+      if (aAgeInterval?.minAge !== bAgeInterval?.minAge) {
+        return (aAgeInterval?.minAge || 0) - (bAgeInterval?.minAge || 0);
+      }
+
+      // Ordenar por minWeight de la división
+      if (aDivision?.minWeight !== bDivision?.minWeight) {
+        return (aDivision?.minWeight || 0) - (bDivision?.minWeight || 0);
+      }
+
+      // Ordenar por gender de la división
+      if (
+        aDivision?.gender === "Masculino" &&
+        bDivision?.gender !== "Masculino"
+      ) {
+        return 1;
+      } else if (
+        aDivision?.gender != "Masculino" &&
+        bDivision?.gender === "Masculino"
+      ) {
+        return -1;
+      }
+
+      // Si todos los criterios son iguales, mantener el orden original
+      return 0;
+    });
+    console.log(
+      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    );
+    console.log(brackets);
     var eightsMatches = [];
     var quartersMatches = [];
     var semifinalsMatches = [];
@@ -427,3 +476,33 @@ export const enumarateMatches = async (req: Request, res: Response) => {
     });
   }
 };
+
+function obtenerValorNumerico(grado: string): number {
+  if (grado) {
+    switch (grado.toLowerCase()) {
+      case "franja amarillo":
+        return 1;
+      case "amarillo":
+        return 2;
+      case "franja verde":
+        return 3;
+      case "verde":
+        return 4;
+      case "franja azul":
+        return 5;
+      case "azul":
+        return 6;
+      case "franja rojo":
+        return 7;
+      case "rojo":
+        return 8;
+      case "franja negro":
+        return 9;
+      case "negro":
+        return 10;
+      default:
+        return 0;
+    }
+  }
+  return 0;
+}

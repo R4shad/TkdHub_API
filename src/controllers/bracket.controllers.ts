@@ -93,19 +93,54 @@ export const getBracketsWithCompetitorsByChampionshipId = async (
       bracket.dataValues.category = category?.toJSON();
     }
 
+    // Función para obtener el primer match de un tipo de ronda específico
+    const getFirstMatchByRound = (
+      matches: Match[],
+      roundType: string
+    ): Match | null => {
+      return matches.find((match) => match.round === roundType) || null;
+    };
+
+    // Obtener los matches asociados a cada bracket
+    const getMatchesForBracket = async (bracket: Bracket) => {
+      return await Match.findAll({ where: { bracketId: bracket.bracketId } });
+    };
+
     // Ordenar brackets según los criterios especificados
-    brackets.sort((a, b) => {
-      const aDivision = a.dataValues.division;
-      const bDivision = b.dataValues.division;
-      const aCategory = a.dataValues.category;
-      const bCategory = b.dataValues.category;
+    const sortedBrackets = [];
+    for (const bracket of brackets) {
+      const matches = await getMatchesForBracket(bracket);
+
+      // Almacenar el bracket y sus matches para ordenar posteriormente
+      sortedBrackets.push({ bracket, matches });
+    }
+
+    // Ordenar brackets según los criterios especificados
+    sortedBrackets.sort((a, b) => {
+      const roundOrder = ["eights1", "quarters1", "semifinal1", "final"];
+
+      for (const round of roundOrder) {
+        const aHasRound = a.matches.some((match) => match.round === round);
+        const bHasRound = b.matches.some((match) => match.round === round);
+
+        if (aHasRound && !bHasRound) {
+          return -1; // 'a' tiene matches con la ronda 'round', 'b' no los tiene
+        } else if (!aHasRound && bHasRound) {
+          return 1; // 'b' tiene matches con la ronda 'round', 'a' no los tiene
+        }
+      }
+
+      const aDivision = a.bracket.dataValues.division;
+      const bDivision = b.bracket.dataValues.division;
+      const aCategory = a.bracket.dataValues.category;
+      const bCategory = b.bracket.dataValues.category;
 
       // Ordenar por gradeMin de la categoría
-      const gradeMinComparison = (aCategory?.gradeMin || "").localeCompare(
-        bCategory?.gradeMin || ""
-      );
-      if (gradeMinComparison !== 0) {
-        return gradeMinComparison;
+      const aNumericValue = obtenerValorNumerico(aCategory?.gradeMin);
+      const bNumericValue = obtenerValorNumerico(bCategory?.gradeMin);
+
+      if (aNumericValue !== bNumericValue) {
+        return (aNumericValue || 0) - (bNumericValue || 0);
       }
 
       const aAgeInterval = aDivision ? aDivision.ChampionshipAgeInterval : null;
@@ -122,15 +157,26 @@ export const getBracketsWithCompetitorsByChampionshipId = async (
       }
 
       // Ordenar por gender de la división
-      if (aDivision?.gender && bDivision?.gender) {
-        return aDivision.gender.localeCompare(bDivision.gender);
+      if (
+        aDivision?.gender === "Masculino" &&
+        bDivision?.gender !== "Masculino"
+      ) {
+        return 1;
+      } else if (
+        aDivision?.gender != "Masculino" &&
+        bDivision?.gender === "Masculino"
+      ) {
+        return -1;
       }
 
       // Si todos los criterios son iguales, mantener el orden original
       return 0;
     });
 
-    res.status(200).json({ status: 200, data: brackets });
+    // Extraer los brackets ordenados
+    const sortedBracketResults = sortedBrackets.map((item) => item.bracket);
+
+    res.status(200).json({ status: 200, data: sortedBracketResults });
   } catch (error) {
     console.error("Error fetching brackets:", error);
     res.status(500).json({
@@ -139,6 +185,36 @@ export const getBracketsWithCompetitorsByChampionshipId = async (
     });
   }
 };
+
+function obtenerValorNumerico(grado: string): number {
+  if (grado) {
+    switch (grado.toLowerCase()) {
+      case "franja amarillo":
+        return 1;
+      case "amarillo":
+        return 2;
+      case "franja verde":
+        return 3;
+      case "verde":
+        return 4;
+      case "franja azul":
+        return 5;
+      case "azul":
+        return 6;
+      case "franja rojo":
+        return 7;
+      case "rojo":
+        return 8;
+      case "franja negro":
+        return 9;
+      case "negro":
+        return 10;
+      default:
+        return 0;
+    }
+  }
+  return 0;
+}
 
 export const getBracketsWithOneCompetitorByChampionshipId = async (
   req: Request,
