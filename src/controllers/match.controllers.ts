@@ -6,6 +6,7 @@ import ChampionshipDivision from "../models/championshipDivision";
 import Bracket from "../models/bracket";
 import ChampionshipCategory from "../models/championshipCategory";
 import ChampionshipAgeInterval from "../models/championshipAgeInterval";
+import Bracket from "./../models/bracket";
 
 // Controlador para obtener partidos por ID de campeonato
 export const getMatchesByChampionshipId = async (
@@ -263,12 +264,49 @@ export const enumarateMatches = async (req: Request, res: Response) => {
       bracket.dataValues.category = category?.toJSON();
     }
 
+    //LOGICA DE ORDENAMIENTO
+
+    // Obtener los matches asociados a cada bracket
+    const getMatchesForBracket = async (bracket: Bracket) => {
+      return await Match.findAll({ where: { bracketId: bracket.bracketId } });
+    };
+
     // Ordenar brackets según los criterios especificados
-    brackets.sort((a, b) => {
-      const aDivision = a.dataValues.division;
-      const bDivision = b.dataValues.division;
-      const aCategory = a.dataValues.category;
-      const bCategory = b.dataValues.category;
+    const sortedBrackets = [];
+    for (const bracket of brackets) {
+      const matches = await getMatchesForBracket(bracket);
+
+      // Almacenar el bracket y sus matches para ordenar posteriormente
+      sortedBrackets.push({ bracket, matches });
+    }
+
+    // Ordenar brackets según los criterios especificados
+    sortedBrackets.sort((a, b) => {
+      const roundOrder = ["eights1", "quarters1", "semifinal1", "final"];
+
+      for (const round of roundOrder) {
+        const aHasRound = a.matches.some((match) => match.round === round);
+        const bHasRound = b.matches.some((match) => match.round === round);
+
+        if (aHasRound && !bHasRound) {
+          console.log(
+            "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+            a.bracket.bracketId
+          );
+          return -1; // 'a' tiene matches con la ronda 'round', 'b' no los tiene
+        } else if (!aHasRound && bHasRound) {
+          console.log(
+            "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+            a.bracket.bracketId
+          );
+          return 1; // 'b' tiene matches con la ronda 'round', 'a' no los tiene
+        }
+      }
+
+      const aDivision = a.bracket.dataValues.division;
+      const bDivision = b.bracket.dataValues.division;
+      const aCategory = a.bracket.dataValues.category;
+      const bCategory = b.bracket.dataValues.category;
 
       // Ordenar por gradeMin de la categoría
       const aNumericValue = obtenerValorNumerico(aCategory?.gradeMin);
@@ -296,29 +334,28 @@ export const enumarateMatches = async (req: Request, res: Response) => {
         aDivision?.gender === "Masculino" &&
         bDivision?.gender !== "Masculino"
       ) {
-        return 1;
+        return -1;
       } else if (
         aDivision?.gender != "Masculino" &&
         bDivision?.gender === "Masculino"
       ) {
-        return -1;
+        return 1;
       }
 
       // Si todos los criterios son iguales, mantener el orden original
       return 0;
     });
-    console.log(
-      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-    );
-    console.log(brackets);
+
+    console.log(sortedBrackets);
+
     var eightsMatches = [];
     var quartersMatches = [];
     var semifinalsMatches = [];
     var finalsMatches = [];
 
-    for (const bracket of brackets) {
+    for (const bracket of sortedBrackets) {
       const matches = await Match.findAll({
-        where: { bracketId: bracket.bracketId },
+        where: { bracketId: bracket.bracket.bracketId },
       });
 
       if (matches.length > 0) {
@@ -414,12 +451,6 @@ export const enumarateMatches = async (req: Request, res: Response) => {
         (m?.redCompetitorId === null && m?.blueCompetitorId === null)
     );
 
-    const totalMatches =
-      quartersMatches.length +
-      eightsMatches.length +
-      semifinalsMatches.length +
-      finalsMatches.length;
-
     var conteo = 1;
 
     for (const match of eightsMatches) {
@@ -447,26 +478,6 @@ export const enumarateMatches = async (req: Request, res: Response) => {
         await match.save();
       }
     }
-    /*
-    if (!match) {
-      return res.status(404).json({
-        status: 404,
-        error: "Match not found",
-      });
-    }
-
-    // Actualizar los valores de las rondas si se proporcionan en el cuerpo de la solicitud
-    if (redRounds !== undefined) {
-      match.redRounds = redRounds;
-    }
-    if (blueRounds !== undefined) {
-      match.blueRounds = blueRounds;
-    }
-
-    // Guardar los cambios
-    await match.save();
-*/
-    // Enviar respuesta con el partido actualizado
     res.status(200).json({ status: 200, data: 0 });
   } catch (error) {
     console.error("Error updating match rounds:", error);

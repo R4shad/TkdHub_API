@@ -56,7 +56,6 @@ export const getBracketsWithCompetitorsByChampionshipId = async (
 
     const brackets = await Bracket.findAll({
       where: { championshipId },
-      attributes: { exclude: ["createdAt", "updatedAt"] }, // Excluir createdAt y updatedAt
     });
 
     for (const bracket of brackets) {
@@ -72,14 +71,12 @@ export const getBracketsWithCompetitorsByChampionshipId = async (
           divisionId: bracket.divisionId,
           categoryId: bracket.categoryId,
         },
-        attributes: { exclude: ["createdAt", "updatedAt"] }, // Excluir createdAt y updatedAt
       });
 
       const competitorsWithDetails = await Promise.all(
         competitors.map(async (competitor) => {
           const participant = await Participant.findOne({
             where: { id: competitor.participantId },
-            attributes: { exclude: ["createdAt", "updatedAt"] }, // Excluir createdAt y updatedAt
           });
           return {
             ...competitor.toJSON(),
@@ -87,19 +84,10 @@ export const getBracketsWithCompetitorsByChampionshipId = async (
           };
         })
       );
-
       bracket.dataValues.competitors = competitorsWithDetails;
       bracket.dataValues.division = division?.toJSON();
       bracket.dataValues.category = category?.toJSON();
     }
-
-    // Función para obtener el primer match de un tipo de ronda específico
-    const getFirstMatchByRound = (
-      matches: Match[],
-      roundType: string
-    ): Match | null => {
-      return matches.find((match) => match.round === roundType) || null;
-    };
 
     // Obtener los matches asociados a cada bracket
     const getMatchesForBracket = async (bracket: Bracket) => {
@@ -161,12 +149,12 @@ export const getBracketsWithCompetitorsByChampionshipId = async (
         aDivision?.gender === "Masculino" &&
         bDivision?.gender !== "Masculino"
       ) {
-        return 1;
+        return -1;
       } else if (
         aDivision?.gender != "Masculino" &&
         bDivision?.gender === "Masculino"
       ) {
-        return -1;
+        return 1;
       }
 
       // Si todos los criterios son iguales, mantener el orden original
