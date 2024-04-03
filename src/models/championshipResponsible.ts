@@ -21,10 +21,6 @@ ChampionshipResponsible.init(
       allowNull: false,
       primaryKey: true,
     },
-    password: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
-    },
   },
   {
     sequelize,

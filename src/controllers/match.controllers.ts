@@ -6,7 +6,6 @@ import ChampionshipDivision from "../models/championshipDivision";
 import Bracket from "../models/bracket";
 import ChampionshipCategory from "../models/championshipCategory";
 import ChampionshipAgeInterval from "../models/championshipAgeInterval";
-import Bracket from "./../models/bracket";
 
 // Controlador para obtener partidos por ID de campeonato
 export const getMatchesByChampionshipId = async (

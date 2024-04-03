@@ -3,6 +3,8 @@ import {
   getResponsibles,
   createResponsible,
   loginResponsible,
+  deleteResponsible,
+  updateResponsible,
 } from "../controllers/responsible.controllers";
 
 const router = Router();
@@ -36,7 +38,7 @@ router.get("/:championshipId", getResponsibles);
  *       - name: championshipId
  *         in: path
  *         required: true
- *         description: ID of the championship
+ *         description: ID del campeonato
  *         schema:
  *           type: integer
  *     requestBody:
@@ -46,13 +48,20 @@ router.get("/:championshipId", getResponsibles);
  *           schema:
  *             type: object
  *             properties:
- *               responsibleCi:
- *                 type: integer
  *               name:
  *                 type: string
+ *               email:
+ *                 type: string
+ *             required:
+ *               - name
+ *               - email
  *     responses:
  *       201:
- *         description: Created
+ *         description: Creado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Responsible'
  *       500:
  *         description: Error
  */
@@ -89,5 +98,83 @@ router.post("/:championshipId", createResponsible);
  *         description: Error
  */
 router.post("/login/:championshipId", loginResponsible);
+
+/**
+ * @openapi
+ * /api/responsible/{championshipId}/{responsibleId}:
+ *   patch:
+ *     tags:
+ *       - Responsible
+ *     summary: Actualizar información del responsable
+ *     description: Actualiza la información de un responsable específico por su código de responsable e ID de campeonato.
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID del campeonato
+ *         schema:
+ *           type: integer
+ *       - name: responsibleId
+ *         in: path
+ *         required: true
+ *         description: Id del responsable
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               password:
+ *                 type: string
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *     responses:
+ *       '200':
+ *         description: Responsable actualizado correctamente
+ *       '400':
+ *         description: Solicitud incorrecta
+ *       '404':
+ *         description: Responsable no encontrado
+ *       '500':
+ *         description: Error interno del servidor
+ */
+router.patch("/:championshipId/:responsibleId", updateResponsible);
+
+/**
+ * @openapi
+ * /api/responsible/{championshipId}/{responsibleId}:
+ *   delete:
+ *     tags:
+ *       - Responsible
+ *     summary: Eliminar un Responsable
+ *     description: Elimina un responsable asociado a un campeonato.
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID del campeonato
+ *         schema:
+ *           type: integer
+ *       - name: responsibleId
+ *         in: path
+ *         required: true
+ *         description: Código del responsable a eliminar
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Responsable eliminado correctamente
+ *       '404':
+ *         description: Responsable no encontrado
+ *       '500':
+ *         description: Error interno del servidor
+ */
+router.delete("/:championshipId/:responsibleId", deleteResponsible);
 
 export default router;

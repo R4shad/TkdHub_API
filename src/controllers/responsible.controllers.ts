@@ -25,9 +25,9 @@ export const getResponsibles = async (req: Request, res: Response) => {
         responsible.responsibleId
       ); // Consultar los datos de Responsible usando el responsableCi de ChampionshipResponsible
       const formattedData = {
-        responsibleCi: responsible.responsibleId,
+        responsibleId: responsible.responsibleId,
         name: responsibleData?.name || null, // Acceder al nombre de Responsible
-        password: responsible.password,
+        email: responsibleData?.email,
       };
       responsibleResponse.push(formattedData);
     }
@@ -46,7 +46,7 @@ export const getResponsibles = async (req: Request, res: Response) => {
     res.status(response.status).json(response);
   }
 };
-
+/*
 export const createResponsible = async (req: Request, res: Response) => {
   try {
     const { championshipId } = req.params;
@@ -112,6 +112,65 @@ export const createResponsible = async (req: Request, res: Response) => {
     const password = `${passwordBase}_${randomComponent}`;
     return password;
   }
+};*/
+
+export const createResponsible = async (req: Request, res: Response) => {
+  try {
+    const { championshipId } = req.params;
+    const { name, email } = req.body;
+
+    // Verificar si el responsible ya existe en la base de datos
+    const existingResponsible = await Responsible.findOne({
+      where: { email: email },
+    });
+
+    if (existingResponsible) {
+      // Actualizar los valores del responsible existente
+      await existingResponsible.update({
+        name: name,
+        email: email,
+      });
+
+      // Agregar el responsible existente a ChampionshipResponsible si no está presente
+      await ChampionshipResponsible.create({
+        championshipId: parseInt(championshipId, 10),
+        responsibleId: existingResponsible.id,
+      });
+
+      const response = {
+        status: 200,
+        message: "Responsible updated successfully",
+        data: existingResponsible.toJSON(),
+      };
+      return res.status(response.status).json(response);
+    } else {
+      // Crear un nuevo responsible y agregarlo a ChampionshipResponsible
+      const newResponsible = await Responsible.create({
+        name: name,
+        email: email,
+        password: "",
+      });
+
+      await ChampionshipResponsible.create({
+        championshipId: parseInt(championshipId, 10),
+        responsibleId: newResponsible.id,
+      });
+
+      const response = {
+        status: 201,
+        message: "Responsible created successfully",
+        data: newResponsible.toJSON(),
+      };
+      return res.status(response.status).json(response);
+    }
+  } catch (error) {
+    console.error("Error creating/updating the responsible:", error);
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "There was an error processing the request.",
+    };
+    res.status(response.status).json(response);
+  }
 };
 
 export const loginResponsible = async (req: Request, res: Response) => {
@@ -157,4 +216,83 @@ export const loginResponsible = async (req: Request, res: Response) => {
     process.env.SECRET_KEY || "R4shad"
   );
   res.json({ token });
+};
+
+export const updateResponsible = async (req: Request, res: Response) => {
+  try {
+    const { championshipId, responsibleId } = req.params;
+    const { name, email, passowrd } = req.body;
+
+    // Verificar si el responsable existe en ChampionshipResponsible
+    const existingResponsible = await ChampionshipResponsible.findOne({
+      where: { championshipId: championshipId, responsibleId: responsibleId },
+    });
+
+    if (!existingResponsible) {
+      const response: ApiResponse<undefined> = {
+        status: 404,
+        error: "Responsible not found",
+      };
+      return res.status(response.status).json(response);
+    }
+
+    // Actualizar los valores del responsible
+    await Responsible.update(
+      {
+        name: name,
+        email: email,
+        passowrd: passowrd,
+      },
+      { where: { id: responsibleId } }
+    );
+
+    const response = {
+      status: 200,
+      message: "Responsible updated successfully",
+    };
+    res.status(response.status).json(response);
+  } catch (error) {
+    console.error("Error updating the Responsible:", error);
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "There was an error processing the request.",
+    };
+    res.status(response.status).json(response);
+  }
+};
+
+export const deleteResponsible = async (req: Request, res: Response) => {
+  const championshipId = parseInt(req.params.championshipId, 10);
+  const responsibleId = req.params.responsibleId;
+
+  try {
+    const responsible = await ChampionshipResponsible.findOne({
+      where: {
+        championshipId: championshipId,
+        responsibleId: responsibleId,
+      },
+    });
+
+    if (!responsible) {
+      return res.status(404).json({
+        status: 404,
+        error: "Responsible not found",
+      });
+    }
+
+    await responsible.destroy();
+
+    const response = {
+      status: 200,
+      message: "Responsible deleted successfully",
+    };
+    res.status(response.status).json(response);
+  } catch (error) {
+    console.error("Error deleting the responsible:", error);
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "There was an error processing the request.",
+    };
+    res.status(response.status).json(response);
+  }
 };
