@@ -5,7 +5,7 @@ import Participant from "../models/participant";
 
 (async () => {
   try {
-    const championshipId: number = 1;
+    const championshipId: number = 8;
     await sequelize.sync(); // Sincroniza el modelo con la base de datos, eliminando las tablas existentes si existen
     const participants = [];
     const firstNames = [
@@ -55,7 +55,7 @@ import Participant from "../models/participant";
     for (let i = 0; i < 16; i++) {
       const clubCode = "LIN";
       const age = 18;
-      const weight = 65;
+      const weight = 50;
       const grade = "franja amarillo";
       const gender = "Masculino";
       const firstName = firstNames[i % firstNames.length];
@@ -75,8 +75,8 @@ import Participant from "../models/participant";
     for (let i = 0; i < 15; i++) {
       const clubCode = "D-3";
       const age = 18;
-      const weight = 65;
-      const grade = "franja azul";
+      const weight = 60;
+      const grade = "franja amarillo";
       const gender = "Masculino";
       const firstName = firstNames[i % firstNames.length];
       const lastName = lastNames[i % lastNames.length];
@@ -95,9 +95,9 @@ import Participant from "../models/participant";
     for (let i = 0; i < 14; i++) {
       const clubCode = "LIN";
       const age = 18;
-      const weight = 49;
+      const weight = 70;
       const grade = "franja amarillo";
-      const gender = "Femenino";
+      const gender = "Masculino";
       const firstName = firstNames[i % firstNames.length];
       const lastName = lastNames[i % lastNames.length];
       const participant = await Participant.create({
@@ -114,10 +114,10 @@ import Participant from "../models/participant";
 
     for (let i = 0; i < 13; i++) {
       const clubCode = "D-3";
-      const age = 18;
-      const weight = 49;
+      const age = 20;
+      const weight = 85;
       const grade = "franja rojo";
-      const gender = "Femenino";
+      const gender = "Masculino";
       const firstName = firstNames[i % firstNames.length];
       const lastName = lastNames[i % lastNames.length];
       const participant = await Participant.create({
@@ -134,8 +134,8 @@ import Participant from "../models/participant";
 
     for (let i = 0; i < 12; i++) {
       const clubCode = "LIN";
-      const age = 7;
-      const weight = 34;
+      const age = 19;
+      const weight = 50;
       const grade = "franja amarillo";
       const gender = "Femenino";
       const firstName = firstNames[i % firstNames.length];
@@ -154,10 +154,10 @@ import Participant from "../models/participant";
 
     for (let i = 0; i < 11; i++) {
       const clubCode = "D-3";
-      const age = 7;
-      const weight = 43;
+      const age = 20;
+      const weight = 55;
       const grade = "franja amarillo";
-      const gender = "Masculino";
+      const gender = "Femenino";
       const firstName = firstNames[i % firstNames.length];
       const lastName = lastNames[i % lastNames.length];
       const participant = await Participant.create({
@@ -174,10 +174,10 @@ import Participant from "../models/participant";
 
     for (let i = 0; i < 10; i++) {
       const clubCode = "LIN";
-      const age = 10;
-      const weight = 58;
-      const grade = "franja verde";
-      const gender = "Masculino";
+      const age = 22;
+      const weight = 60;
+      const grade = "franja amarillo";
+      const gender = "Femenino";
       const firstName = firstNames[i % firstNames.length];
       const lastName = lastNames[i % lastNames.length];
       const participant = await Participant.create({
@@ -194,9 +194,9 @@ import Participant from "../models/participant";
 
     for (let i = 0; i < 9; i++) {
       const clubCode = "D-3";
-      const age = 10;
-      const weight = 58;
-      const grade = "franja verde";
+      const age = 20;
+      const weight = 65;
+      const grade = "franja amarillo";
       const gender = "Femenino";
       const firstName = firstNames[i % firstNames.length];
       const lastName = lastNames[i % lastNames.length];
@@ -214,9 +214,9 @@ import Participant from "../models/participant";
 
     for (let i = 0; i < 8; i++) {
       const clubCode = "LIN";
-      const age = 20;
-      const weight = 48;
-      const grade = "franja negro";
+      const age = 25;
+      const weight = 75;
+      const grade = "franja amarillo";
       const gender = "Femenino";
       const firstName = firstNames[i % firstNames.length];
       const lastName = lastNames[i % lastNames.length];
@@ -235,9 +235,9 @@ import Participant from "../models/participant";
     for (let i = 0; i < 7; i++) {
       const clubCode = "D-3";
       const age = 20;
-      const weight = 48;
+      const weight = 44;
       const grade = "franja negro";
-      const gender = "Masculino";
+      const gender = "Femenino";
       const firstName = firstNames[i % firstNames.length];
       const lastName = lastNames[i % lastNames.length];
       const participant = await Participant.create({
@@ -255,9 +255,9 @@ import Participant from "../models/participant";
     for (let i = 0; i < 6; i++) {
       const clubCode = "LIN";
       const age = 20;
-      const weight = 90;
+      const weight = 52;
       const grade = "franja negro";
-      const gender = "Masculino";
+      const gender = "Femenino";
       const firstName = firstNames[i % firstNames.length];
       const lastName = lastNames[i % lastNames.length];
       const participant = await Participant.create({
@@ -275,7 +275,7 @@ import Participant from "../models/participant";
     for (let i = 0; i < 5; i++) {
       const clubCode = "D-3";
       const age = 20;
-      const weight = 80;
+      const weight = 60;
       const grade = "franja negro";
       const gender = "Femenino";
       const firstName = firstNames[i % firstNames.length];
@@ -295,8 +295,8 @@ import Participant from "../models/participant";
     for (let i = 0; i < 4; i++) {
       const clubCode = "LIN";
       const age = 16;
-      const weight = 67;
-      const grade = "franja amarillo";
+      const weight = 70;
+      const grade = "franja negro";
       const gender = "Femenino";
       const firstName = firstNames[i % firstNames.length];
       const lastName = lastNames[i % lastNames.length];
@@ -314,9 +314,9 @@ import Participant from "../models/participant";
 
     for (let i = 0; i < 3; i++) {
       const clubCode = "D-3";
-      const age = 16;
-      const weight = 67;
-      const grade = "franja amarillo";
+      const age = 27;
+      const weight = 57;
+      const grade = "franja negro";
       const gender = "Masculino";
       const firstName = firstNames[i % firstNames.length];
       const lastName = lastNames[i % lastNames.length];
@@ -334,9 +334,9 @@ import Participant from "../models/participant";
 
     for (let i = 0; i < 2; i++) {
       const clubCode = "LIN";
-      const age = 16;
+      const age = 30;
       const weight = 67;
-      const grade = "franja rojo";
+      const grade = "franja negro";
       const gender = "Masculino";
       const firstName = firstNames[i % firstNames.length];
       const lastName = lastNames[i % lastNames.length];
@@ -355,9 +355,9 @@ import Participant from "../models/participant";
     for (let i = 0; i < 1; i++) {
       const clubCode = "D-3";
       const age = 16;
-      const weight = 67;
-      const grade = "franja rojo";
-      const gender = "Femenino";
+      const weight = 85;
+      const grade = "franja negro";
+      const gender = "Masculino";
       const firstName = firstNames[i % firstNames.length];
       const lastName = lastNames[i % lastNames.length];
       const participant = await Participant.create({

@@ -6,7 +6,7 @@ import {
   createMatch,
   updateMatch,
   updateMatchRounds,
-  enumarateMatches,
+  enumerateMatches,
 } from "../controllers/match.controllers";
 
 const router = Router();
@@ -205,7 +205,7 @@ router.patch("/:matchId/updateRounds", updateMatchRounds);
 
 /**
  * @swagger
- * /api/match/enumarateMatches/{championshipId}:
+ * /api/match/enumerateMatches/{championshipId}:
  *   patch:
  *     tags:
  *       - Match
@@ -224,6 +224,6 @@ router.patch("/:matchId/updateRounds", updateMatchRounds);
  *       500:
  *         description: Error
  */
-router.patch("/enumarateMatches/:championshipId", enumarateMatches);
+router.patch("/enumerateMatches/:championshipId", enumerateMatches);
 
 export default router;

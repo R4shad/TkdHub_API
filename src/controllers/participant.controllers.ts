@@ -242,6 +242,43 @@ export const updateParticipantVerification = async (
   }
 };
 
+export const discardParticipantValidation = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { championshipId, participantId } = req.params;
+
+    // Buscar al participante en la tabla ChampionshipParticipant
+    const championshipParticipant = await ChampionshipParticipant.findOne({
+      where: {
+        championshipId: championshipId,
+        participantId: participantId,
+      },
+    });
+    if (!championshipParticipant) {
+      return res.status(404).json({
+        status: 404,
+        error: "participant not found in the championship",
+      });
+    }
+
+    // Actualizar el atributo verified a true
+    await championshipParticipant.update({ verified: false });
+
+    return res.status(200).json({
+      status: 200,
+      message: "participant verification updated successfully",
+    });
+  } catch (error) {
+    console.error("Error updating participant verification:", error);
+    return res.status(500).json({
+      status: 500,
+      error: "There was an error processing the request.",
+    });
+  }
+};
+
 export const deleteParticipant = async (req: Request, res: Response) => {
   const championshipId = parseInt(req.params.championshipId);
   const participantId = req.params.participantId;

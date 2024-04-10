@@ -128,7 +128,29 @@ export const deleteCompetitor = async (req: Request, res: Response) => {
     const result = await Competitor.destroy({
       where: { competitorId },
     });
-    console.log(result);
+    if (result === 1) {
+      res
+        .status(200)
+        .json({ status: 200, message: "Competidor eliminado exitosamente" });
+    } else {
+      res
+        .status(404)
+        .json({ status: 404, message: "Competidor no encontrado" });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ status: 500, message: "Error al procesar la solicitud" });
+    console.log(error);
+  }
+};
+
+export const deleteCompetitorPid = async (req: Request, res: Response) => {
+  const participantId = req.params.participantId;
+  try {
+    const result = await Competitor.destroy({
+      where: { participantId },
+    });
     if (result === 1) {
       res
         .status(200)

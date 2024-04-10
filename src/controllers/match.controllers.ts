@@ -245,7 +245,7 @@ export const updateMatchRounds = async (req: Request, res: Response) => {
   }
 };
 
-export const enumarateMatches = async (req: Request, res: Response) => {
+export const enumerateMatches = async (req: Request, res: Response) => {
   try {
     const { championshipId } = req.params;
 
@@ -267,7 +267,9 @@ export const enumarateMatches = async (req: Request, res: Response) => {
 
     // Obtener los matches asociados a cada bracket
     const getMatchesForBracket = async (bracket: Bracket) => {
-      return await Match.findAll({ where: { bracketId: bracket.bracketId } });
+      return await Match.findAll({
+        where: { bracketId: bracket.bracketId, championshipId: championshipId },
+      });
     };
 
     // Ordenar brackets según los criterios especificados

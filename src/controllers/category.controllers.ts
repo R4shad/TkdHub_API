@@ -181,12 +181,10 @@ export const incrementCompetitors = async (req: Request, res: Response) => {
 export const decrementCompetitors = async (req: Request, res: Response) => {
   const championshipId = parseInt(req.params.championshipId, 10);
   const categoryId = parseInt(req.params.categoryId, 10);
-
   try {
     const category = await ChampionshipCategory.findOne({
-      where: { championshipId, categoryId },
+      where: { championshipId: championshipId, categoryId: categoryId },
     });
-
     if (!category) {
       const response: ApiResponse<undefined> = {
         status: 404,
@@ -273,7 +271,6 @@ export const deleteChampionshipCategory = async (
         categoryId: categoryId,
       },
     });
-    console.log("XQ TOY AQUI");
     if (!category) {
       return res.status(404).json({
         status: 404,
@@ -303,8 +300,6 @@ export const deleteAllChampionshipCategories = async (
 ) => {
   try {
     const championshipId = req.params.championshipId;
-    console.log("datos:");
-    console.log(championshipId);
     // Buscar todas las categorías de campeonato asociadas al campeonato
     const categories = await ChampionshipCategory.findAll({
       where: { championshipId },

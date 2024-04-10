@@ -5,6 +5,7 @@ import {
   createCompetitor,
   updateCompetitor,
   deleteCompetitor,
+  deleteCompetitorPid,
 } from "../controllers/competitor.controllers";
 
 const router = Router();
@@ -145,7 +146,7 @@ router.patch("/:competitorId", updateCompetitor);
  * /api/competitor/{competitorId}:
  *   delete:
  *     tags:
- *       - competitor
+ *       - Competitor
  *     summary: Eliminar competidor del campeonato
  *     description: Elimina un competidor de un campeonato mediante su ID de competidor.
  *     parameters:
@@ -164,5 +165,30 @@ router.patch("/:competitorId", updateCompetitor);
  *         description: Error al procesar la solicitud
  */
 router.delete("/:competitorId", deleteCompetitor);
+
+/**
+ * @openapi
+ * /api/competitor/pId/{participantId}:
+ *   delete:
+ *     tags:
+ *       - Competitor
+ *     summary: Eliminar competidor del campeonato
+ *     description: Elimina un competidor de un campeonato mediante su ID de participante.
+ *     parameters:
+ *       - name: participantId
+ *         in: path
+ *         required: true
+ *         description: ID del participante
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Participante eliminado exitosamente
+ *       '404':
+ *         description: Participante no encontrado
+ *       '500':
+ *         description: Error al procesar la solicitud
+ */
+router.delete("/pId/:participantId", deleteCompetitorPid);
 
 export default router;

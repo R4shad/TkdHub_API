@@ -128,16 +128,54 @@ export const updateClub = async (req: Request, res: Response) => {
     const { name, coachName, email, clubCode } = req.body;
 
     // Verificar si el club existe en ChampionshipClub
-    const existingClub = await ChampionshipClub.findOne({
+    const existingChampionshipClub = await ChampionshipClub.findOne({
       where: { championshipId: championshipId, clubCode: oldClubCode },
     });
 
-    if (!existingClub) {
+    if (!existingChampionshipClub) {
       const response: ApiResponse<undefined> = {
         status: 404,
         error: "Club not found",
       };
       return res.status(response.status).json(response);
+    }
+
+    const existingClub = await Club.findOne({
+      where: { clubCode: clubCode },
+    });
+
+    if (existingClub) {
+      await existingChampionshipClub.destroy();
+
+      const newClub = await ChampionshipClub.findOne({
+        where: { clubCode: oldClubCode },
+      });
+      await newClub?.destroy();
+
+      await Club.update(
+        {
+          name: name,
+          coachName: coachName,
+          email: email,
+        },
+        { where: { clubCode: clubCode } }
+      );
+
+      await ChampionshipClub.create({
+        clubCode: clubCode,
+        championshipId: championshipId,
+      });
+
+      if (oldClubCode === "NEW") {
+        const toDelete = await Club.findOne({
+          where: { clubCode: oldClubCode },
+        });
+      }
+      const response = {
+        status: 200,
+        message: "Club updated successfully",
+      };
+      res.status(response.status).json(response);
     }
 
     // Actualizar los valores del club
@@ -171,6 +209,28 @@ export const deleteClub = async (req: Request, res: Response) => {
   const clubCode = req.params.clubCode;
 
   try {
+    if (clubCode === "NEW") {
+      const toDelete1 = await ChampionshipClub.findOne({
+        where: {
+          clubCode: clubCode,
+          championshipId: championshipId,
+        },
+      });
+      await toDelete1?.destroy();
+
+      const toDelete2 = await Club.findOne({
+        where: {
+          clubCode: clubCode,
+        },
+      });
+      await toDelete2?.destroy();
+
+      const response = {
+        status: 200,
+        message: "Club deleted successfully",
+      };
+      res.status(response.status).json(response);
+    }
     const club = await ChampionshipClub.findOne({
       where: {
         championshipId: championshipId,

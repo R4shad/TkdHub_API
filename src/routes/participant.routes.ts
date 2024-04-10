@@ -6,6 +6,7 @@ import {
   getParticipantsToRegister,
   updateParticipant,
   updateParticipantVerification,
+  discardParticipantValidation,
   deleteParticipant,
 } from "../controllers/participant.controllers";
 
@@ -251,6 +252,54 @@ router.patch("/:championshipId/:participantId", updateParticipant);
 router.patch(
   "/validate/:championshipId/:participantId",
   updateParticipantVerification
+);
+
+/**
+ * @openapi
+ * /api/participant/discard/{championshipId}/{participantId}:
+ *   patch:
+ *     tags:
+ *       - participant
+ *     summary: Descartar el estado de verificación del participante
+ *     description: Descarta el estado de verificación del participante para inscribirlo en un campeonato.
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID del campeonato
+ *         schema:
+ *           type: integer
+ *       - name: participantId
+ *         in: path
+ *         required: true
+ *         description: ID del participante
+ *         schema:
+ *           type: string
+ *       - in: body
+ *         name: body
+ *         description: Estado de verificación del participante
+ *         required: true
+ *         schema:
+ *           type: object
+ *           properties:
+ *             verified:
+ *               type: boolean
+ *               description: Estado de verificación del participante
+ *               example: true
+ *     responses:
+ *       '200':
+ *         description: Actualización exitosa
+ *       '400':
+ *         description: Solicitud incorrecta
+ *       '404':
+ *         description: No se encontró el participante
+ *       '500':
+ *         description: Error interno del servidor
+ */
+
+router.patch(
+  "/discard/:championshipId/:participantId",
+  discardParticipantValidation
 );
 
 /**
