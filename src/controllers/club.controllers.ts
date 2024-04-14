@@ -261,3 +261,33 @@ export const deleteClub = async (req: Request, res: Response) => {
     res.status(response.status).json(response);
   }
 };
+
+export const updateCoachPassword = async (req: Request, res: Response) => {
+  try {
+    const { clubCode } = req.params;
+    const { password } = req.body;
+
+    console.log(clubCode);
+    const existingClub = await Club.findOne({
+      where: { clubCode: clubCode },
+    });
+
+    if (existingClub) {
+      existingClub.password = password;
+      await existingClub.save();
+
+      const response = {
+        status: 200,
+        message: "Club updated successfully",
+      };
+      res.status(response.status).json(response);
+    }
+  } catch (error) {
+    console.error("Error updating the club:", error);
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "There was an error processing the request.",
+    };
+    res.status(response.status).json(response);
+  }
+};

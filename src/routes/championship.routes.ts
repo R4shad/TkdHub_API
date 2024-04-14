@@ -6,6 +6,7 @@ import {
   updateStage,
   loginOrganizer,
   getChampionshipById,
+  updateOrganizerPassword,
 } from "../controllers/championship.controllers";
 
 const router = Router();
@@ -153,5 +154,41 @@ router.post("/", createChampionship);
  *         description: Error
  */
 router.post("/login/:championshipId", loginOrganizer);
+
+/**
+ * @openapi
+ * /api/championship/password/update/{email}:
+ *   patch:
+ *     tags:
+ *       - Championship
+ *     summary: Actualizar el password del Organizador
+ *     description: Actualiza la password del Organizador
+ *     parameters:
+ *       - name: email
+ *         in: path
+ *         required: true
+ *         description: mail del organizador
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               password:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: Organizador actualizado correctamente
+ *       '400':
+ *         description: Solicitud incorrecta
+ *       '404':
+ *         description: Organizador no encontrado
+ *       '500':
+ *         description: Error interno del servidor
+ */
+router.patch("/password/update/:email", updateOrganizerPassword);
 
 export default router;

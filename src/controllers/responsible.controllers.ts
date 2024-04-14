@@ -218,7 +218,7 @@ export const loginResponsible = async (req: Request, res: Response) => {
   res.json({ token });
 };
 
-export const updateResponsible = async (req: Request, res: Response) => {
+export const uR = async (req: Request, res: Response) => {
   try {
     const { championshipId, responsibleId } = req.params;
     const { name, email, passowrd } = req.body;
@@ -289,6 +289,39 @@ export const deleteResponsible = async (req: Request, res: Response) => {
     res.status(response.status).json(response);
   } catch (error) {
     console.error("Error deleting the responsible:", error);
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "There was an error processing the request.",
+    };
+    res.status(response.status).json(response);
+  }
+};
+
+export const updateResponsiblePassword = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { email } = req.params;
+    const { password } = req.body;
+    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaa");
+    console.log(email);
+    const existingResponsable = await Responsible.findOne({
+      where: { email: email },
+    });
+
+    if (existingResponsable) {
+      existingResponsable.password = password;
+      await existingResponsable.save();
+
+      const response = {
+        status: 200,
+        message: "Responsable updated successfully",
+      };
+      res.status(response.status).json(response);
+    }
+  } catch (error) {
+    console.error("Error updating the responsable:", error);
     const response: ApiResponse<undefined> = {
       status: 500,
       error: "There was an error processing the request.",

@@ -11,7 +11,7 @@ enum ChampionshipStage {
   Etapa4 = "Weigh-in",
   Etapa5 = "Groupings",
   Etapa6 = "BracketDraw",
-  Etapa7 = "ResponsiblesRegistration",
+  Etapa7 = "OrganizersRegistration",
   Etapa8 = "CombatRecord",
   Etapa9 = "End",
 }
@@ -243,6 +243,35 @@ export const getChampionshipById = async (req: Request, res: Response) => {
     res.json(response);
   } catch (error) {
     console.error("Error fetching championship by ID:", error);
+    const response: ApiResponse<undefined> = {
+      status: 500,
+      error: "There was an error processing the request.",
+    };
+    res.status(response.status).json(response);
+  }
+};
+
+export const updateOrganizerPassword = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.params;
+    const { password } = req.body;
+
+    const existingOrganizer = await Organizer.findOne({
+      where: { email: email },
+    });
+
+    if (existingOrganizer) {
+      existingOrganizer.password = password;
+      await existingOrganizer.save();
+
+      const response = {
+        status: 200,
+        message: "Organizer updated successfully",
+      };
+      res.status(response.status).json(response);
+    }
+  } catch (error) {
+    console.error("Error updating the responsable:", error);
     const response: ApiResponse<undefined> = {
       status: 500,
       error: "There was an error processing the request.",

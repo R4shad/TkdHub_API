@@ -4,6 +4,7 @@ import {
   createClub,
   updateClub,
   deleteClub,
+  updateCoachPassword,
 } from "../controllers/club.controllers";
 
 const router = Router();
@@ -125,7 +126,43 @@ router.post("/:championshipId", createClub);
  *       '500':
  *         description: Error interno del servidor
  */
-router.patch("/:championshipId/:oldClubCode", updateClub);
+router.patch("/:oldClubCode", updateClub);
+
+/**
+ * @openapi
+ * /api/club/password/{clubCode}:
+ *   patch:
+ *     tags:
+ *       - Club
+ *     summary: Actualizar el password del Coach
+ *     description: Actualiza la password del Coach del Club
+ *     parameters:
+ *       - name: clubCode
+ *         in: path
+ *         required: true
+ *         description: Código del club
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               password:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: Club actualizado correctamente
+ *       '400':
+ *         description: Solicitud incorrecta
+ *       '404':
+ *         description: Club no encontrado
+ *       '500':
+ *         description: Error interno del servidor
+ */
+router.patch("/password/:clubCode", updateCoachPassword);
 
 /**
  * @openapi

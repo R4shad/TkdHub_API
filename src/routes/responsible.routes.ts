@@ -4,7 +4,8 @@ import {
   createResponsible,
   loginResponsible,
   deleteResponsible,
-  updateResponsible,
+  uR,
+  updateResponsiblePassword,
 } from "../controllers/responsible.controllers";
 
 const router = Router();
@@ -144,7 +145,7 @@ router.post("/login/:championshipId", loginResponsible);
  *       '500':
  *         description: Error interno del servidor
  */
-router.patch("/:championshipId/:responsibleId", updateResponsible);
+router.patch("/:championshipId/:responsibleId", uR);
 
 /**
  * @openapi
@@ -176,5 +177,41 @@ router.patch("/:championshipId/:responsibleId", updateResponsible);
  *         description: Error interno del servidor
  */
 router.delete("/:championshipId/:responsibleId", deleteResponsible);
+
+/**
+ * @openapi
+ * /api/responsible/password/update/{email}:
+ *   patch:
+ *     tags:
+ *       - Responsible
+ *     summary: Actualizar el password del Responsable
+ *     description: Actualiza la password del Responsable
+ *     parameters:
+ *       - name: email
+ *         in: path
+ *         required: true
+ *         description: mail del responsable
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               password:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: Responsable actualizado correctamente
+ *       '400':
+ *         description: Solicitud incorrecta
+ *       '404':
+ *         description: Responsable no encontrado
+ *       '500':
+ *         description: Error interno del servidor
+ */
+router.patch("/password/update/:email", updateResponsiblePassword);
 
 export default router;
