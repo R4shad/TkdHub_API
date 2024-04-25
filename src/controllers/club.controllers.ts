@@ -126,7 +126,6 @@ export const updateClub = async (req: Request, res: Response) => {
   try {
     const { championshipId, oldClubCode } = req.params;
     const { name, coachName, email, clubCode } = req.body;
-
     // Verificar si el club existe en ChampionshipClub
     const existingChampionshipClub = await ChampionshipClub.findOne({
       where: { championshipId: championshipId, clubCode: oldClubCode },
@@ -264,12 +263,11 @@ export const deleteClub = async (req: Request, res: Response) => {
 
 export const updateCoachPassword = async (req: Request, res: Response) => {
   try {
-    const { clubCode } = req.params;
+    const { email } = req.params;
     const { password } = req.body;
 
-    console.log(clubCode);
     const existingClub = await Club.findOne({
-      where: { clubCode: clubCode },
+      where: { email: email },
     });
 
     if (existingClub) {
@@ -282,6 +280,12 @@ export const updateCoachPassword = async (req: Request, res: Response) => {
       };
       res.status(response.status).json(response);
     }
+
+    const response = {
+      status: 404,
+      message: "Coach not found",
+    };
+    res.status(response.status).json(response);
   } catch (error) {
     console.error("Error updating the club:", error);
     const response: ApiResponse<undefined> = {

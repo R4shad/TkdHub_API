@@ -143,9 +143,9 @@ router.post("/", createChampionship);
  *           schema:
  *             type: object
  *             properties:
- *               organizerCi:
+ *               email:
  *                 type: number
- *               organizerPassword:
+ *               password:
  *                 type: string
  *     responses:
  *       201:

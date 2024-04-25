@@ -91,9 +91,10 @@ export const updateStage = async (req: Request, res: Response) => {
     }
 
     // Obtener el índice actual del enum ChampionshipStage
-    const currentStageIndex = Object.values(ChampionshipStage).indexOf(
-      championship.stage
+    const currentStageIndex = Object.values<string>(ChampionshipStage).indexOf(
+      championship.stage as string
     );
+
     console.log("BBBBBBBBBBBBB", currentStageIndex);
     // Verificar si el campeonato está en la última etapa
     if (currentStageIndex === Object.values(ChampionshipStage).length - 1) {
@@ -178,11 +179,11 @@ export const createChampionship = async (req: Request, res: Response) => {
 export const loginOrganizer = async (req: Request, res: Response) => {
   try {
     const { championshipId } = req.params;
-    const { organizerCi, organizerPassword } = req.body;
+    const { email, password } = req.body;
 
     // Buscar al organizador en la tabla Organizer
     const organizer = await Organizer.findOne({
-      where: { organizerCi: organizerCi },
+      where: { email: email },
     });
 
     if (!organizer) {
@@ -194,7 +195,7 @@ export const loginOrganizer = async (req: Request, res: Response) => {
     }
 
     // Verificar la contraseña del organizador
-    if (organizerPassword !== organizer.password) {
+    if (password !== organizer.password) {
       const response: ApiResponse<undefined> = {
         status: 400,
         error: "Incorrect Password.",
@@ -205,7 +206,7 @@ export const loginOrganizer = async (req: Request, res: Response) => {
     // Generar el token
     const token = jwt.sign(
       {
-        name: organizer.email, // Aquí deberías tener el nombre del organizador
+        role: Organizer,
       },
       process.env.SECRET_KEY || "R4shad"
     );
@@ -270,6 +271,12 @@ export const updateOrganizerPassword = async (req: Request, res: Response) => {
       };
       res.status(response.status).json(response);
     }
+
+    const response = {
+      status: 404,
+      message: "Organizer not found",
+    };
+    res.status(response.status).json(response);
   } catch (error) {
     console.error("Error updating the responsable:", error);
     const response: ApiResponse<undefined> = {

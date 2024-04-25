@@ -126,18 +126,18 @@ router.post("/:championshipId", createClub);
  *       '500':
  *         description: Error interno del servidor
  */
-router.patch("/:oldClubCode", updateClub);
+router.patch("/:championshipId/:oldClubCode", updateClub);
 
 /**
  * @openapi
- * /api/club/password/{clubCode}:
+ * /api/club/password/{email}:
  *   patch:
  *     tags:
  *       - Club
  *     summary: Actualizar el password del Coach
  *     description: Actualiza la password del Coach del Club
  *     parameters:
- *       - name: clubCode
+ *       - name: email
  *         in: path
  *         required: true
  *         description: Código del club
@@ -162,7 +162,7 @@ router.patch("/:oldClubCode", updateClub);
  *       '500':
  *         description: Error interno del servidor
  */
-router.patch("/password/:clubCode", updateCoachPassword);
+router.patch("/password/:email", updateCoachPassword);
 
 /**
  * @openapi

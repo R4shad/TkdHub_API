@@ -320,6 +320,12 @@ export const updateResponsiblePassword = async (
       };
       res.status(response.status).json(response);
     }
+
+    const response = {
+      status: 404,
+      message: "Responsable not found",
+    };
+    res.status(response.status).json(response);
   } catch (error) {
     console.error("Error updating the responsable:", error);
     const response: ApiResponse<undefined> = {
