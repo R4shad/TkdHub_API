@@ -7,6 +7,7 @@ import Match from "../models/match";
 import ChampionshipDivision from "../models/championshipDivision";
 import ChampionshipCategory from "../models/championshipCategory";
 import ChampionshipAgeInterval from "../models/championshipAgeInterval";
+import { Op } from "sequelize";
 
 export const getBrackets = async (req: Request, res: Response) => {
   try {
@@ -165,6 +166,114 @@ export const getBracketsWithCompetitorsByChampionshipId = async (
     const sortedBracketResults = sortedBrackets.map((item) => item.bracket);
 
     res.status(200).json({ status: 200, data: sortedBracketResults });
+  } catch (error) {
+    console.error("Error fetching brackets:", error);
+    res.status(500).json({
+      status: 500,
+      error: "There was an error processing the request.",
+    });
+  }
+};
+
+export const getBracketResultsByChampionshipId = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { championshipId } = req.params;
+
+    // Buscar todos los brackets para el campeonato dado
+    const brackets = await Bracket.findAll({
+      where: { championshipId },
+      attributes: ["bracketId", "divisionId", "categoryId"], // Seleccionar solo los atributos necesarios
+    });
+
+    // Arreglo para almacenar los ganadores de cada bracket
+    const winners = [];
+
+    // Iterar sobre cada bracket encontrado
+    for (const bracket of brackets) {
+      // Buscar todos los partidos asociados al bracket actual
+      const matches = await Match.findAll({
+        where: { bracketId: bracket.bracketId }, // Filtrar por el bracketId actual
+        attributes: [
+          "matchId",
+          "round",
+          "redRounds",
+          "blueRounds",
+          "redCompetitorId",
+          "blueCompetitorId",
+        ], // Seleccionar solo los atributos necesarios
+      });
+
+      // Determinar el ganador de oro y plata
+      let goldWinner, silverWinner;
+      for (const match of matches) {
+        if (match.round === "final") {
+          if (match.redRounds === 2) {
+            const compRed = await Competitor.findOne({
+              where: { competitorId: match.redCompetitorId },
+            });
+
+            goldWinner = await Participant.findOne({
+              where: { id: compRed?.participantId },
+            });
+          } else {
+            const compBlue = await Competitor.findOne({
+              where: { competitorId: match.blueCompetitorId },
+            });
+
+            goldWinner = await Participant.findOne({
+              where: { id: compBlue?.participantId },
+            });
+          }
+
+          // Determinar el perdedor como el ganador de plata
+          silverWinner = await Participant.findOne({
+            where: { id: { [Op.not]: goldWinner?.id } }, // Excluye al ganador de oro
+          });
+        }
+      }
+
+      // Determinar el ganador de bronce
+      const bronzeWinners = [];
+      for (const match of matches) {
+        if (match.round === "semifinal1" || match.round === "semifinal2") {
+          const loserId =
+            match.redRounds === 2
+              ? match.blueCompetitorId
+              : match.redCompetitorId;
+          const loser = await Competitor.findOne({
+            where: { competitorId: loserId },
+          });
+          const bronzeWinner = await Participant.findOne({
+            where: { id: loser?.participantId },
+          });
+          bronzeWinners.push(bronzeWinner);
+        }
+      }
+
+      // Estructurar los resultados del bracket
+      const bracketResult = {
+        bracketId: bracket.bracketId,
+        divisionId: bracket.divisionId,
+        categoryId: bracket.categoryId,
+        results: [
+          { ...goldWinner?.toJSON(), position: "oro" },
+          { ...silverWinner?.toJSON(), position: "plata" },
+          ...bronzeWinners.map((bronzeWinner) => ({
+            ...bronzeWinner?.toJSON(),
+            position: "bronce",
+          })),
+        ],
+      };
+
+      // Agregar los resultados del bracket al arreglo de ganadores
+      winners.push(bracketResult);
+    }
+
+    // Enviar respuesta con los ganadores de cada bracket
+    res.status(200).json({ status: 200, data: winners });
   } catch (error) {
     console.error("Error fetching brackets:", error);
     res.status(500).json({

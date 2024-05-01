@@ -3,6 +3,7 @@ import Championship from "./../models/championship";
 import Organizer from "./../models/organizer";
 import ApiResponse from "../interfaces/apiResponse";
 import jwt from "jsonwebtoken";
+import * as nodemailer from "nodemailer";
 
 enum ChampionshipStage {
   Etapa1 = "InitialConfiguration",
@@ -160,6 +161,40 @@ export const createChampionship = async (req: Request, res: Response) => {
       silverPoints: 4,
       bronzePoints: 1,
     });
+
+    const getId = await Championship.findOne({
+      where: { championshipName: championshipName },
+    });
+
+    //Envio Email
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: "tkdhub4@gmail.com",
+        pass: "jbcaozbdlxbhqhvn",
+      },
+    });
+    const text =
+      "Registrate como Organizador en TkdHub ingresando a este link: http://localhost:4200/championship/" +
+      getId?.championshipId +
+      "/CreatePassword/Organizer/" +
+      email;
+    const mailOptions = {
+      from: "tkdhub4@gmail.com",
+      to: email,
+      subject: championshipName,
+      text: text,
+    };
+    transporter.sendMail(
+      mailOptions,
+      function (error: Error | null, info: nodemailer.SentMessageInfo) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("Correo electrónico enviado: " + info.response);
+        }
+      }
+    );
 
     const response: ApiResponse<typeof newChampionship> = {
       status: 201,

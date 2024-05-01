@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import Club from "./../models/club";
 import ApiResponse from "../interfaces/apiResponse";
 import ChampionshipClub from "./../models/championshipClub";
-
+import * as nodemailer from "nodemailer";
+import Championship from "../models/championship";
 export const getClubs = async (req: Request, res: Response) => {
   try {
     const championshipId = parseInt(req.params.championshipId, 10);
@@ -170,11 +171,49 @@ export const updateClub = async (req: Request, res: Response) => {
           where: { clubCode: oldClubCode },
         });
       }
-      const response = {
-        status: 200,
-        message: "Club updated successfully",
-      };
-      res.status(response.status).json(response);
+
+      //Envio Email
+      const transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          user: "tkdhub4@gmail.com",
+          pass: "jbcaozbdlxbhqhvn",
+        },
+      });
+
+      const getId = await ChampionshipClub.findOne({
+        where: { clubCode: clubCode },
+      });
+      console.log(clubCode);
+      const getName = await Championship.findOne({
+        where: { championshipId: getId?.championshipId },
+      });
+      console.log(getId);
+      console.log(getName);
+      const text =
+        "Registrate como Coach en TkdHub ingresando a este link: http://localhost:4200/championship/" +
+        getId?.championshipId +
+        "/CreatePassword/Coach/" +
+        email;
+      if (getName && getName.championshipName && getId) {
+        const mailOptions = {
+          from: "tkdhub4@gmail.com",
+          to: email,
+          subject: getName.championshipName!,
+          text: text,
+        };
+
+        transporter.sendMail(
+          mailOptions,
+          function (error: Error | null, info: nodemailer.SentMessageInfo) {
+            if (error) {
+              console.log(error);
+            } else {
+              console.log("Correo electrónico enviado: " + info.response);
+            }
+          }
+        );
+      }
     }
 
     // Actualizar los valores del club
