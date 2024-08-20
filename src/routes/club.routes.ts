@@ -162,7 +162,7 @@ router.patch("/:championshipId/:oldClubCode", updateClub);
  *       '500':
  *         description: Error interno del servidor
  */
-router.patch("/password/:email", updateCoachPassword);
+router.patch("/coach/password/:email", updateCoachPassword);
 
 /**
  * @openapi

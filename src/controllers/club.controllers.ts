@@ -4,6 +4,7 @@ import ApiResponse from "../interfaces/apiResponse";
 import ChampionshipClub from "./../models/championshipClub";
 import * as nodemailer from "nodemailer";
 import Championship from "../models/championship";
+
 export const getClubs = async (req: Request, res: Response) => {
   try {
     const championshipId = parseInt(req.params.championshipId, 10);
@@ -49,7 +50,6 @@ export const createClub = async (req: Request, res: Response) => {
   try {
     const { championshipId } = req.params;
     const { clubCode, name, coachName, email } = req.body;
-
     // Verificar si el club ya existe en ChampionshipClub
     const existingClubInChampionship = await ChampionshipClub.findOne({
       where: {
@@ -144,7 +144,9 @@ export const updateClub = async (req: Request, res: Response) => {
       where: { clubCode: clubCode },
     });
 
+    console.log("EXISTING CLUB:", existingClub);
     if (existingClub) {
+      console.log("ENTREEEEE");
       await existingChampionshipClub.destroy();
 
       const newClub = await ChampionshipClub.findOne({
@@ -171,61 +173,62 @@ export const updateClub = async (req: Request, res: Response) => {
           where: { clubCode: oldClubCode },
         });
       }
-
-      //Envio Email
-      const transporter = nodemailer.createTransport({
-        service: "Gmail",
-        auth: {
-          user: "tkdhub4@gmail.com",
-          pass: "jbcaozbdlxbhqhvn",
+    } else {
+      // Actualizar los valores del club
+      await Club.update(
+        {
+          clubCode: clubCode,
+          name: name,
+          coachName: coachName,
+          email: email,
         },
-      });
-
-      const getId = await ChampionshipClub.findOne({
-        where: { clubCode: clubCode },
-      });
-      console.log(clubCode);
-      const getName = await Championship.findOne({
-        where: { championshipId: getId?.championshipId },
-      });
-      console.log(getId);
-      console.log(getName);
-      const text =
-        "Registrate como Coach en TkdHub ingresando a este link: http://localhost:4200/championship/" +
-        getId?.championshipId +
-        "/CreatePassword/Coach/" +
-        email;
-      if (getName && getName.championshipName && getId) {
-        const mailOptions = {
-          from: "tkdhub4@gmail.com",
-          to: email,
-          subject: getName.championshipName!,
-          text: text,
-        };
-
-        transporter.sendMail(
-          mailOptions,
-          function (error: Error | null, info: nodemailer.SentMessageInfo) {
-            if (error) {
-              console.log(error);
-            } else {
-              console.log("Correo electrónico enviado: " + info.response);
-            }
-          }
-        );
-      }
+        { where: { clubCode: oldClubCode } }
+      );
     }
 
-    // Actualizar los valores del club
-    await Club.update(
-      {
-        clubCode: clubCode,
-        name: name,
-        coachName: coachName,
-        email: email,
+    //Envio Email
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: "tkdhub4@gmail.com",
+        pass: "jbcaozbdlxbhqhvn",
       },
-      { where: { clubCode: oldClubCode } }
-    );
+    });
+
+    const getId = await ChampionshipClub.findOne({
+      where: { clubCode: clubCode },
+    });
+    console.log(clubCode);
+    const getName = await Championship.findOne({
+      where: { championshipId: getId?.championshipId },
+    });
+    console.log(getId);
+    console.log(getName);
+    const text =
+      "Registrate como Entrenador en TkdHub ingresando a este link: http://localhost:4200/Championship/" +
+      getId?.championshipId +
+      "/CreatePassword/Coach/" +
+      email;
+    if (getName && getName.championshipName && getId) {
+      const mailOptions = {
+        from: "tkdhub4@gmail.com",
+        to: email,
+        subject: getName.championshipName!,
+        text: text,
+      };
+
+      transporter.sendMail(
+        mailOptions,
+        function (error: Error | null, info: nodemailer.SentMessageInfo) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("Correo electrónico enviado: " + info.response);
+          }
+        }
+      );
+    }
+    //Fin envio Email
 
     const response = {
       status: 200,
@@ -304,6 +307,8 @@ export const updateCoachPassword = async (req: Request, res: Response) => {
   try {
     const { email } = req.params;
     const { password } = req.body;
+
+    console.log("ASDASDA", email);
 
     const existingClub = await Club.findOne({
       where: { email: email },

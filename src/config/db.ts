@@ -6,7 +6,7 @@ const sequelize = new Sequelize({
   host: "localhost",
   username: "root",
   password: "megaman123",
-  database: "tkdHub_v7",
+  database: "tkdHub_v8",
 });
 
 export { sequelize };

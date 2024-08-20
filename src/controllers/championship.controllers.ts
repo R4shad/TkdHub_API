@@ -12,7 +12,7 @@ enum ChampionshipStage {
   Etapa4 = "Weigh-in",
   Etapa5 = "Groupings",
   Etapa6 = "BracketDraw",
-  Etapa7 = "OrganizersRegistration",
+  Etapa7 = "ResponsiblesRegistration",
   Etapa8 = "CombatRecord",
   Etapa9 = "End",
 }
@@ -71,24 +71,18 @@ export const getChampionshipStage = async (req: Request, res: Response) => {
 export const updateStage = async (req: Request, res: Response) => {
   try {
     const { championshipId } = req.params;
+    console.log("Championship ID:", championshipId);
 
+    // Buscar el campeonato por su ID
     const championship = await Championship.findByPk(Number(championshipId));
 
     if (!championship) {
-      const response = {
-        status: 404,
-        error: "Championship not found.",
-      };
-      return res.status(response.status).json(response);
+      return res.status(404).json({ error: "Championship not found." });
     }
 
-    // Verificar si la propiedad stage no es null
+    // Verificar si la propiedad stage es null
     if (championship.stage === null) {
-      const response = {
-        status: 400,
-        error: "Championship stage is null.",
-      };
-      return res.status(response.status).json(response);
+      return res.status(400).json({ error: "Championship stage is null." });
     }
 
     // Obtener el índice actual del enum ChampionshipStage
@@ -96,33 +90,36 @@ export const updateStage = async (req: Request, res: Response) => {
       championship.stage as string
     );
 
-    console.log("BBBBBBBBBBBBB", currentStageIndex);
-    // Verificar si el campeonato está en la última etapa
+    console.log("Current Stage Index:", currentStageIndex);
+
+    // Verificar si el campeonato ya está en la última etapa
     if (currentStageIndex === Object.values(ChampionshipStage).length - 1) {
-      const response = {
-        status: 400,
-        error: "The championship is already in the last stage.",
-      };
-      return res.status(response.status).json(response);
+      return res
+        .status(400)
+        .json({ error: "The championship is already in the last stage." });
     }
-    console.log("CCCCCCCCCCCCc");
-    // Actualizar la etapa del campeonato al siguiente
-    const nextStage = Object.values(ChampionshipStage)[currentStageIndex + 1];
-    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAA", nextStage);
+
+    // Obtener el índice de la siguiente etapa
+    const nextStageIndex = currentStageIndex + 1;
+
+    // Obtener la siguiente etapa
+    const nextStage = Object.values(ChampionshipStage)[nextStageIndex];
+
+    console.log("Next Stage (Value):", nextStage);
+
+    // Actualizar la etapa del campeonato
     await championship.update({ stage: nextStage });
 
-    const response = {
-      status: 200,
-      message: "Championship stage updated successfully.",
-    };
-    res.status(response.status).json(response);
+    console.log("Stage updated successfully to:", nextStage);
+
+    return res
+      .status(200)
+      .json({ message: "Championship stage updated successfully." });
   } catch (error) {
     console.error("Error updating championship stage:", error);
-    const response = {
-      status: 500,
-      error: "There was an error processing the request.",
-    };
-    res.status(response.status).json(response);
+    return res
+      .status(500)
+      .json({ error: "There was an error processing the request." });
   }
 };
 
@@ -175,7 +172,7 @@ export const createChampionship = async (req: Request, res: Response) => {
       },
     });
     const text =
-      "Registrate como Organizador en TkdHub ingresando a este link: http://localhost:4200/championship/" +
+      "Registrate como Organizador en TkdHub ingresando a este link: http://localhost:4200/Championship/" +
       getId?.championshipId +
       "/CreatePassword/Organizer/" +
       email;
