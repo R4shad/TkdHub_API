@@ -4,6 +4,8 @@ import Organizer from "./../models/organizer";
 import ApiResponse from "../interfaces/apiResponse";
 import jwt from "jsonwebtoken";
 import * as nodemailer from "nodemailer";
+import Club from "../models/club";
+import Responsible from "../models/responsible";
 
 enum ChampionshipStage {
   Etapa1 = "InitialConfiguration",
@@ -208,26 +210,41 @@ export const createChampionship = async (req: Request, res: Response) => {
   }
 };
 
-export const loginOrganizer = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response) => {
   try {
     const { championshipId } = req.params;
     const { email, password } = req.body;
 
-    // Buscar al organizador en la tabla Organizer
-    const organizer = await Organizer.findOne({
-      where: { email: email },
-    });
+    // Buscar al organizador en las tablas Organizer, Club, y Responsible
+    const organizer = await Organizer.findOne({ where: { email: email } });
+    const coach = await Club.findOne({ where: { email: email } });
+    const responsible = await Responsible.findOne({ where: { email: email } });
 
-    if (!organizer) {
+    // Verificar si el email pertenece a alguna de las tablas
+    if (!organizer && !coach && !responsible) {
       const response: ApiResponse<undefined> = {
         status: 404,
-        error: "Organizer not found.",
+        error: "User not found.",
       };
       return res.status(response.status).json(response);
     }
 
-    // Verificar la contraseña del organizador
-    if (password !== organizer.password) {
+    let user = null;
+    let userRole = "";
+    let clubCode = "";
+    // Verificar la contraseña según la tabla correspondiente
+    if (organizer && password === organizer.password) {
+      user = organizer;
+      userRole = "Organizer";
+    } else if (coach && password === coach.password) {
+      user = coach;
+      userRole = "Coach";
+      clubCode = coach.clubCode;
+    } else if (responsible && password === responsible.password) {
+      user = responsible;
+      userRole = "Scorer";
+      clubCode = "BracketResults";
+    } else {
       const response: ApiResponse<undefined> = {
         status: 400,
         error: "Incorrect Password.",
@@ -235,17 +252,17 @@ export const loginOrganizer = async (req: Request, res: Response) => {
       return res.status(response.status).json(response);
     }
 
-    // Generar el token
+    // Generar el token con el rol adecuado
     const token = jwt.sign(
       {
-        role: Organizer,
+        role: userRole,
       },
       process.env.SECRET_KEY || "R4shad"
     );
 
-    res.json({ token });
+    res.json({ token, role: userRole, clubCode: clubCode });
   } catch (error) {
-    console.error("Error during organizer login:", error);
+    console.error("Error during login:", error);
     const response: ApiResponse<undefined> = {
       status: 500,
       error: "There was an error processing the request.",

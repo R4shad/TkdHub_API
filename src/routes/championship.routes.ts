@@ -4,7 +4,7 @@ import {
   getChampionshipStage,
   createChampionship,
   updateStage,
-  loginOrganizer,
+  login,
   getChampionshipById,
   updateOrganizerPassword,
 } from "../controllers/championship.controllers";
@@ -153,7 +153,7 @@ router.post("/", createChampionship);
  *       500:
  *         description: Error
  */
-router.post("/login/:championshipId", loginOrganizer);
+router.post("/login/:championshipId", login);
 
 /**
  * @openapi

@@ -2,11 +2,12 @@ import { Request, Response } from "express";
 import Responsible from "./../models/responsible";
 
 import ApiResponse from "../interfaces/apiResponse";
-
+import * as nodemailer from "nodemailer";
 import ChampionshipResponsible from "./../models/championshipResponsible";
 import bcrypt from "bcrypt";
 
 import jwt from "jsonwebtoken";
+import Championship from "../models/championship";
 
 export const getResponsibles = async (req: Request, res: Response) => {
   try {
@@ -245,6 +246,46 @@ export const uR = async (req: Request, res: Response) => {
       },
       { where: { id: responsibleId } }
     );
+
+    //Envio Email
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: "tkdhub4@gmail.com",
+        pass: "jbcaozbdlxbhqhvn",
+      },
+    });
+
+    const text =
+      "Registrate como Anotador en TkdHub ingresando a este link: http://localhost:4200/Championship/" +
+      championshipId +
+      "/CreatePassword/Scorer/" +
+      email;
+
+    const getName = await Championship.findOne({
+      where: { championshipId: championshipId },
+    });
+
+    if (getName && getName.championshipName) {
+      const mailOptions = {
+        from: "tkdhub4@gmail.com",
+        to: email,
+        subject: getName.championshipName!,
+        text: text,
+      };
+
+      transporter.sendMail(
+        mailOptions,
+        function (error: Error | null, info: nodemailer.SentMessageInfo) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("Correo electrónico enviado: " + info.response);
+          }
+        }
+      );
+    }
+    //Fin envio Email
 
     const response = {
       status: 200,
