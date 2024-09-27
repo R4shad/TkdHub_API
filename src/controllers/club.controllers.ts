@@ -197,7 +197,9 @@ export const updateClub = async (req: Request, res: Response) => {
 
     const getId = await ChampionshipClub.findOne({
       where: { clubCode: clubCode },
+      order: [["championshipId", "DESC"]],
     });
+
     console.log(clubCode);
     const getName = await Championship.findOne({
       where: { championshipId: getId?.championshipId },

@@ -5,7 +5,7 @@ import Participant from "../models/participant";
 
 (async () => {
   try {
-    const championshipId: number = 8;
+    const championshipId: number = 3;
     await sequelize.sync(); // Sincroniza el modelo con la base de datos, eliminando las tablas existentes si existen
     const participants = [];
     const firstNames = [
@@ -56,7 +56,7 @@ import Participant from "../models/participant";
       const clubCode = "LIN";
       const age = 18;
       const weight = 50;
-      const grade = "franja amarillo";
+      const grade = "amarillo";
       const gender = "Masculino";
       const firstName = firstNames[i % firstNames.length];
       const lastName = lastNames[i % lastNames.length];
