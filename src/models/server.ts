@@ -34,6 +34,8 @@ import ChampionshipAgeInterval from "./championshipAgeInterval";
 import DefaultCategory from "./defaultCategory";
 import DefaultDivision from "./defaultDivision";
 import Organizer from "./organizer";
+
+import validateToken from "./validateToken";
 class Server {
   app: express.Application;
   port: string | number;
@@ -56,16 +58,16 @@ class Server {
   }
 
   private routes() {
-    this.app.use("/api/championship", routesChampionship);
-    this.app.use("/api/participant", routesParticipant);
-    this.app.use("/api/responsible", routesResponsibles);
-    this.app.use("/api/club", routesClub);
-    this.app.use("/api/ageInterval", routesAgeInterval);
-    this.app.use("/api/division", routesDivision);
-    this.app.use("/api/category", routesCategory);
-    this.app.use("/api/competitor", routesCompetitor);
-    this.app.use("/api/bracket", routesBracket);
-    this.app.use("/api/match", routesMatch);
+    this.app.use("/api/championship", validateToken, routesChampionship);
+    this.app.use("/api/participant", validateToken, routesParticipant);
+    this.app.use("/api/responsible", validateToken, routesResponsibles);
+    this.app.use("/api/club", validateToken, routesClub);
+    this.app.use("/api/ageInterval", validateToken, routesAgeInterval);
+    this.app.use("/api/division", validateToken, routesDivision);
+    this.app.use("/api/category", validateToken, routesCategory);
+    this.app.use("/api/competitor", validateToken, routesCompetitor);
+    this.app.use("/api/bracket", validateToken, routesBracket);
+    this.app.use("/api/match", validateToken, routesMatch);
   }
 
   private launchSwagger() {

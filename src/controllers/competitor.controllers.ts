@@ -9,7 +9,7 @@ export const getCompetitors = async (req: Request, res: Response) => {
     const { championshipId } = req.params;
 
     const competitors = await Competitor.findAll({
-      where: { championshipId },
+      where: { championshipId, notParticipate: false },
       include: [
         {
           model: participant,
@@ -24,7 +24,53 @@ export const getCompetitors = async (req: Request, res: Response) => {
           ],
         },
       ],
-      attributes: ["participantId", "divisionId", "categoryId"],
+      attributes: [
+        "participantId",
+        "divisionId",
+        "categoryId",
+        "notParticipate",
+      ],
+    });
+
+    res.status(200).json({ status: 200, data: competitors });
+  } catch (error) {
+    console.error("Error fetching competitors:", error);
+    res.status(500).json({
+      status: 500,
+      error: "There was an error processing the request.",
+    });
+  }
+};
+
+export const getCompetitorsNotParticipating = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { championshipId } = req.params;
+
+    const competitors = await Competitor.findAll({
+      where: { championshipId, notParticipate: true },
+      include: [
+        {
+          model: participant,
+          attributes: [
+            "clubCode",
+            "firstNames",
+            "lastNames",
+            "age",
+            "weight",
+            "grade",
+            "gender",
+          ],
+        },
+      ],
+      attributes: [
+        "participantId",
+        "divisionId",
+        "categoryId",
+        "notParticipate",
+      ],
     });
 
     res.status(200).json({ status: 200, data: competitors });
@@ -125,13 +171,14 @@ export const createCompetitor = async (req: Request, res: Response) => {
 export const deleteCompetitor = async (req: Request, res: Response) => {
   const competitorId = req.params.competitorId;
   try {
-    const result = await Competitor.destroy({
-      where: { competitorId },
-    });
-    if (result === 1) {
+    const result = await Competitor.update(
+      { notParticipate: true },
+      { where: { competitorId } }
+    );
+    if (result[0] === 1) {
       res
         .status(200)
-        .json({ status: 200, message: "Competidor eliminado exitosamente" });
+        .json({ status: 200, message: "Competidor actualizado exitosamente" });
     } else {
       res
         .status(404)

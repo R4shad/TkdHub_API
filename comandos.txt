@@ -1,4 +1,6 @@
 npx tsc --watch
 node dist/db/staticParticipantData.js
 node dist/db/randomParticipantsData.js
+node dist/db/manualParticipants.js
 node dist/db/initialData.js
+npx cypress open

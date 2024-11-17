@@ -6,6 +6,7 @@ import {
   updateCompetitor,
   deleteCompetitor,
   deleteCompetitorPid,
+  getCompetitorsNotParticipating,
 } from "../controllers/competitor.controllers";
 
 const router = Router();
@@ -33,6 +34,30 @@ const router = Router();
  *               items:
  */
 router.get("/:championshipId", getCompetitors);
+
+/**
+ * @openapi
+ * /api/competitor/notParticipate/{championshipId}:
+ *   get:
+ *     tags:
+ *       - Competitor
+ *     parameters:
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: ID of the championship
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ */
+router.get("/notParticipate/:championshipId", getCompetitorsNotParticipating);
 
 /**
  * @openapi

@@ -59,6 +59,8 @@ export const getBracketsWithCompetitorsByChampionshipId = async (
       where: { championshipId },
     });
 
+    const bracketsWithCompetitors = [];
+
     for (const bracket of brackets) {
       const division = await ChampionshipDivision.findByPk(bracket.divisionId, {
         include: [ChampionshipAgeInterval],
@@ -74,20 +76,26 @@ export const getBracketsWithCompetitorsByChampionshipId = async (
         },
       });
 
-      const competitorsWithDetails = await Promise.all(
-        competitors.map(async (competitor) => {
-          const participant = await Participant.findOne({
-            where: { id: competitor.participantId },
-          });
-          return {
-            ...competitor.toJSON(),
-            participant: participant ? participant.toJSON() : null,
-          };
-        })
-      );
-      bracket.dataValues.competitors = competitorsWithDetails;
-      bracket.dataValues.division = division?.toJSON();
-      bracket.dataValues.category = category?.toJSON();
+      // Solo continuar si hay competidores
+      if (competitors.length > 0) {
+        const competitorsWithDetails = await Promise.all(
+          competitors.map(async (competitor) => {
+            const participant = await Participant.findOne({
+              where: { id: competitor.participantId },
+            });
+            return {
+              ...competitor.toJSON(),
+              participant: participant ? participant.toJSON() : null,
+            };
+          })
+        );
+        bracket.dataValues.competitors = competitorsWithDetails;
+        bracket.dataValues.division = division?.toJSON();
+        bracket.dataValues.category = category?.toJSON();
+
+        // Agregar el bracket solo si tiene competidores
+        bracketsWithCompetitors.push(bracket);
+      }
     }
 
     // Obtener los matches asociados a cada bracket
@@ -97,7 +105,7 @@ export const getBracketsWithCompetitorsByChampionshipId = async (
 
     // Ordenar brackets según los criterios especificados
     const sortedBrackets = [];
-    for (const bracket of brackets) {
+    for (const bracket of bracketsWithCompetitors) {
       const matches = await getMatchesForBracket(bracket);
 
       // Almacenar el bracket y sus matches para ordenar posteriormente
@@ -152,7 +160,7 @@ export const getBracketsWithCompetitorsByChampionshipId = async (
       ) {
         return -1;
       } else if (
-        aDivision?.gender != "Masculino" &&
+        aDivision?.gender !== "Masculino" &&
         bDivision?.gender === "Masculino"
       ) {
         return 1;
@@ -205,20 +213,37 @@ export const getBracketResultsByChampionshipId = async (
           "blueCompetitorId",
         ], // Seleccionar solo los atributos necesarios
       });
-
+      console.log("MATCHES DEL BRACKET: ", matches);
       // Determinar el ganador de oro y plata
-      let goldWinner, silverWinner;
+      interface Winner {
+        id: string;
+        toJSON: () => any;
+      }
+
+      let goldWinner: Winner | null = null;
+      let silverWinner: Winner | null = null;
+
       for (const match of matches) {
         if (match.round === "final") {
           if (match.redRounds === 2) {
             const compRed = await Competitor.findOne({
               where: { competitorId: match.redCompetitorId },
             });
+            const compBlue = await Competitor.findOne({
+              where: { competitorId: match.blueCompetitorId },
+            });
 
             goldWinner = await Participant.findOne({
               where: { id: compRed?.participantId },
             });
+
+            silverWinner = await Participant.findOne({
+              where: { id: compBlue?.participantId },
+            });
           } else {
+            const compRed = await Competitor.findOne({
+              where: { competitorId: match.redCompetitorId },
+            });
             const compBlue = await Competitor.findOne({
               where: { competitorId: match.blueCompetitorId },
             });
@@ -226,17 +251,16 @@ export const getBracketResultsByChampionshipId = async (
             goldWinner = await Participant.findOne({
               where: { id: compBlue?.participantId },
             });
-          }
 
-          // Determinar el perdedor como el ganador de plata
-          silverWinner = await Participant.findOne({
-            where: { id: { [Op.not]: goldWinner?.id } }, // Excluye al ganador de oro
-          });
+            silverWinner = await Participant.findOne({
+              where: { id: compRed?.participantId },
+            });
+          }
         }
       }
 
       // Determinar el ganador de bronce
-      const bronzeWinners = [];
+      var bronzeWinners = [];
       for (const match of matches) {
         if (match.round === "semifinal1" || match.round === "semifinal2") {
           const loserId =
@@ -252,24 +276,53 @@ export const getBracketResultsByChampionshipId = async (
           bronzeWinners.push(bronzeWinner);
         }
       }
+      console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaa");
+      console.log(goldWinner);
+      console.log(silverWinner);
+      console.log(bronzeWinners);
 
       // Estructurar los resultados del bracket
-      const bracketResult = {
-        bracketId: bracket.bracketId,
-        divisionId: bracket.divisionId,
-        categoryId: bracket.categoryId,
-        results: [
-          { ...goldWinner?.toJSON(), position: "oro" },
-          { ...silverWinner?.toJSON(), position: "plata" },
-          ...bronzeWinners.map((bronzeWinner) => ({
-            ...bronzeWinner?.toJSON(),
-            position: "bronce",
-          })),
-        ],
-      };
-
-      // Agregar los resultados del bracket al arreglo de ganadores
-      winners.push(bracketResult);
+      if (silverWinner != null) {
+        if (
+          bronzeWinners[0]?.id === silverWinner?.id ||
+          bronzeWinners[1]?.id === silverWinner?.id
+        ) {
+          const bracketResult = {
+            bracketId: bracket.bracketId,
+            divisionId: bracket.divisionId,
+            categoryId: bracket.categoryId,
+            results: [
+              { ...goldWinner?.toJSON(), position: "oro" },
+              { ...silverWinner?.toJSON(), position: "plata" },
+              ...bronzeWinners
+                .filter((bronzeWinner) => bronzeWinner?.id !== silverWinner?.id)
+                .slice(0, 1) // Tomar solo el primer ganador de bronce que no sea repetido
+                .map((bronzeWinner) => ({
+                  ...bronzeWinner?.toJSON(),
+                  position: "bronce",
+                })),
+            ],
+          };
+          // Agregar los resultados del bracket al arreglo de ganadores
+          winners.push(bracketResult);
+        } else {
+          const bracketResult = {
+            bracketId: bracket.bracketId,
+            divisionId: bracket.divisionId,
+            categoryId: bracket.categoryId,
+            results: [
+              { ...goldWinner?.toJSON(), position: "oro" },
+              { ...silverWinner?.toJSON(), position: "plata" },
+              ...bronzeWinners.map((bronzeWinner) => ({
+                ...bronzeWinner?.toJSON(),
+                position: "bronce",
+              })),
+            ],
+          };
+          // Agregar los resultados del bracket al arreglo de ganadores
+          winners.push(bracketResult);
+        }
+      }
     }
 
     // Enviar respuesta con los ganadores de cada bracket

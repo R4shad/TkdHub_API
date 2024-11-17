@@ -7,6 +7,7 @@ import {
   login,
   getChampionshipById,
   updateOrganizerPassword,
+  sendForgotEmail,
 } from "../controllers/championship.controllers";
 
 const router = Router();
@@ -190,5 +191,38 @@ router.post("/login/:championshipId", login);
  *         description: Error interno del servidor
  */
 router.patch("/password/update/:email", updateOrganizerPassword);
+
+/**
+ * @openapi
+ * /api/championship/{championshipId}/updatePassword/{email}:
+ *   patch:
+ *     tags:
+ *       - Championship
+ *     summary: Actualizar el password de un usuario
+ *     description: Actualiza la password de un usuario
+ *     parameters:
+ *       - name: email
+ *         in: path
+ *         required: true
+ *         description: mail del organizador
+ *         schema:
+ *           type: string
+ *       - name: championshipId
+ *         in: path
+ *         required: true
+ *         description: mail del organizador
+ *         schema:
+ *           type: number
+ *     responses:
+ *       '200':
+ *         description: Correo enviado correctamente
+ *       '400':
+ *         description: Solicitud incorrecta
+ *       '404':
+ *         description: Correo  no encontrado
+ *       '500':
+ *         description: Error interno del servidor
+ */
+router.patch("/:championshipId/updatePassword/:email", sendForgotEmail);
 
 export default router;

@@ -274,6 +274,7 @@ export const enumerateMatches = async (req: Request, res: Response) => {
 
     // Ordenar brackets según los criterios especificados
     const sortedBrackets = [];
+    console.log("BRACKETSSSSSSSSSSSSSSSSSSSS: ", brackets);
     for (const bracket of brackets) {
       const matches = await getMatchesForBracket(bracket);
 

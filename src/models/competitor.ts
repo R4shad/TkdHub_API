@@ -10,6 +10,7 @@ class Competitor extends Model {
   public championshipId!: number;
   public divisionId!: number; // Cambio de divisionName a divisionId
   public categoryId!: number; // Cambio de categoryName a categoryId
+  public notParticipate!: boolean; // Nuevo campo agregado
 }
 
 Competitor.init(
@@ -40,6 +41,11 @@ Competitor.init(
       type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
     },
+    notParticipate: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false, // Valor por defecto
+      allowNull: false,
+    },
   },
   {
     sequelize,
@@ -51,11 +57,9 @@ Competitor.init(
 Competitor.belongsTo(participant, {
   foreignKey: "participantId",
 });
-
 Competitor.belongsTo(ChampionshipCategory, {
   foreignKey: "categoryId", // Cambio de championshipId a categoryId
 });
-
 Competitor.belongsTo(ChampionshipDivision, {
   foreignKey: "divisionId", // Cambio de championshipId a divisionId
 });
